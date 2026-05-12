@@ -58,7 +58,12 @@ nb_preallocation=2* ceil(length(data.(param{1}))/(nb_data_min/2)); % the unused 
                     %compute p value from bootstrapping
                     test_boot=bootstrp(nbboot,@pettitt,x,alpha);
 indBoot=test_boot(:,2)>=a(2);
+pvalue_bootx=(1+sum(indBoot))/(nbboot+1);
+if pvalue_bootx<=alpha
 result.pvalue_boot(k)=(1+sum(indBoot))/(nbboot+1);
+else
+ result.pvalue_boot(k)=NaN;   
+end
                     if ~isnan(a(1))
                         % result.(param{1}).time(k)=tree{k}.Time(a(1));
                         result.time(k)=tree{k}.Time(a(1));
