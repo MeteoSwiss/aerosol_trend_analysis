@@ -49,20 +49,27 @@ nb_preallocation=2* ceil(length(data.(param{1}))/(nb_data_min/2)); % the unused 
             if ~isempty(tree{k})
                 if length(tree{k}.(param{1}))>=nb_data_min
                     x=tree{k};
-                    [~,ttt, ppp, PrctDiff]=snht(x, param{1},alpha);
+                    [~,result.time(k), result.pvalue(k), result.PrctDiff(k,:)]=snht(x, param{1},alpha);
                     % result.(param{j}).level(k)=i;
                     % result.(param{j}).pvalue(k)=a(3);
                     result.level(k)=i;
-                    result.pvalue(k)=ppp;
+                    result.pvalue(k)=a(3);
                     result.PrctDiff(k,:)=PrctDiff;
                     %compute p value from bootstrapping
-                   
-                    if ~isnat(ttt)
+                    test_boot=bootstrp(nbboot,@pettitt,x,alpha);
+indBoot=test_boot(:,2)>=a(2);
+pvalue_bootx=(1+sum(indBoot))/(nbboot+1);
+if pvalue_bootx<=alpha
+result.pvalue_boot(k)=(1+sum(indBoot))/(nbboot+1);
+else
+ result.pvalue_boot(k)=NaN;   
+end
+                    if ~isnan(a(1))
                         % result.(param{1}).time(k)=tree{k}.Time(a(1));
-                        result.time(k)=ttt;
+                        result.time(k)=tree{k}.Time(a(1));
                         % divide the segment into two
-                        tree{2*k}=tree{k}(tree{k}.Time<ttt,:);
-                        tree{2*k+1}=tree{k}(tree{k}.Time>ttt,:);  
+                        tree{2*k}=tree{k}(tree{k}.Time<tree{k}.Time(a(1)),:);
+                        tree{2*k+1}=tree{k}(tree{k}.Time>tree{k}.Time(a(1)),:);  
                         if length(tree{2*k}.(param{1}))>=nb_data_min || length(tree{2*k+1}.(param{1}))>=nb_data_min
                             iteration=true;
                         end

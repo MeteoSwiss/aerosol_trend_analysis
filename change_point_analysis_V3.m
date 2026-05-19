@@ -27,8 +27,7 @@ function Tresult= change_point_analysis_V3(data, param, alpha, station, inst )
 for i=1:length(param)
     ind_nan(:,i)=isnan(data.(param{i}));
 end
-data(sum(ind_nan)>0,:)=[];
-x=1;
+data(sum(ind_nan,2)==length(param),:)=[];
 
 % produce yearly and monthly medians
 data_m=retime(data,'monthly',@nanmedian);
