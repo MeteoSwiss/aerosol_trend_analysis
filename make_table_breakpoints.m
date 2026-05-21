@@ -22,7 +22,10 @@ for i=1:height(Break_result)
        T.level(k)=Break_result.results{i}.level(j);
 
     end
+    else
+
     end
+
 end
 
 T=sortrows(T,'Break_point'); 
