@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import read_spo_actris
+from read_spo_actris import read_spo_actris
 
 def read_betsy_2026(filename, STN):
     """
@@ -10,6 +10,18 @@ def read_betsy_2026(filename, STN):
 
     # 1. Read data
     station_dat = read_spo_actris(filename)  # assumed DataFrame
+
+    if "Year" in station_dat.columns and "DOY" in station_dat.columns:
+    
+        station_dat["datetime"] = (
+            pd.to_datetime(station_dat["Year"], format="%Y")
+            + pd.to_timedelta(station_dat["DOY"] - 1, unit="D")
+        )
+    
+        station_dat = station_dat.set_index("datetime")
+    
+    else:
+        raise ValueError("No Year/DOY columns found → cannot build datetime index")
 
     # 2. Convert to numeric (similar to timetable2num)
     station_dat = station_dat.apply(pd.to_numeric, errors='coerce')
@@ -21,12 +33,8 @@ def read_betsy_2026(filename, STN):
             'MRN','MZW','PAZ','RMN','SCN','SIA','TMO','UBW']
     east = ['ACA','CRO','DSW','GSM','GGW','LBW','MCN','NCC','SHN']
 
-    # helper flags (MATLAB contains bug fixed properly here)
-    is_west = STN in west
-    is_east = STN in east
-
     # 4. Scattering thresholds
-    if is_west:
+    if STN in west:
         bs_mask = [c for c in names_var if c.startswith(("Bs", "Bbs"))]
 
         for col in bs_mask:
@@ -37,7 +45,7 @@ def read_betsy_2026(filename, STN):
             station_dat.loc[(station_dat[col] >= 9999) |
                 (station_dat[col] >= 99999),col] = np.nan
 
-    elif is_east:
+    elif STN in east:
         bs_mask = [c for c in names_var if c.startswith(("Bs", "Bbs"))]
 
         for col in bs_mask:

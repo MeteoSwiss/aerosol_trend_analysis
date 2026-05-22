@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+from pettitt import pettitt
 
 def multiple_breakpoints_2y_period(data, param, nb_data_min, alpha):
     """ multiple_breakpoints iteratively search for breakpoints in a time series
@@ -15,11 +15,10 @@ def multiple_breakpoints_2y_period(data, param, nb_data_min, alpha):
     
      example:
      mco, March 2026
-    """    
+    # """    
     nbboot = 10000
 
-    data = data.copy()
-    data = data.dropna(subset=[param])
+    data = data.dropna(subset=[param]).copy()
 
     data["year"] = data.index.year
 
