@@ -51,7 +51,7 @@ end
 if pvalue<=alpha
     a=[loc; K ;pvalue];
     % compute difference after-before the break for min (10%), med (50%) and max (90%) percentiles
-PrctDiff=round((prctile(data(loc:end),[10 50 90])-prctile(data(1:loc),[10 50 90])).*100./prctile(data,[10 50 90]));
+PrctDiff=(prctile(data(loc:end),[10 50 90])-prctile(data(1:loc),[10 50 90]).*100./prctile(data,[10 50 90]));
 else
     a=[NaN; K ;NaN];
     PrctDiff=[NaN, NaN, NaN];

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from LMS_residue import LMS_residue
-from multiple_breakpoints_while_one import multiple_breakpoints_while_one
+from multiple_breakpoints_while_one_snht import multiple_breakpoints_while_one_snht
 from multiple_breakpoints_2y_period import multiple_breakpoints_2y_period
 
 """
@@ -19,7 +19,7 @@ from multiple_breakpoints_2y_period import multiple_breakpoints_2y_period
  example:
  fev-mars 2026, mco"""
 
-def change_point_analysis_v3(data, params, alpha, station, inst):
+def change_point_analysis_v3_snht(data, params, alpha, station, inst):
 
     data = data.copy()
 
@@ -61,7 +61,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
     for p in params:
 
         # --- 1. deseason
-        result_m = multiple_breakpoints_while_one(
+        result_m = multiple_breakpoints_while_one_snht(
             data_m_deseason, p, 12, alpha
         )
 
@@ -78,7 +78,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
         })
 
         # --- 2. residue
-        result_m = multiple_breakpoints_while_one(
+        result_m = multiple_breakpoints_while_one_snht(
             data_m_residue, p, 12, alpha
         )
 
@@ -95,7 +95,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
         })
 
         # --- 3. residue log
-        result_m = multiple_breakpoints_while_one(
+        result_m = multiple_breakpoints_while_one_snht(
             data_m_residueLog, p, 12, alpha
         )
 
@@ -116,7 +116,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
 
         df_inv = pd.DataFrame({p: data_inv})
 
-        result_m = multiple_breakpoints_while_one(
+        result_m = multiple_breakpoints_while_one_snht(
             df_inv, p, 12, alpha
         )
 
@@ -145,21 +145,21 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
         })
 
         # --- 5. finestres 2 anys
-        result_m = multiple_breakpoints_2y_period(
-            data_m_residueLog, p, 12, alpha
-        )
+        # result_m = multiple_breakpoints_2y_period(
+        #     data_m_residueLog, p, 12, alpha
+        # )
 
-        results.append({
-            "station": station,
-            "start_time": start_time,
-            "end_time": end_time,
-            "length_period": period,
-            "granularity": "month",
-            "parameter": f"{p}_residueLog_2yper",
-            "instrument": inst,
-            "method": "Pettitt",
-            "results": result_m
-        })
+        # results.append({
+        #     "station": station,
+        #     "start_time": start_time,
+        #     "end_time": end_time,
+        #     "length_period": period,
+        #     "granularity": "month",
+        #     "parameter": f"{p}_residueLog_2yper",
+        #     "instrument": inst,
+        #     "method": "Pettitt",
+        #     "results": result_m
+        # })
 
     # 🔹 convertir a DataFrame final
     Tresult = pd.DataFrame(results)

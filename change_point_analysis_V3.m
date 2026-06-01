@@ -16,7 +16,7 @@ function Tresult= change_point_analysis_V3(data, param, alpha, station, inst )
 % outputs:  result= table of results
 
 
-% use: ...
+% use: ...  ... ...
 
 % example:
 
@@ -27,7 +27,7 @@ function Tresult= change_point_analysis_V3(data, param, alpha, station, inst )
 for i=1:length(param)
     ind_nan(:,i)=isnan(data.(param{i}));
 end
-data(sum(ind_nan)>0,:)=[];
+data(sum(ind_nan,2)==length(param),:)=[];
 
 % produce yearly and monthly medians
 data_m=retime(data,'monthly',@nanmedian);
@@ -110,8 +110,8 @@ for i=1:length(param)
 
 % % Pettitt from all 2 y periods in forward direction only
 
- result_m =multiple_breakpoints_2y_period(data_m_residueLog,{param{i}}, 12, 0.05);
-    Tresult(4*length(param)+i,:)=table({station},start_time, end_time,period, {granu}, {strcat(param{i},'_residueLog','_2yper')} ,{inst},  {'Pettitt'}, {result_m},'VariableNames',{'station','start_time','end_time','length_period','granularity','parameter','instrument','method','results'});
+ % % % result_m =multiple_breakpoints_2y_period(data_m_residueLog,{param{i}}, 12, 0.05);
+ % % %    Tresult(4*length(param)+i,:)=table({station},start_time, end_time,period, {granu}, {strcat(param{i},'_residueLog','_2yper')} ,{inst},  {'Pettitt'}, {result_m},'VariableNames',{'station','start_time','end_time','length_period','granularity','parameter','instrument','method','results'});
 
     % % plot of data with breakpoints and cusum
     subplot(nb_subplot,1,1);
@@ -132,15 +132,17 @@ for i=1:length(param)
     p4=plot(selectx.time+days(30/2),selectx.pvalue_boot,'^','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
     selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog','_inv')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
     p5=plot(selectx.time+days(30/2),selectx.pvalue_boot,'v','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
-  selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog','_2yper')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
-    p6=plot(selectx.time+days(30/2),selectx.pvalue_boot,'*','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
+%%  selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog','_2yper')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
+   %% p6=plot(selectx.time+days(30/2),selectx.pvalue_boot,'*','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
   
     %legend([p1 p2 p3 p4],{'break data','break deseason','break LMS','break LMS of log'});
-    legend([p2(1) p3(1) p4(1) p5(1) p6(1)],{'deseason', 'residue','resLog forward', 'resLog backward','resLog 2yPer'},'Location','northeastoutside');
+    legend([p2(1) p3(1) p4(1) p5(1)],{'deseason', 'residue','resLog forward', 'resLog backward'},'Location','northeastoutside');
+%%        legend([p2(1) p3(1) p4(1) p5(1) p6(1)],{'deseason', 'residue','resLog forward', 'resLog backward','resLog 2yPer'},'Location','northeastoutside');
+
     %ylim([0, alpha]);
     ylabel('p-value bootstrap');
     grid on;
-% plot of break points with deseason/detrend data
+% plot of break points (only without log  with deseason/detrend data
  subplot(nb_subplot,1,2);
  yyaxis left
     hold on;
@@ -155,15 +157,17 @@ for i=1:length(param)
     p2=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'o','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i)); %'MarkerFaceColor',couleur(i),
     selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residue')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
     p3=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'s','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i));
-    selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
-    p4=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'^','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
-    selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog','_inv')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
-    p5=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'v','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
-  selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog','_2yper')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
-    p6=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'*','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
+  % %   selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
+  % %   p4=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'^','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
+  % %   selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog','_inv')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
+  % %   p5=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'v','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
+  % % %% selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog','_2yper')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
+   %% p6=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'*','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
   
     %legend([p1 p2 p3 p4],{'break data','break deseason','break LMS','break LMS of log'});
-    legend([p2(1) p3(1) p4(1) p5(1) p6(1)],{'deseason', 'residue','resLog forward', 'resLog backward','resLog 2yPer'},'Location','northeastoutside');
+    legend([p2(1) p3(1)],{'deseason', 'residue'},'Location','northeastoutside');
+    %    legend([p2(1) p3(1) p4(1) p5(1) p6(1)],{'deseason', 'residue','resLog forward', 'resLog backward','resLog 2yPer'},'Location','northeastoutside');
+
     %ylim([0, alpha]);
     ylabel('Median Diff');
     grid on;

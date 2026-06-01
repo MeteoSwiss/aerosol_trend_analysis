@@ -59,7 +59,7 @@ def pettitt(data, alpha):
         p_after = np.percentile(after, [10, 50, 90])
         p_total = np.percentile(data, [10, 50, 90])
 
-        PrctDiff = np.round((p_after - p_before) * 100 / p_total)
+        PrctDiff = (p_after - p_before) * 100 / p_total
 
         return np.array([loc, K, pvalue]), PrctDiff
 

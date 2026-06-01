@@ -1,12 +1,11 @@
 import numpy as np
 import pandas as pd
-import pettitt
+from pettitt import pettitt
 
 def multiple_breakpoints_while_one(data, param, nb_data_min, alpha):
     nbboot = 10000
 
-    data = data.copy()
-    data = data.dropna(subset=[param])
+    data = data.dropna(subset=[param]).copy()
 
     # Preallocació (aproximada)
     nb_preallocation = int(2 * np.ceil(len(data) / (nb_data_min / 2)))
