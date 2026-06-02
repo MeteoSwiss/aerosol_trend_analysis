@@ -1,23 +1,21 @@
 import pandas as pd
 import numpy as np
 
-def make_table_breakpoints(Break_result, param):
+def make_table_breakpoints(Break_result):
     rows = []
 
-    for i in range(len(Break_result)):
-        station = Break_result.loc[i, "station"]
+    for item in Break_result:
+        station = item["station"]
 
         # Saltar si està buit
         if station is None or (isinstance(station, (list, str)) and len(station) == 0):
             continue
 
-        results = Break_result.loc[i, "results"]
+        results = item["results"]
 
-        times = results["time"]
-
-        for j in range(len(times)):
+        for j in range(len(results["time"])):
             row = {
-                "param": Break_result.loc[i, "parameter"],
+                "param": item["parameter"],
                 "Break_point": results["time"][j],
                 "p_value": results["pvalue"][j],
                 "p_value_boot": results["pvalue_boot"][j],
