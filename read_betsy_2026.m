@@ -14,7 +14,11 @@ station_dat = timetable2num(station_dat);
 
 %%
 names_var=fieldnames(station_dat);
-
+%% remove the variables containing g (STD) and N (nb of data)
+c=contains(names_var,{'g','N'}); 
+names_delete=names_var(c);
+station_dat=removevars(station_dat,names_delete);
+names_var=fieldnames(station_dat);
 % Improve station, limit of scattering to 500 Mm-1 for the eastern stations (ACA, GSM, MCN, SHN)
 % and 100 Mm-1 for western (BBE HCG IBB MRN MZW PAZ SCN SIA)
 %check the RH for the scattering
@@ -44,6 +48,13 @@ elseif contains(east,STN)
     N=names_var(Cc);
     for i=1:length(N)
         ind=station_dat.(N{i})>=9999;
+        station_dat.(N{i})(ind)=NaN;
+    end
+else
+    Cc=startsWith(names_var,["T","U"]) & ~startsWith(names_var,'Time');
+    N=names_var(Cc);
+    for i=1:length(N)
+        ind=station_dat.(N{i})>=9999 | station_dat.(N{i})>=99999 | station_dat.(N{i})>=99999;
         station_dat.(N{i})(ind)=NaN;
     end
 end
