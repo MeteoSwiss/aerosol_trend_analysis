@@ -4,29 +4,40 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from LMS_residue import LMS_residue
 from multiple_breakpoints_while_one import multiple_breakpoints_while_one
+from multiple_breakpoints_while_one_snht import multiple_breakpoints_while_one_snht
 from multiple_breakpoints_2y_period import multiple_breakpoints_2y_period
 
 """
- apply the Pettitt and monthly data
+ apply the SNHT or Pettitt and monthly data
  the tests are applied only for at least 10 years on yearly data -->
  subsequent division of the time serie also follows this rule
  tests on monthly data should not be applied on less than 2 years if divided
  find a way to extract the best potentiel change points (and not all)
  save fig all in one
  inputs: data = TimeTable
-           param = parameters (as fieldnames) to be analysed
+           params = parameters (as fieldnames) to be analysed
            alpha = confidence level, set at 0.05 as default
+           model = snht or Pettitt
  outputs:  result= table of Tresult
  use: ...
  example:
  fev-mars 2026, mco"""
 
-def change_point_analysis_v3(data, params, alpha, station, inst):
+def change_point_analysis_v4(data, params, alpha, station, inst, model):
 
     data = data.copy()
 
     # remove lines with NaN
     # data = data.dropna(subset=params)
+
+    # decide model
+    if model == 'snht':
+        func = multiple_breakpoints_while_one_snht
+    elif model == 'Pettitt':
+        func = multiple_breakpoints_while_one
+    else:
+        raise TypeError("model must be snht or Pettitt")
+
 
     # produce yearly and monthly medians
     data_m = data.resample("ME").median()
@@ -57,7 +68,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
 
     cmap = plt.get_cmap("turbo", len(params))
     couleur = cmap(range(len(params)))
-    grandeur = [12, 11, 10, 9, 8, 7, 6, 5, 4]
+    # grandeur = [12, 11, 10, 9, 8, 7, 6, 5, 4]
 
     Tresult = []
 
@@ -66,8 +77,9 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
         data_m_residue[p] = LMS_residue(data_m, p, "lin")
         data_m_residueLog[p] = LMS_residue(data_m, p, "log")
 
+        granu = "month"
         # --- 1. deseason
-        result_m = multiple_breakpoints_while_one(
+        result_m = func(
             data_m_deseason, p, 12, alpha)
 
         Tresult.append({
@@ -75,15 +87,15 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
             "start_time": start_time,
             "end_time": end_time,
             "length_period": period,
-            "granularity": "month",
+            "granularity": granu,
             "parameter": f"{p}_deseason",
             "instrument": inst,
-            "method": "Pettitt",
+            "method": model,
             "results": result_m
         })
 
         # --- 2. residue
-        result_m = multiple_breakpoints_while_one(
+        result_m = func(
             data_m_residue, p, 12, alpha)
 
         Tresult.append({
@@ -91,15 +103,15 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
             "start_time": start_time,
             "end_time": end_time,
             "length_period": period,
-            "granularity": "month",
+            "granularity": granu,
             "parameter": f"{p}_residue",
             "instrument": inst,
-            "method": "Pettitt",
+            "method": model,
             "results": result_m
         })
 
         # --- 3. residue log
-        result_m = multiple_breakpoints_while_one(
+        result_m = func(
             data_m_residueLog, p, 12, alpha)
 
         Tresult.append({
@@ -107,10 +119,10 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
             "start_time": start_time,
             "end_time": end_time,
             "length_period": period,
-            "granularity": "month",
+            "granularity": granu,
             "parameter": f"{p}_residueLog",
             "instrument": inst,
-            "method": "Pettitt",
+            "method": model,
             "results": result_m
         })
 
@@ -119,7 +131,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
 
         df_inv = pd.DataFrame({p: data_inv})
 
-        result_m = multiple_breakpoints_while_one(
+        result_m = func(
             df_inv, p, 12, alpha)
 
         # corregir temps
@@ -143,31 +155,30 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
             "start_time": start_time,
             "end_time": end_time,
             "length_period": period,
-            "granularity": "month",
+            "granularity": granu,
             "parameter": f"{p}_residueLog_inv",
             "instrument": inst,
-            "method": "Pettitt",
+            "method": model,
             "results": result_m
         })
 
         # # --- 5. finestres 2 anys
         # result_m = multiple_breakpoints_2y_period(
-        #     data_m_residueLog, p, 12, alpha
-        # )
+        #     data_m_residueLog, p, 12, alpha)
 
         # Tresult.append({
         #     "station": station,
         #     "start_time": start_time,
         #     "end_time": end_time,
         #     "length_period": period,
-        #     "granularity": "month",
+        #     "granularity": granu,
         #     "parameter": f"{p}_residueLog_2yper",
         #     "instrument": inst,
-        #     "method": "Pettitt",
+        #     "method": model,
         #     "results": result_m
         # })
 
-    # convertir a DataFrame final
+    # 🔹 convertir a DataFrame final
     Tresult_df = pd.DataFrame(Tresult)
     fig, axes = plt.subplots(nb_subplot, 1, figsize=(12, 10), sharex=True)
 
@@ -196,7 +207,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
             mask = (
                 (Tresult_df["parameter"] == f"{name}") &
                 (Tresult_df["granularity"] == "month") &
-                (Tresult_df["method"] == "Pettitt")
+                (Tresult_df["method"] == model)
             )
             if mask.sum() == 0:
                 return None
@@ -209,7 +220,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
             mask = time.notna() & np.isfinite(pval)
 
             ax2.plot(time[mask].to_numpy() + pd.Timedelta(days=15),pval[mask],marker,
-                    markerfacecolor='none',markeredgecolor=couleur[i],markersize=10,label=label)
+                    markerfacecolor='none',markeredgecolor=couleur[i], markersize=10,label=label)
 
         # deseason
         res = get_select(f"{p}_deseason")
@@ -276,8 +287,8 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
                 # create ratio series
                 data_m[ratio_name] = data_m[p1] / data_m[p2]
 
-                # Pettitt / breakpoint analysis
-                result_m = multiple_breakpoints_while_one(data_m,ratio_name,12,alpha)
+                # SNHT / breakpoint analysis
+                result_m = func(data_m,ratio_name,12,alpha)
 
                 # store result (like MATLAB table row)
                 Tresult.append({
@@ -288,7 +299,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
                     "granularity": "month",
                     "parameter": ratio_name,
                     "instrument": inst,
-                    "method": "Pettit",
+                    "method": model,
                     "results": result_m
                 })
 
@@ -320,7 +331,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
         Line2D([0], [0], marker='v', linestyle='None',markerfacecolor='none',
                markeredgecolor='k', label='resLog backward')]
 
-    ax1_right.legend(handles=legend_elements,loc='upper left',bbox_to_anchor=(1.08, 1))
+    ax1_right.legend(handles=legend_elements,loc='upper left',bbox_to_anchor=(1.09, 1))
     ax1_right.set_ylabel("p-value bootstrap")
 
     legend_elements2 = [Line2D([0], [0], marker='o', linestyle='None',markerfacecolor='none',
@@ -332,7 +343,7 @@ def change_point_analysis_v3(data, params, alpha, station, inst):
     ax2_right.set_ylabel("Median Diff")
 
     legend_elements3 = [Line2D([0], [0], linestyle=':', color='k', label='residueLog')]
-    axes[2].legend(handles=legend_elements3,loc='upper left',bbox_to_anchor=(1, 1))
+    axes[2].legend(handles=legend_elements3,loc='upper left',bbox_to_anchor=(1.01, 1))
     
     if nb_subplot >= 4:
         legend_elements4 = [Line2D([0], [0], marker='v', linestyle='None',markerfacecolor='none',

@@ -19,16 +19,16 @@ import numpy as np
     Reference: Pohlert, Thorsten. "Non-Parametric Trend Tests and Change-Point Detection." (2016).
     """
 def pettitt(data, alpha):
-    data = np.asarray(data)
+    data = np.asarray(data).flatten()
     m = len(data)
 
     # Matriu de comparacions
     #with vectorisation
-    t1 = np.tile(data, (m, 1))
-    v = np.sign(t1.T - t1)
+    # t1 = np.tile(data, (m, 1))
+    v = np.sign(data[:, None] - data[None, :])
 
     # Suma per files
-    V = np.sum(v, axis=1)
+    V = np.sum(v.T, axis=1)
 
     # Suma acumulada
     U = np.cumsum(V)
