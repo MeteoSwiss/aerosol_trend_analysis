@@ -22,10 +22,11 @@ def multiple_breakpoints_while_one_snht(data, param, nb_data_min, alpha):
 
     # while: process until each segment < nb_data_min
     nbboot = 10000
-    data = data.dropna(subset=[param]).copy()
+    # data = data.dropna(subset=[param]).copy()
 
     # Preallocació (aproximada)
-    nb_preallocation = 2 * int(np.ceil(len(data[param]) / (nb_data_min / 2)))
+    max_depth = int(np.ceil(np.log2(len(data[param]) / nb_data_min))) + 2
+    nb_preallocation = 2**max_depth - 1
 
     # Resultats
     result = {
@@ -48,16 +49,19 @@ def multiple_breakpoints_while_one_snht(data, param, nb_data_min, alpha):
         iteration = False
 
         for k in range(2**(i-1)-1, 2**i-1):
-
-            # if k in tree and len(tree[k]) > 0:
+            
             if tree[k] is not None and not tree[k].empty:
 
-                if len(tree[k][param]) >= nb_data_min:
+                n_valid = tree[k][param].notna().sum()
+                if n_valid >= nb_data_min:
 
                     x = tree[k]
 
                     # SNHT 
-                    res = snht(x, param, alpha)
+                    try:
+                        res = snht(x, param, alpha)
+                    except ValueError:
+                        continue
 
                     ttt = res.get("breakpoint", np.nan)
                     ppp = res.get("p_value", np.nan)
@@ -88,14 +92,6 @@ def multiple_breakpoints_while_one_snht(data, param, nb_data_min, alpha):
 
                         if left_ok or right_ok:
                             iteration = True
-
-                        # split segment (arbre binari)
-                        # tree[2 * k + 1] = x[x.index < ttt]
-                        # tree[2 * k + 2] = x[x.index > ttt]
-
-                        # if (len(tree[2 * k][param]) >= nb_data_min or
-                            # len(tree[2 * k + 1][param]) >= nb_data_min):
-                            # iteration = True
 
                 else:
                     result["level"][k] = i
