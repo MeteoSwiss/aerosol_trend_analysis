@@ -26,7 +26,7 @@ def change_point_analysis_v3_snht(data, params, alpha, station, inst):
     data = data.copy()
 
     # remove lines with NaN
-    data = data.dropna(subset=params)
+    # data = data.dropna(subset=params)
 
     # produce yearly and monthly medians
     data_m = data.resample("ME").median()
@@ -55,8 +55,9 @@ def change_point_analysis_v3_snht(data, params, alpha, station, inst):
     else:
         nb_subplot = 4
 
-    couleur = ['b', 'c', 'g', 'r', 'm', 'y', 'k', 'k']
-    grandeur = [12, 11, 10, 9, 8, 7, 6, 5, 4]
+    cmap = plt.get_cmap("turbo", len(params))
+    couleur = cmap(range(len(params)))
+    # grandeur = [12, 11, 10, 9, 8, 7, 6, 5, 4]
 
     Tresult = []
 
@@ -150,7 +151,7 @@ def change_point_analysis_v3_snht(data, params, alpha, station, inst):
             "results": result_m
         })
 
-        # --- 5. finestres 2 anys
+        # # --- 5. finestres 2 anys
         # result_m = multiple_breakpoints_2y_period(
         #     data_m_residueLog, p, 12, alpha)
 
@@ -167,8 +168,6 @@ def change_point_analysis_v3_snht(data, params, alpha, station, inst):
         # })
 
     # 🔹 convertir a DataFrame final
-    # Tresult = pd.DataFrame(Tresult)
-
     Tresult_df = pd.DataFrame(Tresult)
     fig, axes = plt.subplots(nb_subplot, 1, figsize=(12, 10), sharex=True)
 
@@ -210,7 +209,7 @@ def change_point_analysis_v3_snht(data, params, alpha, station, inst):
             mask = time.notna() & np.isfinite(pval)
 
             ax2.plot(time[mask].to_numpy() + pd.Timedelta(days=15),pval[mask],marker,
-                    markerfacecolor='none',markeredgecolor=couleur[i],markersize=grandeur[i],label=label)
+                    markerfacecolor='none',markeredgecolor=couleur[i], markersize=10,label=label)
 
         # deseason
         res = get_select(f"{p}_deseason")
@@ -239,7 +238,7 @@ def change_point_analysis_v3_snht(data, params, alpha, station, inst):
         ax = axes[1]
 
         ax.plot(data_m_deseason.index, data_m_deseason[p], '.', color=couleur[i])
-        ax.plot(data_m_residue.index, data_m_residue[p], '.', color=couleur[i+1])
+        ax.plot(data_m_residue.index, data_m_residue[p], '.', color=couleur[i])
         ax.set_ylabel(inst)
 
         ax2 = ax2_right
@@ -321,7 +320,7 @@ def change_point_analysis_v3_snht(data, params, alpha, station, inst):
         Line2D([0], [0], marker='v', linestyle='None',markerfacecolor='none',
                markeredgecolor='k', label='resLog backward')]
 
-    ax1_right.legend(handles=legend_elements,loc='upper left',bbox_to_anchor=(1.08, 1))
+    ax1_right.legend(handles=legend_elements,loc='upper left',bbox_to_anchor=(1.09, 1))
     ax1_right.set_ylabel("p-value bootstrap")
 
     legend_elements2 = [Line2D([0], [0], marker='o', linestyle='None',markerfacecolor='none',
@@ -333,7 +332,7 @@ def change_point_analysis_v3_snht(data, params, alpha, station, inst):
     ax2_right.set_ylabel("Median Diff")
 
     legend_elements3 = [Line2D([0], [0], linestyle=':', color='k', label='residueLog')]
-    axes[2].legend(handles=legend_elements3,loc='upper left',bbox_to_anchor=(1, 1))
+    axes[2].legend(handles=legend_elements3,loc='upper left',bbox_to_anchor=(1.01, 1))
     
     if nb_subplot >= 4:
         legend_elements4 = [Line2D([0], [0], marker='v', linestyle='None',markerfacecolor='none',
