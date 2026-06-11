@@ -28,12 +28,15 @@ def timetable_naming_trend(ds):
             # select variable type
             if "_scattering" in var_name:
                 prefix = "Bs"
+                inst = "S"
 
             elif "backscattering" in var_name:
                 prefix = "Bbs"
+                inst = "S"
 
             elif "absorption" in var_name:
                 prefix = "Ba"
+                inst = "A"
 
             elif "humidity" in var_name:
                 prefix = "U"
@@ -80,7 +83,7 @@ def timetable_naming_trend(ds):
             if np.isnan(col).all():
                 continue
 
-            name = f"{prefix}{wv}{pm}_I"
+            name = f"{prefix}{wv}{pm}_{inst}"
 
             data[name] = col
 
