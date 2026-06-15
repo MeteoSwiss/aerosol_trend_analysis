@@ -5,8 +5,12 @@ function station_datD = read_betsy_2026(filename, STN)
 
 %exemple:  SPO_rd=read_betsy_2026('/prod/pay/Aerosol_actris_trend/data/spo/spo_1979_2025','SPO');
 %% read the data
+if strcmp(STN,'SUM2')
+    station_dat = importfile_SUM2("C:\github_trend\raw_data\sum_neph_psap_clap2_clap10_AE16_AE33", [2, Inf]);
+station_dat.Properties.DimensionNames{1}='Time';
+else
 station_dat= read_spo_actris(filename);
-
+end
 
 %% probleme numeric negative: tentative to solve it
 station_dat = timetable2num(station_dat);
@@ -50,6 +54,14 @@ elseif contains(east,STN)
         ind=station_dat.(N{i})>=9999;
         station_dat.(N{i})(ind)=NaN;
     end
+elseif strcmp(STN,'SUM2')
+  
+    Cc=startsWith(names_var,["B","U","X"]);
+    N=names_var(Cc);
+    for i=1:length(N)
+        ind=station_dat.(N{i})>=9999;
+        station_dat.(N{i})(ind)=NaN;
+    end
 else
     Cc=startsWith(names_var,["T","U"]) & ~startsWith(names_var,'Time');
     N=names_var(Cc);
@@ -82,6 +94,7 @@ for i=1:length(RH)
     %select RH too high
     if strcmp(STN,'GSN')==1 && strcmp(RH{i},'U_S11')
         RH{i}='U0_S11';
+  
     end
     indRH=station_dat.(RH{i})>50 ;
     if strcmp(STN,'MCN')==1 | strcmp(STN,'MRN')==1

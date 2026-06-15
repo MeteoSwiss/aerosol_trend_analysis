@@ -60,7 +60,7 @@ else
     nb_subplot=4; % plot of the ratio are needed for the visual inspection
 end
 % color order
-couleur=['b' 'c' 'g' 'r' 'm' 'y' 'k' 'k'];
+couleur=['b' 'c' 'g' 'r' 'm' 'y' 'k' 'k' 'b' 'c' 'g' 'r' 'm' 'y' 'k'];
 grandeur=[12 11 10 9 8 7 6 5 4];
 
 figure;
@@ -176,7 +176,7 @@ for i=1:length(param)
     subplot(nb_subplot,1,3);
     hold on;
     %plot(data_m_deseason.Time,cumsum(data_m_deseason.(param{i}),"omitnan"),'-','Color',couleur(i));
-    %plot(data_m_residue.Time,cumsum(data_m_residue.(param{i}),"omitnan"),'--','Color',couleur(i));
+    plot(data_m_residue.Time,cumsum(data_m_residue.(param{i}),"omitnan"),'--','Color',couleur(i));
     plot(data_m_residueLog.Time,cumsum(data_m_residueLog.(param{i}),"omitnan"),':','Color',couleur(i));
   legend('residue LMS of log','Location','northeastoutside'); % legend('deseason','residue LMS','residue LMS of log');
     ylabel(strcat('CumSum ',param{1}));
@@ -184,10 +184,11 @@ for i=1:length(param)
 end
 
 %% if nb_param >1 do all the same for the ratio of the param
-if length(param)>1
+if length(param)>1 
     for i=1:length(param)-1
         for j=i+1:length(param)
             data_m.(strcat(param{i},'_',param{j}))=data_m.(param{i})./data_m.(param{j});
+            %if ~STD(data_m(strcat(param{i},'_',param{j})))==0
             result_m = multiple_breakpoints_while_one_snht(data_m,{strcat(param{i},'_',param{j})}, 12, 0.05);
             Tresult((2+i-1)*length(param)+(j-i),:)=table({station},start_time, end_time,period, {granu}, {(strcat(param{i},'_',param{j}))} ,{inst},  {'Pettitt'}, {result_m},'VariableNames',{'station','start_time','end_time','length_period','granularity','parameter','instrument','method','results'});
 
@@ -226,6 +227,7 @@ if length(param)>1
             ylim([0, alpha]);
             ylabel('p-value');
             legend([p10(1) p9(1)],{'ratio', 'all ratios'},'Location','northeastoutside')
+           % end
         end
     end
 
