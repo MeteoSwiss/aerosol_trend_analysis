@@ -31,12 +31,16 @@ for i=1:length(merged_data.Variables)
                 % select variable type
                 if contains(merged_data.Variables(i).Name,'_scattering')
                     var='Bs';
+                    inst='S';
                 elseif contains(merged_data.Variables(i).Name,'backscattering')
                     var='Bbs';
+                    inst='S';
                 elseif contains(merged_data.Variables(i).Name,'absorption')
                     var='Ba';
+                    inst='A';
                 elseif contains(merged_data.Variables(i).Name,'humidity')
                     var='U';
+                    inst='S';
                 else
                     warning('none of the variable has been identified')
                 end
@@ -83,7 +87,7 @@ for i=1:length(merged_data.Variables)
 
                 % keep the paramerter only if there is data for the applied wavelength
                 if sum(isnan(merged_data.Variables(i).Value(:,j)),1)< size(merged_data.Variables(i).Value(:,j),1)
-                    name_var=strcat(var,wv,pm,'_I'); % parameter name
+                    name_var=strcat(var,wv,pm,'_',inst); % parameter name
                     STN_rds.(name_var)=merged_data.Variables(i).Value(:,j);
                 end
             end

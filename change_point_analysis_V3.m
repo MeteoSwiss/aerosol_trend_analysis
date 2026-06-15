@@ -60,7 +60,7 @@ else
     nb_subplot=4; % plot of the ratio are needed for the visual inspection
 end
 % color order
-couleur=['b' 'c' 'g' 'r' 'm' 'y' 'k' 'k'];
+couleur=['b' 'c' 'g' 'r' 'm' 'y' 'k' 'k' 'b' 'c' 'g' 'r' 'm' 'y' 'k'];
 grandeur=[12 11 10 9 8 7 6 5 4];
 
 figure;
@@ -147,16 +147,17 @@ for i=1:length(param)
  yyaxis left
     hold on;
     plot(data_m_deseason.Time, data_m_deseason.(param{i}),'.','Color',couleur( i));
-     plot(data_m_residue.Time, data_m_residue.(param{i}),'.','Color',couleur( i+1));
+    p10= plot(data_m_residue.Time, data_m_residue.(param{i}),'.','Color',couleur( i+1));
     ylabel(inst);
+    legend(param)
     yyaxis right
     hold on;
     % selectx= Tresult.results{strcmp(Tresult.parameter,param{i})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
     % p1=plot(selectx.time+days(30/2),selectx.pvalue,'d','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur(i),'LineWidth',1.5);
     selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_deseason')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
-    p2=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'o','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i)); %'MarkerFaceColor',couleur(i),
+    p2=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'o','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i),'DisplayName', 'Deseason'); %'MarkerFaceColor',couleur(i),
     selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residue')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
-    p3=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'s','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i));
+    p3=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'s','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i),'DisplayName', 'residue');
   % %   selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
   % %   p4=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'^','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
   % %   selectx= Tresult.results{strcmp(Tresult.parameter,{strcat(param{i},'_residueLog','_inv')})==1 & strcmp(Tresult.granularity,'month')==1 & strcmp(Tresult.method,'Pettitt')==1 ,:};
@@ -165,7 +166,8 @@ for i=1:length(param)
    %% p6=plot(selectx.time+days(30/2),selectx.PrctDiff(:,2),'*','MarkerSize',grandeur(i), 'MarkerEdgeColor',couleur( i), 'LineWidth',1.5);
   
     %legend([p1 p2 p3 p4],{'break data','break deseason','break LMS','break LMS of log'});
-    legend([p2(1) p3(1)],{'deseason', 'residue'},'Location','northeastoutside');
+    %legend([p2(1) p3(1)],{'deseason', 'residue'},'Location','northeastoutside');
+    %legend(p10,param,'Location','northeastoutside');
     %    legend([p2(1) p3(1) p4(1) p5(1) p6(1)],{'deseason', 'residue','resLog forward', 'resLog backward','resLog 2yPer'},'Location','northeastoutside');
 
     %ylim([0, alpha]);
@@ -175,10 +177,10 @@ for i=1:length(param)
     %plot(selectx.time_inv+days(30/2),selectx.pvalue_inv,'sm','MarkerSize',10, 'MarkerFaceColor','m');
     subplot(nb_subplot,1,3);
     hold on;
-    %plot(data_m_deseason.Time,cumsum(data_m_deseason.(param{i}),"omitnan"),'-','Color',couleur(i));
-    %plot(data_m_residue.Time,cumsum(data_m_residue.(param{i}),"omitnan"),'--','Color',couleur(i));
-    plot(data_m_residueLog.Time,cumsum(data_m_residueLog.(param{i}),"omitnan"),':','Color',couleur(i));
-  legend('residue LMS of log','Location','northeastoutside'); % legend('deseason','residue LMS','residue LMS of log');
+    %plot(data_m_deseason.Time,cumsum(data_m_deseason.(param{i}),"omitnan"),'-','Color',couleur(i),'DisplayName','deseason');
+    plot(data_m_residue.Time,cumsum(data_m_residue.(param{i}),"omitnan"),'--','Color',couleur(i),'DisplayName','residue');
+    plot(data_m_residueLog.Time,cumsum(data_m_residueLog.(param{i}),"omitnan"),':','Color',couleur(i),'DisplayName','log(residue)');
+  legend('Location','northeastoutside'); % legend('deseason','residue LMS','residue LMS of log');
     ylabel(strcat('CumSum ',param{1}));
     grid on;
 end
@@ -222,7 +224,7 @@ if length(param)>1
             p10=plot(data_m.Time,data_m.(strcat(param{i},'_',param{j})),'-','Color',couleur(i));
             ylabel(inst);
             yyaxis right
-            p9=plot(result_m.time+days(30/2),result_m.pvalue_boot,'vk','MarkerSize',12,'LineWidth',1,'Color',couleur(i));
+            p9=plot(result_m.time+days(30/2),result_m.pvalue_boot,'vk','MarkerSize',12,'LineWidth',1);%'Color',couleur(i));
             ylim([0, alpha]);
             ylabel('p-value');
             legend([p10(1) p9(1)],{'ratio', 'all ratios'},'Location','northeastoutside')
