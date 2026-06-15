@@ -115,5 +115,14 @@ def multiple_breakpoints_while_one_snht(data, param, nb_data_min, alpha):
         result["level"] = level[ind]
         result["time"] = time[ind]
         result["PrctDiff"] = prct[ind, :]
+    
+    valid = ~pd.isna(time)
+
+    result = {
+        "level": level[valid],
+        "pvalue": pvalue[valid],
+        "time": time[valid],
+        "PrctDiff": prct[valid, :]
+    }
 
     return result

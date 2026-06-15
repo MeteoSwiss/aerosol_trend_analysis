@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def make_table_breakpoints(Break_result):
+def make_table_breakpoints(Break_result,model):
     rows = []
 
     for item in Break_result:
@@ -14,16 +14,17 @@ def make_table_breakpoints(Break_result):
         results = item["results"]
 
         for j in range(len(results["time"])):
-            row = {
-                "param": item["parameter"],
+            row = {"param": item["parameter"],
                 "Break_point": results["time"][j],
-                "p_value": results["pvalue"][j],
-                "p_value_boot": results["pvalue_boot"][j],
-                "level": results["level"][j],
+                "p_value": results["pvalue"][j],}
+
+            if model == "Pettitt":
+                row["p_value_boot"] = results["pvalue_boot"][j]
+
+            row.update({"level": results["level"][j],
                 "minDiff": results["PrctDiff"][j][0],
                 "medDiff": results["PrctDiff"][j][1],
-                "maxDiff": results["PrctDiff"][j][2]
-            }
+                "maxDiff": results["PrctDiff"][j][2]})
 
             rows.append(row)
 

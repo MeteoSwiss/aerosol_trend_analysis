@@ -64,4 +64,4 @@ def pettitt(data, alpha):
         return np.array([loc, K, pvalue]), PrctDiff
 
     else:
-        return np.array([np.nan, K, np.nan]), [np.nan, np.nan, np.nan]
+        return np.array([np.nan, np.nan, np.nan]), [np.nan, np.nan, np.nan]

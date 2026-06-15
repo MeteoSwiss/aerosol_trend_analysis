@@ -68,7 +68,6 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
 
     cmap = plt.get_cmap("turbo", len(params))
     couleur = cmap(range(len(params)))
-    # grandeur = [12, 11, 10, 9, 8, 7, 6, 5, 4]
 
     Tresult = []
 
@@ -79,8 +78,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
 
         granu = "month"
         # --- 1. deseason
-        result_m = func(
-            data_m_deseason, p, 12, alpha)
+        result_m = func(data_m_deseason, p, 12, alpha)
 
         Tresult.append({
             "station": station,
@@ -95,8 +93,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
         })
 
         # --- 2. residue
-        result_m = func(
-            data_m_residue, p, 12, alpha)
+        result_m = func(data_m_residue, p, 12, alpha)
 
         Tresult.append({
             "station": station,
@@ -111,8 +108,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
         })
 
         # --- 3. residue log
-        result_m = func(
-            data_m_residueLog, p, 12, alpha)
+        result_m = func(data_m_residueLog, p, 12, alpha)
 
         Tresult.append({
             "station": station,
@@ -131,8 +127,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
 
         df_inv = pd.DataFrame({p: data_inv})
 
-        result_m = func(
-            df_inv, p, 12, alpha)
+        result_m = func(df_inv, p, 12, alpha)
 
         # corregir temps
         corrected_times = []
@@ -198,7 +193,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
 
         # left axis: original data
         ax.plot(data_m.index,data_m[p],'.',color=couleur[i],label=p)
-        ax.set_ylabel(inst)
+        ax.set_ylabel(p)
 
         ax2 = ax1_right
 
@@ -242,7 +237,6 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
         if res is not None:
             clean_plot(res, res["pvalue"], 'v', "resLog backward")
 
-        ax2.set_ylabel("p-value bootstrap")
         ax.grid(True)
 
         # 2. SECOND PLOT (PrctDiff)
@@ -250,7 +244,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
 
         ax.plot(data_m_deseason.index, data_m_deseason[p], '.', color=couleur[i])
         ax.plot(data_m_residue.index, data_m_residue[p], '.', color=couleur[i])
-        ax.set_ylabel(inst)
+        ax.set_ylabel(p)
 
         ax2 = ax2_right
 
@@ -263,12 +257,13 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
         if res is not None:
             clean_plot(res, res["PrctDiff"][:, 1], 's', 'residue')
 
-        ax2.set_ylabel("Median Diff")
         ax.grid(True)
 
         # 3. CUMSUM PLOT
         ax = axes[2]
 
+        ax.plot(data_m_deseason.index,np.nancumsum(data_m_deseason[p]),'-',color=couleur[i],label="deseason")
+        ax.plot(data_m_residue.index,np.nancumsum(data_m_residue[p]),'--',color=couleur[i],label="residue")
         ax.plot(data_m_residueLog.index,np.nancumsum(data_m_residueLog[p]),':',color=couleur[i],label="residueLog")
 
         ax.set_ylabel(f"CumSum {p}")
@@ -313,7 +308,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
                     # ratio line
                     ax.plot(data_m.index,data_m[ratio_name],'-',color=couleur[i],label="ratio")
 
-                    ax.set_ylabel(inst)
+                    ax.set_ylabel(p)
 
                     # p-values
                     clean_plot(result_m, result_m["pvalue"], 'v', 'all ratios')
@@ -332,7 +327,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
                markeredgecolor='k', label='resLog backward')]
 
     ax1_right.legend(handles=legend_elements,loc='upper left',bbox_to_anchor=(1.09, 1))
-    ax1_right.set_ylabel("p-value bootstrap")
+    ax1_right.set_ylabel("p-value")
 
     legend_elements2 = [Line2D([0], [0], marker='o', linestyle='None',markerfacecolor='none',
                markeredgecolor='k', label='deseason'),
@@ -342,7 +337,9 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
     ax2_right.legend(handles=legend_elements2,loc='upper left',bbox_to_anchor=(1.08, 1))
     ax2_right.set_ylabel("Median Diff")
 
-    legend_elements3 = [Line2D([0], [0], linestyle=':', color='k', label='residueLog')]
+    legend_elements3 = [Line2D([0], [0], linestyle='-', color='k', label='deseason'),
+                        Line2D([0], [0], linestyle='--', color='k', label='residue'),
+                        Line2D([0], [0], linestyle=':', color='k', label='residueLog'),]
     axes[2].legend(handles=legend_elements3,loc='upper left',bbox_to_anchor=(1.01, 1))
     
     if nb_subplot >= 4:
