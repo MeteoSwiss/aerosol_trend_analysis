@@ -95,16 +95,7 @@ def snht(data, var_name, alpha=0.05, n_boot=1000):
     significant = p_value <= alpha
 
     # --------------------------------------------------
-    # 6. breakpoint
-    # --------------------------------------------------
-
-    if significant:
-        breakpoint = time_index[cp] if time_index is not None else cp
-    else:
-        breakpoint = np.nan
-
-    # --------------------------------------------------
-    # 7. percentiles
+    # 6. percentiles
     # --------------------------------------------------
 
     before = x[:cp]
@@ -115,6 +106,21 @@ def snht(data, var_name, alpha=0.05, n_boot=1000):
     p_all = np.percentile(x, [10, 50, 90])
 
     prct_diff = 100 * (p_after - p_before) / p_all
+
+    # --------------------------------------------------
+    # 7. breakpoint
+    # --------------------------------------------------
+
+    if significant:
+        breakpoint = time_index[cp] if time_index is not None else cp
+    else:
+        breakpoint = np.nan
+        T_max = np.nan
+        p_value = np.nan
+        significant = np.nan
+        cp = np.nan
+        T = np.nan
+        prct_diff = np.nan
 
     return {
         "T_max": T_max,
