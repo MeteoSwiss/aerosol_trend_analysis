@@ -9,23 +9,29 @@ def read_betsy_2026(filename, STN):
     """
 
     # 1. Read data
-    station_dat = read_spo_actris(filename)  # assumed DataFrame
+    station_dat = filename  # assumed DataFrame
+    # station_dat = read_spo_actris(filename)  # assumed DataFrame
 
-    if "Year" in station_dat.columns and "DOY" in station_dat.columns:
+    # if "Year" in station_dat.columns and "DOY" in station_dat.columns:
     
-        station_dat["datetime"] = (
-            pd.to_datetime(station_dat["Year"], format="%Y")
-            + pd.to_timedelta(station_dat["DOY"] - 1, unit="D")
-        )
+    #     station_dat["datetime"] = (
+    #         pd.to_datetime(station_dat["Year"], format="%Y")
+    #         + pd.to_timedelta(station_dat["DOY"] - 1, unit="D")
+    #     )
     
-        station_dat = station_dat.set_index("datetime")
+    #     station_dat = station_dat.set_index("datetime")
     
-    else:
-        raise ValueError("No Year/DOY columns found → cannot build datetime index")
+    # else:
+    #     raise ValueError("No Year/DOY columns found → cannot build datetime index")
 
     # 2. Convert to numeric (similar to timetable2num)
     station_dat = station_dat.apply(pd.to_numeric, errors='coerce')
 
+    names_var = station_dat.columns.tolist()
+
+    # remove the variables containing g (STD) and N (nb of data)
+    names_delete = [col for col in names_var if 'g' in col or 'N' in col]
+    station_dat = station_dat.drop(columns=names_delete)
     names_var = station_dat.columns.tolist()
 
     # 3. Station groups
@@ -54,6 +60,12 @@ def read_betsy_2026(filename, STN):
         t_mask = [c for c in names_var if c.startswith(("T", "U"))]
         for col in t_mask:
             station_dat.loc[station_dat[col] >= 9999, col] = np.nan
+            
+    else:
+        t_mask = [c for c in names_var if c.startswith(("T", "U")) and not c.startswith('Time')]
+        for col in t_mask:
+            station_dat.loc[station_dat[col] >= 9999, col] = np.nan
+
 
     # 5. Special cases
     if STN == "AMY":
