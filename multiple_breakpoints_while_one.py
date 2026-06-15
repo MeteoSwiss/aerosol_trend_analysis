@@ -99,9 +99,6 @@ def multiple_breakpoints_while_one(data, param, nb_data_min, alpha):
                     result["level"][k] = i
             else:
                 result["level"][k] = i
-                    # result["pvalue"][k] = a[2]
-                    # result["pvalue_boot"][k] = pvalue_boot
-                    # result["PrctDiff"][k] = PrctDiff
 
     pvalue = np.asarray(result["pvalue"])
     pvalue_boot = np.asarray(result["pvalue_boot"])
@@ -122,4 +119,13 @@ def multiple_breakpoints_while_one(data, param, nb_data_min, alpha):
         result["time"] = time[valid]
         result["PrctDiff"] = prct[valid]
 
+    valid = ~pd.isna(time)
+
+    result = {
+        "level": level[valid],
+        "pvalue": pvalue[valid],
+        "pvalue_boot": pvalue_boot[valid],
+        "time": time[valid],
+        "PrctDiff": prct[valid, :]
+    }
     return result
