@@ -1,4 +1,4 @@
-function [Tresult_MK,Tresult_GSMd,Tresult_LMSlog,Tresult_LMSlin]=all3_trend(data,param, inst, station, resolution, varargin)
+function [Tresult_MK,Tresult_GSMd,Tresult_LMSlog,Tresult_LMSlin,Tresult_LMSlog2,Tresult_LMSlin2]=all3_trend(data,param, inst, station, resolution, varargin)
 
 % do the MK, LM and MC trend and save the results and figures
 %data: should be as time table
