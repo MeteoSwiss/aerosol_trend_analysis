@@ -1,3 +1,4 @@
+% STN infos
 SPO_st.name='SPO';
 SPO_st.lat=-89.98;
 SPO_st.lon=-24.8;
@@ -5,6 +6,7 @@ SPO_st.alt=2410;
 SPO_st.env='P';
 SPO_st.footp='P';
 %%
+%reading process
 if ispc
 SPO_rd=read_betsy_2026('M:/pay-prod/Aerosol_actris_trend/data/spo/spo_1979_2025',SPO_st.name);
 elseif isunix

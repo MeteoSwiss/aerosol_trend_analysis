@@ -178,7 +178,8 @@ for i=nb_period:-1:1
         subplot(2,2,1);
                 title(join([(station) ,(name),'LMS',{inst}]));
         end
-                Tresult(i,:)=table({station}, end_time, period(i), {granu}, {name} ,{inst},  {distribution}, {'LMS'}, {result},'VariableNames',{'station','end_time','length_period','granularity','parameter','instrument','MK_seasonality','method','results'});
+Tresult(i,:)=table({station}, end_time, period(i), {granu}, {name} ,{inst},  {distribution}, {'LMS'}, {result.significance},{result.ss},{result.slope}, {result.UCL},{result.LCL},{result.slopeP}, {result.UCLP},{result.LCLP},{result.slopeR}, {result.UCLR},{result.LCLR},...
+                    'VariableNames',{'station','end_time','length_period','granularity','parameter','instrument','MK_seasonality','method','significance','ss','slope','UCL','LCL','slopeP','UCLP','LCLP','slopeR','UCLR','LCLR'});
     else
         %add the slope of the other periods on the figure with the longest period
        if fig
@@ -188,7 +189,7 @@ for i=nb_period:-1:1
         
         plot(dataGa.Time, b(1)+b(2).*(datenum(dataGa.Time)-datenum(dataGa.Time(1))),'-k','LineWidth',2);
        end
-        Tresult(i,:)={{station}, end_time, period(i), {granu}, {name} ,{inst},  {distribution}, {'LMS'}, {result}};
+        Tresult(i,:)={{station}, end_time, period(i), {granu}, {name} ,{inst},  {distribution}, {'LMS'},  {result.significance},{result.ss},{result.slope}, {result.UCL},{result.LCL},{result.slopeP}, {result.UCLP},{result.LCLP},{result.slopeR}, {result.UCLR},{result.LCLR}};
     end
 end
 

@@ -109,15 +109,23 @@ end
 for i=nb_period:-1:1
     TT=timerange(datetime(end_time-period(i)+1,1,1,0,0,0),datetime(end_time,1,1,0,0,0));
     dataGa=dataG(TT,:);
+    dataGa.m=month(dataGa.Time);
     % defined centered time vector 
     t=datenum(dataGa.Time)-datenum(dataGa.Time(1));
     % deseasonalised the data with the median of the month
-    month_med=groupsummary(dataGa,'month',@nanmedian);
-    dataGa_deseason=timetable(dataGa.Time);
-    dataGa_deseason.month=dataGa.month;
+    % compute the median for each months
     
-   dataGa_deseason.(param{1})=dataGa.(param{1}).*nanmedian(dataGa.(param{1}))./month_med.(strcat('fun1_',param{1}))(dataGa_deseason.month);
-
+    dataGa_deseason=timetable(dataGa.Time);
+    dataGa_deseason.month=dataGa.m;
+    
+    for j=1:12
+        d=dataGa.(name)(dataGa.m==j);
+        month_med(j)=nanmedian(d);
+           dataGa_deseason.(name)(dataGa.m==j)=dataGa.(name)(dataGa.m==j).*nanmedian(dataGa.(name))./month_med(j);
+    end
+    indNaN=~isnan(dataGa_deseason.(name));
+dataGa_deseason=dataGa_deseason(indNaN,:);
+t=t(indNaN);
     % define the matrix X with a cte term and the trend
     E= [ones(size(t)) t];
     
@@ -133,11 +141,13 @@ for i=nb_period:-1:1
     
     %calcul le coefficient d'autocorrelation phi et la variance du bruit blanc
     %restant
+    %keep x_residue finite
+    x_residue=x_residue(isfinite(x_residue));
     [a,e]=arburg(x_residue,1);
     delta_b1=std(x_residue)/(sum(ind)+1)^0.5;
     
     % calcul si le trend est valable a 95% de confiance. Dans ce cas real_T >
-    % 2, si il est valable � 90% resl_T > 1.67
+    % 2, si il est valable  90% resl_T > 1.67
     result.variance=e.^0.5 / ((1+a(2))*period(i).^(3/2));
     
     % computation of the confidence limits

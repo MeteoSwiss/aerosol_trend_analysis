@@ -240,6 +240,14 @@ T_SUM_abs_pettitt=make_table_breakpoints(break_SUM_abs_pettitt,names_abs);
 break_SUM_abs_snht=change_point_analysis_SNHT_V1(SUM_rd2,names_abs,0.05,'SUM - SNHT','Abs AE16 + clap');
 T_SUM_abs_snht=make_table_breakpoints(break_SUM_abs_snht,names_abs);
 %%
+%statistical BP detection for expA TO DO 
+%%
+
+%statistical BP detection for BF TO DO 
+%%
+
+%statistical BP detection for SSA TO DO 
+%%
 %Questions:
 %problems:
 
@@ -268,6 +276,9 @@ SUM_tr.expA_bg=real(-log(SUM_tr.BaB_A11./SUM_tr.BaG_A11)/log(lambdaAE(1)/lambdaA
 SUM_tr.BaB_A11=[];
 SUM_tr.BaR_A=[];
 %%
+% write SUM_tr.nc
+%%
+%compute the trends
 SUM_result=all_trend_STN(SUM_tr,SUM_st);
 %%
 SUM_result_D=SUM_result;
