@@ -313,6 +313,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
                     # p-values
                     clean_plot(result_m, result_m["pvalue"], 'v', 'all ratios')
 
+                    ax2.grid(True)
                     ax2.set_ylim(0, alpha)
                     ax2.set_ylabel("p-value")
 
