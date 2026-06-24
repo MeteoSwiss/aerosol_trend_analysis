@@ -19,11 +19,13 @@ def timetable_naming_trend(ds):
 
         values = da.values
 
-        # variables amb dimensió longitud d'ona
-        if values.ndim < 2:
-            continue
+        for j, wl in enumerate(wavelength):
 
-        for j in range(values.shape[1]):
+            col = values[:, j]
+
+            # keep the paramerter only if there is data for the applied wavelength
+            if np.isnan(col).all():
+                continue
 
             # select variable type
             if "_scattering" in var_name:
@@ -58,8 +60,6 @@ def timetable_naming_trend(ds):
                 pm = ""
 
             # select wavelength
-            wl = wavelength[j]
-
             wl_map = {370: "1",470: "2",520: "3",
                 590: "4",660: "5",880: "6",950: "7",}
 
@@ -76,12 +76,6 @@ def timetable_naming_trend(ds):
                     wv = "R"
                 else:
                     wv = "Q"
-
-            col = values[:, j]
-
-            # keep the paramerter only if there is data for the applied wavelength
-            if np.isnan(col).all():
-                continue
 
             name = f"{prefix}{wv}{pm}_{inst}"
 

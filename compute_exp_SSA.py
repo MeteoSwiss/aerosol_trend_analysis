@@ -20,7 +20,7 @@ def Exp_AE_nan_regr(data):
 
         # mínim 2 punts per fer regressió
         if np.sum(mask) >= 2:
-            slope, intercept = np.polyfit(x[mask], y[i, mask], 1)
+            slope, intercept = np.polyfit(x[mask], y[i,mask], 1)
             aae[i] = -slope
 
     return aae
@@ -204,143 +204,124 @@ def compute_exp_ssa(data, lambdaSC, lambdaAE):
         # AE33 / 7 WAVELENGTHS
         namesBa7 = [c for c in namesBa if "Ba7" in c]
 
-        if len(namesBa7) > 0 and len(namesBa) == 7:
-
-            b = [c for c in namesBa if c.startswith("Ba2")]
-            g = [c for c in namesBa if c.startswith("Ba3")]
-            r = [c for c in namesBa if c.startswith("Ba5")]
-
-            # AAE
-            data_cal["expA_bg"] = (-np.log(data[b[0]] / data[g[0]])
-                / np.log(470 / 520))
-
-            data_cal["expA_br"] = (-np.log(data[b[0]] / data[r[0]])
-                / np.log(470 / 660))
-
-            data_cal["expA_gr"] = (-np.log(data[g[0]] / data[r[0]])
-                / np.log(520 / 660))
-
-            a1 = [c for c in namesBa if c.startswith("Ba1")]
-            a4 = [c for c in namesBa if c.startswith("Ba4")]
-            a6 = [c for c in namesBa if c.startswith("Ba6")]
-            a7 = [c for c in namesBa if c.startswith("Ba7")]
-
-            all_abs = np.column_stack([data[a1[0]],data[b[0]],data[g[0]],
-                data[a4[0]],data[r[0]],data[a6[0]],data[a7[0]]])
-
-            data_cal["expA_fit"] = Exp_AE_nan_regr(all_abs)
-
-        # MIXED AE + 3W INSTRUMENTS
-        elif len(namesBa) in [10, 13, 16]:
-
-            print("Warning: one AE and one/several 3w instrument?")
-
-            # AE33 PART
-            b = [c for c in namesBa if c.startswith("Ba2")]
-            g = [c for c in namesBa if c.startswith("Ba3")]
-            r = [c for c in namesBa if c.startswith("Ba5")]
-            a1 = [c for c in namesBa if c.startswith("Ba1")]
-            a4 = [c for c in namesBa if c.startswith("Ba4")]
-            a6 = [c for c in namesBa if c.startswith("Ba6")]
-            a7 = [c for c in namesBa if c.startswith("Ba7")]
-
-            data_cal["expA_AE_bg"] = (-np.log(data[b[0]] / data[g[0]])
-                / np.log(470 / 520))
-
-            data_cal["expA_AE_br"] = (-np.log(data[b[0]] / data[r[0]])
-                / np.log(470 / 660))
-
-            data_cal["expA_AE_gr"] = (-np.log(data[g[0]] / data[r[0]])
-                / np.log(520 / 660))
-
-            all_abs = np.column_stack([data[a1[0]],data[b[0]],data[g[0]],
-                data[a4[0]],data[r[0]],data[a6[0]],data[a7[0]]])
-            data_cal["expA_fit"] = Exp_AE_nan_regr(all_abs)
-            
-            # CLASSIFY 3-WAVELENGTH INSTRUMENTS
-            Ca = {}
-            Ca[0] = [("0_" in c) for c in namesBa]
-            Ca[1] = [("1_" in c) for c in namesBa]
-            Ca[2] = [("dry" in c) for c in namesBa]
-            Ca[3] = [("_" in c) and not Ca[0][i] and not Ca[1][i] and not Ca[2][i]
-                for i, c in enumerate(namesBa)]
-
-            # LOOP OVER INSTRUMENTS
-            for i in range(4):
-
-                namesBax = [namesBa[j] for j in range(len(namesBa))
-                    if Ca[i][j]]
-
-                if len(namesBax) == 3:
-
-                    ba = [c for c in namesBax if c.startswith("BaB")]
-                    ga = [c for c in namesBax if c.startswith("BaG")]
-                    ra = [c for c in namesBax if c.startswith("BaR")]
-
-                    data_cal[f"expA_bg{i}"] = (-np.log(data[ba[0]] / data[ga[0]])
-                        / np.log(lambdaAE[0] / lambdaAE[1]))
-
-                    data_cal[f"expA_br{i}"] = (-np.log(data[ba[0]] / data[ra[0]])
-                        / np.log(lambdaAE[0] / lambdaAE[2]))
-
-                    data_cal[f"expA_gr{i}"] = (-np.log(data[ga[0]] / data[ra[0]])
-                        / np.log(lambdaAE[1] / lambdaAE[2]))
-                
-        # 2 instruments x 2 size cuts x 3 wavelengths
-        elif len(namesBax) == 12:
-
-            Ca = {}
-            Ca[0] = [("0_A11" in c) for c in namesBa]
-            Ca[1] = [("1_A11" in c) for c in namesBa]
-            Ca[2] = [("0_A12" in c) for c in namesBa]
-            Ca[3] = [("1_A12" in c) for c in namesBa]
-
-            for i in range(4):
-            
-                namesBax = [namesBa[j] for j in range(len(namesBa))
-                    if Ca[i][j]]
-
-                if len(namesBax) == 3:
-                
-                    ba = [c for c in namesBax if c.startswith("BaB")]
-                    ga = [c for c in namesBax if c.startswith("BaG")]
-                    ra = [c for c in namesBax if c.startswith("BaR")]
-
-                    data_cal[f"expA_bg{i}"] = (-np.log(data[ba[0]] / data[ga[0]])
-                        / np.log(lambdaAE[0] / lambdaAE[1]))
-
-                    data_cal[f"expA_br{i}"] = (-np.log(data[ba[0]] / data[ra[0]])
-                        / np.log(lambdaAE[0] / lambdaAE[2]))
-
-                    data_cal[f"expA_gr{i}"] = (-np.log(data[ga[0]] / data[ra[0]])
-                        / np.log(lambdaAE[1] / lambdaAE[2]))
-
-        else:
+        # CLASSIFY Bs CHANNELS
+        Ca = {}
+        Ca[0] = [("0_" in c) for c in namesBa]
+        Ca[1] = [("1_" in c) for c in namesBa]
+        Ca[2] = [("dry" in c) for c in namesBa]
+        Ca[3] = [("_" in c) and not Ca[0][i] and not Ca[1][i] and not Ca[2][i]
+            for i, c in enumerate(namesBa)]
         
-            Ca = {}
-            Ca[0] = [("0_" in c) for c in namesBa]
-            Ca[1] = [("1_" in c) for c in namesBa]
-            Ca[2] = [("dry" in c) for c in namesBa]
-            Ca[3] = [("_" in c) and not Ca[0][i] and not Ca[1][i] and not Ca[2][i]
-                for i, c in enumerate(namesBa)]
-
-            for i in range(4):
-            
-                namesBax = [namesBa[j] for j in range(len(namesBa))
+        for i in range(4):
+            namesBax = [namesBa[j] for j in range(len(namesBa))
                     if Ca[i][j]]
 
+            if len(namesBa7) > 0 and len(namesBax) == 7:
+
+                b = [c for c in namesBax if c.startswith("Ba2")]
+                g = [c for c in namesBax if c.startswith("Ba3")]
+                r = [c for c in namesBax if c.startswith("Ba5")]
+
+                # AAE
+                data_cal[f"expA_bg{i}"] = (-np.log(data[b[0]] / data[g[0]])
+                    / np.log(470 / 520))
+
+                data_cal[f"expA_br{i}"] = (-np.log(data[b[0]] / data[r[0]])
+                    / np.log(470 / 660))
+
+                data_cal[f"expA_gr{i}"] = (-np.log(data[g[0]] / data[r[0]])
+                    / np.log(520 / 660))
+
+                a1 = [c for c in namesBax if c.startswith("Ba1")]
+                a4 = [c for c in namesBax if c.startswith("Ba4")]
+                a6 = [c for c in namesBax if c.startswith("Ba6")]
+                a7 = [c for c in namesBax if c.startswith("Ba7")]
+
+                all_abs = np.column_stack([data[a1[0]],data[b[0]],data[g[0]],
+                    data[a4[0]],data[r[0]],data[a6[0]],data[a7[0]]])
+
+                data_cal[f"expA_fit{i}"] = Exp_AE_nan_regr(all_abs)
+
+            # MIXED AE + 3W INSTRUMENTS
+            elif len(namesBax) in [10, 13, 16]:
+
+                print("Warning: one AE and one/several 3w instrument?")
+
+                # AE33 PART
+                b = [c for c in namesBax if c.startswith("Ba2")]
+                g = [c for c in namesBax if c.startswith("Ba3")]
+                r = [c for c in namesBax if c.startswith("Ba5")]
+                a1 = [c for c in namesBax if c.startswith("Ba1")]
+                a4 = [c for c in namesBax if c.startswith("Ba4")]
+                a6 = [c for c in namesBax if c.startswith("Ba6")]
+                a7 = [c for c in namesBax if c.startswith("Ba7")]
+
+                data_cal[f"expA_AE_bg{i}"] = (-np.log(data[b[0]] / data[g[0]])
+                    / np.log(470 / 520))
+
+                data_cal[f"expA_AE_br{i}"] = (-np.log(data[b[0]] / data[r[0]])
+                    / np.log(470 / 660))
+
+                data_cal[f"expA_AE_gr{i}"] = (-np.log(data[g[0]] / data[r[0]])
+                    / np.log(520 / 660))
+
+                all_abs = np.column_stack([data[a1[0]],data[b[0]],data[g[0]],
+                    data[a4[0]],data[r[0]],data[a6[0]],data[a7[0]]])
+                data_cal[f"expA_fit{i}"] = Exp_AE_nan_regr(all_abs)
+
+                # CLASSIFY 3-WAVELENGTH INSTRUMENTS
+                ba = [c for c in namesBax if c.startswith("BaB")]
+                ga = [c for c in namesBax if c.startswith("BaG")]
+                ra = [c for c in namesBax if c.startswith("BaR")]
+
+                data_cal[f"expA_bg{i}"] = (-np.log(data[ba[0]] / data[ga[0]])
+                    / np.log(lambdaAE[0] / lambdaAE[1]))
+                
+                data_cal[f"expA_br{i}"] = (-np.log(data[ba[0]] / data[ra[0]])
+                    / np.log(lambdaAE[0] / lambdaAE[2]))
+                
+                data_cal[f"expA_gr{i}"] = (-np.log(data[ga[0]] / data[ra[0]])
+                    / np.log(lambdaAE[1] / lambdaAE[2]))
+
+            # 2 instruments x 2 size cuts x 3 wavelengths
+            elif len(namesBax) == 12:
+
+                Ca = {}
+                Ca[0] = [("0_A11" in c) for c in namesBax]
+                Ca[1] = [("1_A11" in c) for c in namesBax]
+                Ca[2] = [("0_A12" in c) for c in namesBax]
+                Ca[3] = [("1_A12" in c) for c in namesBax]
+
+                for i in range(4):
+                
+                    namesBax = [namesBa[j] for j in range(len(namesBa))
+                        if Ca[i][j]]
+
+                    if len(namesBax) == 3:
+                    
+                        ba = [c for c in namesBax if c.startswith("BaB")]
+                        ga = [c for c in namesBax if c.startswith("BaG")]
+                        ra = [c for c in namesBax if c.startswith("BaR")]
+
+                        data_cal[f"expA_bg{i}"] = (-np.log(data[ba[0]] / data[ga[0]])
+                            / np.log(lambdaAE[0] / lambdaAE[1]))
+
+                        data_cal[f"expA_br{i}"] = (-np.log(data[ba[0]] / data[ra[0]])
+                            / np.log(lambdaAE[0] / lambdaAE[2]))
+
+                        data_cal[f"expA_gr{i}"] = (-np.log(data[ga[0]] / data[ra[0]])
+                            / np.log(lambdaAE[1] / lambdaAE[2]))
+
+            else:
                 if len(namesBax) == 3:
                 
                     ba = [c for c in namesBax if c.startswith("BaB")]
                     ga = [c for c in namesBax if c.startswith("BaG")]
                     ra = [c for c in namesBax if c.startswith("BaR")]
-
                     data_cal[f"expA_bg{i}"] = (-np.log(data[ba[0]] / data[ga[0]])
                         / np.log(lambdaAE[0] / lambdaAE[1]))
-
                     data_cal[f"expA_br{i}"] = (-np.log(data[ba[0]] / data[ra[0]])
                         / np.log(lambdaAE[0] / lambdaAE[2]))
-
                     data_cal[f"expA_gr{i}"] = (-np.log(data[ga[0]] / data[ra[0]])
                         / np.log(lambdaAE[1] / lambdaAE[2]))            
 
@@ -375,8 +356,8 @@ def compute_exp_ssa(data, lambdaSC, lambdaAE):
                 namesBsy = [namesBsG[j] for j in range(len(namesBsG)) if CsG[i][j]]
                 namesBay = [namesBaR[j] for j in range(len(namesBaR)) if CaR[i][j]]
 
-                for j in enumerate(namesBsy):
-                    for k in enumerate(namesBay):
+                for j in namesBsy:
+                    for k in namesBay:
 
                         N_SSA = f"SSA{i}{j}{k}"
 
@@ -388,8 +369,8 @@ def compute_exp_ssa(data, lambdaSC, lambdaAE):
                 namesBsy = [namesBsG[j] for j in range(len(namesBsG)) if CsG[i][j]]
                 namesBay = [namesBa[j] for j in range(len(namesBa)) if CaG[j]]
 
-                for j in enumerate(namesBsy):
-                    for k in enumerate(namesBay):
+                for j in namesBsy:
+                    for k in namesBay:
 
                         name = f"SSA{i}{j}{k}"
 
