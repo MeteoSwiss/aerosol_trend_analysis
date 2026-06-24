@@ -189,10 +189,10 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
         # 1. MAIN PLOT (p-values)
         ax = axes[0]
 
-        ax.set_title(station)
+        ax.set_title(station +' '+ inst +' '+ model)
 
         # left axis: original data
-        ax.plot(data_m.index,data_m[p],'.',color=couleur[i],label=p)
+        ax.plot(data_m.index,data_m[p],'-',color=couleur[i],label=p)
         ax.set_ylabel(p)
 
         ax2 = ax1_right
@@ -242,8 +242,8 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
         # 2. SECOND PLOT (PrctDiff)
         ax = axes[1]
 
-        ax.plot(data_m_deseason.index, data_m_deseason[p], '.', color=couleur[i])
-        ax.plot(data_m_residue.index, data_m_residue[p], '.', color=couleur[i])
+        ax.plot(data_m_deseason.index, data_m_deseason[p], '-', color=couleur[i])
+        ax.plot(data_m_residue.index, data_m_residue[p], '-', color=couleur[i])
         ax.set_ylabel(p)
 
         ax2 = ax2_right
@@ -262,7 +262,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
         # 3. CUMSUM PLOT
         ax = axes[2]
 
-        ax.plot(data_m_deseason.index,np.nancumsum(data_m_deseason[p]),'-',color=couleur[i],label="deseason")
+        # ax.plot(data_m_deseason.index,np.nancumsum(data_m_deseason[p]),'-',color=couleur[i],label="deseason")
         ax.plot(data_m_residue.index,np.nancumsum(data_m_residue[p]),'--',color=couleur[i],label="residue")
         ax.plot(data_m_residueLog.index,np.nancumsum(data_m_residueLog[p]),':',color=couleur[i],label="residueLog")
 
@@ -313,6 +313,7 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
                     # p-values
                     clean_plot(result_m, result_m["pvalue"], 'v', 'all ratios')
 
+                    ax.grid(True)
                     ax2.set_ylim(0, alpha)
                     ax2.set_ylabel("p-value")
 
@@ -337,7 +338,8 @@ def change_point_analysis_v4(data, params, alpha, station, inst, model):
     ax2_right.legend(handles=legend_elements2,loc='upper left',bbox_to_anchor=(1.08, 1))
     ax2_right.set_ylabel("Median Diff")
 
-    legend_elements3 = [Line2D([0], [0], linestyle='-', color='k', label='deseason'),
+    legend_elements3 = [
+        # Line2D([0], [0], linestyle='-', color='k', label='deseason'),
                         Line2D([0], [0], linestyle='--', color='k', label='residue'),
                         Line2D([0], [0], linestyle=':', color='k', label='residueLog'),]
     axes[2].legend(handles=legend_elements3,loc='upper left',bbox_to_anchor=(1.01, 1))
