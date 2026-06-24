@@ -29,7 +29,7 @@ end
 % while: the process is done until each segment< nb_data_min data points
 % the pre-allocation therefore needs nb data points/(nb_data_min/2)
 nbboot=10000;
-nb_preallocation=2* ceil(length(data.(param{1}))/(nb_data_min/2)); % the unused data will be removed
+nb_preallocation=3* ceil(length(data.(param{1}))/(nb_data_min/2)); % the unused data will be removed
 
 
 %remove potential NAN
