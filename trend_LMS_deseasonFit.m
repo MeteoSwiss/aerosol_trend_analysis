@@ -113,36 +113,52 @@ for i=nb_period:-1:1
     % defined centered time vector 
     t=datenum(dataGa.Time)-datenum(dataGa.Time(1));
     % deseasonalised the data with the median of the month
-    % compute the median for each months
-    
-    dataGa_deseason=timetable(dataGa.Time);
-    dataGa_deseason.month=dataGa.m;
-    
+    % make matrix with 12 months
+    month_names = {'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'};
+
+    dataGa.(name)(dataGa.(name)==inf)=NaN;
+    dataGa.(name)(dataGa.(name)==-inf)=NaN;
+    indNaN=~isnan(dataGa.(name));
+dataGa=dataGa(indNaN,:);
+
+month_dummies= zeros(length(dataGa.Time), 12);
+dummy_cols = zeros(height(dataGa), 12);    
     for j=1:12
-        d=dataGa.(name)(dataGa.m==j);
-        month_med(j)=nanmedian(d);
-           dataGa_deseason.(name)(dataGa.m==j)=dataGa.(name)(dataGa.m==j).*nanmedian(dataGa.(name))./month_med(j);
-    end
-    indNaN=~isnan(dataGa_deseason.(name));
-dataGa_deseason=dataGa_deseason(indNaN,:);
+        month_dummies(:,j)=(dataGa.m==j);
+%     end
+% 
+% for m = 1:12
+    col_name = strcat('Month', month_names{j});
+    dummy_cols(month_dummies(:,j)==1, j) = dataGa.(name)(month_dummies(:,j)==1);
+end
+
+% Ajouter au tableau (noms de colonnes explicites)
+dummy_table = array2table(month_dummies, ...
+    'VariableNames', strcat('Month', month_names));
 t=t(indNaN);
+
+
+X = [t, month_dummies];
     % define the matrix X with a cte term and the trend
-    E= [ones(size(t)) t];
-    
-    b=E\dataGa_deseason.(name);
+
+y = dataGa.(name);
+
+    XtX    = X' * X;
+Xty    = X' * y;
+b = XtX \ Xty;
+
     %pente = en % par an, pente2= unite/an;
+    y_hat = X * b;
+    result.slopeP=b(1)*365.25*100/abs(nanmedian(dataGa.(name)));
     
-    result.slopeP=b(2)*365.25*100/abs(nanmedian(dataGa_deseason.(name)));
     
-    
-    result.slope=b(2)*365.25;
-    Eplot=E*b;
-    x_residue=dataGa_deseason.(name)-Eplot;
+    result.slope=b(1)*365.25;
+   % Eplot=E*b(1);
+    x_residue=dataGa.(name)-y_hat;
     
     %calcul le coefficient d'autocorrelation phi et la variance du bruit blanc
     %restant
     %keep x_residue finite
-    x_residue=x_residue(isfinite(x_residue));
     [a,e]=arburg(x_residue,1);
     delta_b1=std(x_residue)/(sum(ind)+1)^0.5;
     
@@ -151,13 +167,13 @@ t=t(indNaN);
     result.variance=e.^0.5 / ((1+a(2))*period(i).^(3/2));
     
     % computation of the confidence limits
-    result.UCLP=(b(2)+2*result.variance/365.25)*365.25*100/abs(nanmedian(dataGa_deseason.(name)));
-    result.LCLP=(b(2)-2*result.variance/365.25)*365.25*100/abs(nanmedian(dataGa_deseason.(name)));
-    result.UCL=(b(2)+2*result.variance/365.25)*365.25;
-    result.LCL=(b(2)-2*result.variance/365.25)*365.25;
+    result.UCLP=(b(1)+2*result.variance/365.25)*365.25*100/abs(nanmedian(dataGa.(name)));
+    result.LCLP=(b(1)-2*result.variance/365.25)*365.25*100/abs(nanmedian(dataGa.(name)));
+    result.UCL=(b(1)+2*result.variance/365.25)*365.25;
+    result.LCL=(b(1)-2*result.variance/365.25)*365.25;
     
     %computation of the statistical significance
-    result.significance=abs(b(2))*365.25 /result.variance;
+    result.significance=abs(b(1))*365.25 /result.variance(1);
     if result.significance>=2
         result.ss=95;
     elseif result.significance>=1.67
@@ -180,7 +196,7 @@ t=t(indNaN);
     if i==nb_period
         if fig
         f=figure(103);
-        fig_LMS(dataGa_deseason,name,Eplot,x_residue,b);
+        fig_LMS(dataGa,name,y_hat,x_residue,b(1));
         hold on;
         subplot(2,2,1);
                 title(join([(station) ,(name),'LMS',{inst}]));
@@ -194,7 +210,7 @@ t=t(indNaN);
         hold on;
         title(join([(station) ,(name),'LMS',{inst}]));
         
-        plot(dataGa.Time, b(1)+b(2).*(datenum(dataGa.Time)-datenum(dataGa.Time(1))),'-k','LineWidth',2);
+        plot(dataGa.Time, y_hat(1)+b(1).*(datenum(dataGa.Time)-datenum(dataGa.Time(1))),'-k','LineWidth',2);
        end
         Tresult(i,:)={{station}, end_time, period(i), {granu}, {name} ,{inst},  {distribution}, {'LMS'},  {result.significance},{result.ss},{result.slope}, {result.UCL},{result.LCL},{result.slopeP}, {result.UCLP},{result.LCLP},{result.slopeR}, {result.UCLR},{result.LCLR}};
     end
@@ -216,7 +232,7 @@ subplot(2,2,1);
 hold on
 plot(data.Time,data.(name),'bo-','LineWidth',0.5);
 plot(data.Time, Eplot,'-g','LineWidth',2);
-plot(data.Time, b(1)+b(2).*(datenum(data.Time)-datenum(data.Time(1))),'-r','LineWidth',2);
+plot(data.Time, b(1).*(datenum(data.Time)-datenum(data.Time(1)))+Eplot(1),'-r','LineWidth',2);
 ylabel('deseasonalised monthly data and fit');
 datetick('x','yy','keeplimits');
 grid on;

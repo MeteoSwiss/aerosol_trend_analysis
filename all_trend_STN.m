@@ -2,7 +2,7 @@ function [Tresult_MK,Tresult_GSMd,Tresult_LMSlog,Tresult_LMSlin,Tresult_LMSlog2,
 
 %pour une station
 %fait tous les trends necessaires
-
+data_tr.y=year(data_tr.Time);
 names=fieldnames(data_tr);
 a=startsWith(names,["y";"Variable";"Time";"Proper"]);
 names=names(~a);
@@ -58,7 +58,7 @@ for i=1:length(names)
 
     %compute the overall trend with end year = last year for all data!
 
-    [Tresult_MK_25,Tresult_GSMdi,Tresult_LMSlog,Tresult_LMSlin,Tresult_LMSlog2,Tresult_LMSlin2]=all3_trend(data_trok,{names{i}}, inst, data_st.name, resolution,'end_year',max(data_trok.y), 'fig',1);
+    [Tresult_MK_25,Tresult_GSMdi,Tresult_LMSlogi,Tresult_LMSlini,Tresult_LMSlog2i,Tresult_LMSlin2i]=all3_trend(data_trok,{names{i}}, inst, data_st.name, resolution,'end_year',max(data_trok.y), 'fig',1);
     %     end
     %compute all the 10y trend
 
@@ -108,14 +108,18 @@ for i=1:length(names)
 
     if i==1
         Tresult_MK=Tresult_MKi;
-        % Tresult_GSMd=Tresult_GSMdi;
-        % Tresult_LMSlog=Tresult_LMSlogi;
-        % Tresult_LMSlin=Tresult_LMSlini;
+         Tresult_GSMd=Tresult_GSMdi;
+         Tresult_LMSlog=Tresult_LMSlogi;
+         Tresult_LMSlin=Tresult_LMSlini;
+         Tresult_LMSlog2=Tresult_LMSlog2i;
+         Tresult_LMSlin2=Tresult_LMSlin2i;
     else
         Tresult_MK=[Tresult_MK;Tresult_MKi];
-        % Tresult_GSMd=[Tresult_GSMd;Tresult_GSMdi];
-        % Tresult_LMSlog=[Tresult_LMSlog;Tresult_LMSlogi];
-        % Tresult_LMSlin=[Tresult_LMSlin;Tresult_LMSlini];
+         Tresult_GSMd=[Tresult_GSMd;Tresult_GSMdi];
+         Tresult_LMSlog=[Tresult_LMSlog;Tresult_LMSlogi];
+         Tresult_LMSlin=[Tresult_LMSlin;Tresult_LMSlini];
+         Tresult_LMSlog2=[Tresult_LMSlog2;Tresult_LMSlog2i];
+         Tresult_LMSlin2=[Tresult_LMSlin2;Tresult_LMSlin2i];
     end
 end
 
