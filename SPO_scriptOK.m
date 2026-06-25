@@ -117,7 +117,7 @@ SPO_rd_shortx(:,c)=[];
 for i=12:18
     SPO_rd_shortx.Properties.VariableNames{i}=strcat(SPO_rd_shortx.Properties.VariableNames{i},'_A');
 end
-SPO_cal=compute_exp_SSA(SPO_rd_shortx,lambdaSC, lambdaAE);
+SPO_cal=compute_exp_SSA(SPO_rd_shortx,lambdaSC, lambdaAE); %compute_exp_D or compute_SSA_D are perhaprs better suited
 %%
 plotFigControl_cal(SPO_cal, SPO_st.name);
 
@@ -136,8 +136,12 @@ plotFigControl_cal(SPO_cal, SPO_st.name);
 % should we invalidate the large backscatter fraction extrema in September-October 2003 ?
 
 %in 2013 we took only 2003-2010! Do we also restrict ourselves to data after 2003 = 
+
+% Trend results shows BP in 2016 for a lot of variable
+%particularly abs AE33 is too high, expA is much too high and should not be
+%used only since 2016
 %%
-SPO_tr=SPO_rd_shortx;
+SPO_tr=SPO_rd_shortx; %% REDO WIHT POTENTIAL OTHER HOMO OR RESTRICT
 SPO_tr.y=year(SPO_tr.Time);
 % begin at the beginning of a year: scat: february 1979, hole then 1980
 % untilfeb 1981.
@@ -182,8 +186,6 @@ N=names(c);
 for i=1:length(N)
     SPO_tr.(N{i})(P3)=NaN;
 end
-
-
 
 
 % % Absorption (not used in 2019)
@@ -242,12 +244,20 @@ SPO_tr.expA_gr=[];
 
 % SPO_tr.y has to be kept
 
-% TO DO when arrived here.
 %%
 % save data in Netcdf
+timetable_to_netcdf(SPO_tr, 'C:/github_trend/result/SPO/SPO_tr.nc');
 %%
-SPO_result=all_trend_STN(SPO_tr,SPO_st);
-plot_10y_in_two(SPO_result,SPO_st);
+[SPO_result_MK,SPO_result_GSMd,SPO_result_LMSlog,SPO_result_LMSlin,SPO_result_LMSlog2,SPO_result_LMSlin2]=all_trend_STN(SPO_tr, SPO_st);
+plot_10y_in_two(SPO_result_MK,SPO_st);
+writetable(SPO_result_MK,'SPO_result_MK.txt'); %, 'delimiter',',' )
+writetable(SPO_result_GSMd,'SPO_result_GSMd.txt'); 
+writetable(SPO_result_LMSlog,'SPO_result_LMSlog.txt'); 
+writetable(SPO_result_LMSlin,'SPO_result_LMSlin.txt'); 
+writetable(SPO_result_LMSlog2,'SPO_result_LMSlog2.txt'); 
+writetable(SPO_result_LMSlin2,'SPO_result_LMSlin2.txt'); 
+%%
+% do quantile analysis
 %%
 SPO_result_D=SPO_result;
 
