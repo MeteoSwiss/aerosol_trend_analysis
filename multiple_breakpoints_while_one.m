@@ -34,81 +34,71 @@ nb_preallocation=2* ceil(length(data.(param{1}))/(nb_data_min/2)); % the unused 
 
 %remove potential NAN
 %for j=1:length(param{1})
-   % result.(param{j})=struct("level",NaN(nb_preallocation,1),"pvalue",NaN(nb_preallocation,1),"time",NaT(nb_preallocation,1));
-        result=struct("level",NaN(nb_preallocation,1),"pvalue",NaN(nb_preallocation,1),"time",NaT(nb_preallocation,1),"pvalue_boot",NaN(nb_preallocation,1),"PrctDiff",NaN(nb_preallocation,3));
+% result.(param{j})=struct("level",NaN(nb_preallocation,1),"pvalue",NaN(nb_preallocation,1),"time",NaT(nb_preallocation,1));
+result=struct("level",NaN(nb_preallocation,1),"pvalue",NaN(nb_preallocation,1),"time",NaT(nb_preallocation,1),"pvalue_boot",NaN(nb_preallocation,1),"PrctDiff",NaN(nb_preallocation,3));
 
-    tree=cell(nb_preallocation,1);
-    data(isnan(data.(param{1})),:)=[];
-    tree{1}=data;
-    i=0;
-    iteration=true;
-    while iteration==true
-        i=i+1;
-        iteration=false;
-        for k=2^(i-1):2^i-1
-            if ~isempty(tree{k})
-                if length(tree{k}.(param{1}))>=nb_data_min
-                    x=tree{k}.(param{1});
-                    [a,PrctDiff]=pettitt(x, alpha);
-                    % result.(param{j}).level(k)=i;
-                    % result.(param{j}).pvalue(k)=a(3);
-                    result.level(k)=i;
-                    result.pvalue(k)=a(3);
-                    result.PrctDiff(k,:)=PrctDiff;
-                    %compute p value from bootstrapping
-                    test_boot=bootstrp(nbboot,@pettitt,x,alpha);
-indBoot=test_boot(:,2)>=a(2);
-pvalue_bootx=(1+sum(indBoot))/(nbboot+1);
-if pvalue_bootx<=alpha
-result.pvalue_boot(k)=(1+sum(indBoot))/(nbboot+1);
-else
- result.pvalue_boot(k)=NaN;   
-end
-                    if ~isnan(a(1))
-                        % result.(param{1}).time(k)=tree{k}.Time(a(1));
-                        result.time(k)=tree{k}.Time(a(1));
-                        % divide the segment into two
-                        tree{2*k}=tree{k}(tree{k}.Time<tree{k}.Time(a(1)),:);
-                        tree{2*k+1}=tree{k}(tree{k}.Time>tree{k}.Time(a(1)),:);  
-                        if length(tree{2*k}.(param{1}))>=nb_data_min || length(tree{2*k+1}.(param{1}))>=nb_data_min
-                            iteration=true;
-                        end
-                    end
+tree=cell(nb_preallocation,1);
+data(isnan(data.(param{1})),:)=[];
+tree{1}=data;
+i=0;
+iteration=true;
+while iteration==true
+    i=i+1;
+    iteration=false;
+    for k=2^(i-1):2^i-1
+        if ~isempty(tree{k})
+            if length(tree{k}.(param{1}))>=nb_data_min
+                x=tree{k}.(param{1});
+                [a,PrctDiff]=pettitt(x, alpha);
+                % result.(param{j}).level(k)=i;
+                % result.(param{j}).pvalue(k)=a(3);
+                result.level(k)=i;
+                result.pvalue(k)=a(3);
+                result.PrctDiff(k,:)=PrctDiff;
+                %compute p value from bootstrapping
+                test_boot=bootstrp(nbboot,@pettitt,x,alpha);
+                indBoot=test_boot(:,2)>=a(2);
+                pvalue_bootx=(1+sum(indBoot))/(nbboot+1);
+                if pvalue_bootx<=alpha
+                    result.pvalue_boot(k)=(1+sum(indBoot))/(nbboot+1);
                 else
-                    %result.(param{j}).level(k)=i;
-                    result.level(k)=i;
+                    result.pvalue_boot(k)=NaN;
+                end
+                if ~isnan(a(1))
+                    % result.(param{1}).time(k)=tree{k}.Time(a(1));
+                    result.time(k)=tree{k}.Time(a(1));
+                    % divide the segment into two
+                    tree{2*k}=tree{k}(tree{k}.Time<tree{k}.Time(a(1)),:);
+                    tree{2*k+1}=tree{k}(tree{k}.Time>tree{k}.Time(a(1)),:);
+                    if length(tree{2*k}.(param{1}))>=nb_data_min || length(tree{2*k+1}.(param{1}))>=nb_data_min
+                        iteration=true;
+                    end
                 end
             else
                 %result.(param{j}).level(k)=i;
                 result.level(k)=i;
             end
+        else
+            %result.(param{j}).level(k)=i;
+            result.level(k)=i;
         end
     end
+end
 
-    %remove empty results
-    % if sum(isnan(result.(param{j}).pvalue))==length(result.(param{j}).pvalue)
-    %     result.(param{j}).pvalue(2:end,:)=[];
-    %     result.(param{j}).level(2:end,:)=[];
-    %     result.(param{j}).time(2:end,:)=[];
-    % else
-    %     ind=isnan(result.(param{j}).pvalue);
-    %     result.(param{j}).pvalue(ind,:)=[];
-    %     result.(param{j}).level(ind,:)=[];
-    %     result.(param{j}).time(ind,:)=[];
-    % end
-        if sum(isnan(result.pvalue))==length(result.pvalue)
-        result.pvalue(2:end,:)=[];
-        result.pvalue_boot(2:end,:)=[];
-        result.level(2:end,:)=[];
-        result.time(2:end,:)=[];
-         result.PrctDiff(2:end,:)=[];
-    else
-        ind=isnan(result.pvalue);
-        result.pvalue(ind,:)=[];
-        result.pvalue_boot(ind,:)=[];
-        result.level(ind,:)=[];
-        result.time(ind,:)=[];
-        result.PrctDiff(ind,:)=[];
-    end
-%end
+
+if sum(isnan(result.pvalue))==length(result.pvalue)
+    result.pvalue(2:end,:)=[];
+    result.pvalue_boot(2:end,:)=[];
+    result.level(2:end,:)=[];
+    result.time(2:end,:)=[];
+    result.PrctDiff(2:end,:)=[];
+else
+    ind=isnan(result.pvalue);
+    result.pvalue(ind,:)=[];
+    result.pvalue_boot(ind,:)=[];
+    result.level(ind,:)=[];
+    result.time(ind,:)=[];
+    result.PrctDiff(ind,:)=[];
+end
+
 
