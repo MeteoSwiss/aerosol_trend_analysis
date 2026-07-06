@@ -194,11 +194,11 @@ Tresult(i,:)=table({station}, end_time, period(i), {granu}, {name} ,{inst},  {di
 end
 
 if fig %&& exist f
-% % %     if ispc
-% % % savefig(f,strcat('\\meteoswiss.ch\mch\pay-prod\Aerosol_actris_trend\result\',(station),'\',(station),'_',(name),'_LMS.fig'));
-% % %     else
-% % % savefig(f,strcat('/prod/pay/Aerosol_actris_trend/result/',(station),'/',(station),'_',(name),'_LMS.fig'));
-% % %     end
+    if ispc
+savefig(f,strcat('C:\github_trend\result\',(station),'\',(station),'_',(name),'_LMS_D.fig'));
+    else
+savefig(f,strcat('/prod/pay/Aerosol_actris_trend/result/',(station),'/',(station),'_',(name),'_LMS_D.fig'));
+    end
 end
 %close all;
 %_______________________________________________________________________

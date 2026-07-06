@@ -218,9 +218,9 @@ end
 f=figure(103);
 if fig %&& exist f
     if ispc
-savefig(f,strcat('C:\github_trend\result\',(station),'\',(station),'_',(name),'_LMS.fig'));
+savefig(f,strcat('C:\github_trend\result\',(station),'\',(station),'_',(name),'_LMS_Med.fig'));
     else
-savefig(f,strcat('/prod/pay/Aerosol_actris_trend/trend_2026/result/',(station),'/',(station),'_',(name),'_LMS.fig'));
+savefig(f,strcat('/prod/pay/Aerosol_actris_trend/trend_2026/result/',(station),'/',(station),'_',(name),'_LMS_Med.fig'));
     end
 end
 %close all;
