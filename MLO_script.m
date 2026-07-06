@@ -91,6 +91,12 @@ T_MLO_scat=make_table_breakpoints(break_MLO_scat,names_sc_short(1:3)); %[output:
 break_MLO_scat_snht=change_point_analysis_SNHT_V1(MLO_rd_short,names_sc_short(1:3),0.05,'MLO','neph SC'); %[output:5b326e23]
 T_MLO_scat_snht=make_table_breakpoints(break_MLO_scat_snht,names_sc_short(1:3)); %[output:1a3c019a] %[output:71f43b43] %[output:0bad30fd] %[output:7e728061] %[output:80a7e999] %[output:5ce47eba] %[output:621c4ccd] %[output:39b5c56c] %[output:1f91c6f4] %[output:9ddf2d9b] %[output:71ccb40e] %[output:459465a5] %[output:2771d051] %[output:9c5f5771] %[output:42a5ad0d] %[output:4cbadfc9] %[output:26a60721] %[output:9be818e6] %[output:204c1945] %[output:88d1949d] %[output:49a3ff62] %[output:0ccaff46] %[output:260a234a] %[output:11cbd4bd] %[output:2f160858] %[output:13ace16d] %[output:7cc6bda2] %[output:4c71296c] %[output:1798a30b] %[output:56e061ad] %[output:47a20e70] %[output:06630f35]
 %%
+% BP at the instrument change in March 2000
+% Betsy fit --> old neph=1.1 new neph (10% too high)
+% try old=old/1.1 and make BP detection
+
+PBP1=timerange('1988-01-01','2000-04-28');
+%%
 % backscatter since April 2000
 P1=timerange('1988-01-01','2000-04-28');
 P2=timerange('2000-04-29','2022-11-28');
@@ -126,9 +132,13 @@ T_MLO_bscat=make_table_breakpoints(break_MLO_bscat,names_bsc_short);
 break_MLO_bscat_snht=change_point_analysis_SNHT_V1(MLO_rd_short,names_bsc_short,0.05,'MLO','neph BSC'); %[output:34913a45] %[output:3f969500]
 T_MLO_bscat_snht=make_table_breakpoints(break_MLO_bscat_snht,names_bsc_short);
 %%
-% Absorption: two times series needed. 
+% Absorption: two times series needed. in 2019 only clap/PSAP were used, no
+% AE available
 % 1) for PSAP+CLAP: 2000-2022
 % take here only PM10
+% consider B insteat of G
+
+
 %%
 
 break_MLO_abs_clap=change_point_analysis_V3(MLO_rd,names_clap(4:6),0.05,'MLO-PETTIT','PSAP+CLAP'); %[output:8be78140]
@@ -138,7 +148,7 @@ T_MLO_ab_claps=make_table_breakpoints(break_MLO_abs_clap,names_clap(4:6));
 break_MLO_abs_clap_snht=change_point_analysis_SNHT_V1(MLO_rd,names_clap(4:6),0.05,'MLO-SNHT','PSAP+CLAP'); %[output:4eeabdd8] %[output:5a0eb7dc]
 T_MLO_ab_claps_snht=make_table_breakpoints(break_MLO_abs_clap_snht,names_clap(4:6));
 %%
-% Absorption: two times series needed. 
+% Absorption: three times series needed. but much longer
 % 1) for AE16+ AE31 + AE33: 1991-2025
 %%
 lambdaSC=[450;550;700]*ones(1,4);
@@ -196,6 +206,7 @@ for i=1:length(N)
 end 
 
 % invalidate scat 290 (17 October) 1993 and 117 (27 April) 1994
+% yes, has to be done, stat BP
 P4=timerange('1993-10-17','1994-04-27');
 c=startsWith(names,["Bs"]);
 N=names(c);
@@ -236,7 +247,7 @@ MLO_cal2.expA_gr1=[];
 
 MLO_tr=outerjoin(MLO_tr, MLO_cal2);
 
-%trend calculated only on G for neph + abs
+%trend calculated only on G for neph + abs (R should not be used)
 MLO_tr.BsB0_S11=[];
 MLO_tr.BsB1_S11=[];
 MLO_tr.BsR0_S11=[];
@@ -261,7 +272,7 @@ MLO_result_D=MLO_result2;
 %[appendix]{"version":"1.0"}
 %---
 %[metadata:view]
-%   data: {"layout":"onright","rightPanelPercent":31.4}
+%   data: {"layout":"onright","rightPanelPercent":20.7}
 %---
 %[output:0ec933fb]
 %   data: {"dataType":"text","outputData":{"text":"Lecture du fichier en cours...\nLecture terminée : 455832 lignes x 192 variables.\nValeurs NaN      : 56113777 (64.1 % des cellules).\nPériode couverte : 01-Jan-1974  -->  31-Dec-2025 23:00:00\n","truncated":false}}
