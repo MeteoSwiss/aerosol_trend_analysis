@@ -26,6 +26,13 @@ if ~isempty(namesBs) && ~isempty(namesBa)
     % compute SSAB
     if length(namesBs)==1 & length(namesBa)==1
 data_cal.SSA=data.(namesBs{1})./(data.(namesBs{1})+data.(namesBa{1}));
+elseif length(namesBs)==2 & length(namesBa)==2 %(trhee wavelength + 1 size cuts)
+       % 
+       % CaB(1,:)=startsWith(namesBa,["Ba2","Bac2","Bax2",BaB]);
+       % CsB(1,:)=startsWith(namesBa,'BaB');
+data_cal.SSAG=data.(namesBs{startsWith(namesBs,'BsG1')})./(data.(namesBs{startsWith(namesBs,'BsG1')})+data.(namesBa{startsWith(namesBa,["Ba3","Bac3","Bax3","BaG1"])}));
+data_cal.SSAR=data.(namesBs{startsWith(namesBs,'BsG0')})./(data.(namesBs{startsWith(namesBs,'BsG0')})+data.(namesBa{startsWith(namesBa,["Ba3","Bac3","Bax3","BaG0"])}));
+
     elseif length(namesBs)==3 & length(namesBa)==3 %(trhee wavelength + 1 size cuts)
        % 
        % CaB(1,:)=startsWith(namesBa,["Ba2","Bac2","Bax2",BaB]);

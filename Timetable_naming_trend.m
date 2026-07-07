@@ -43,6 +43,7 @@ for i=1:length(merged_data.Variables)
                     inst='S';
                 else
                     warning('none of the variable has been identified')
+                    var='xxx';
                 end
 
                 % select size cut
@@ -86,7 +87,7 @@ for i=1:length(merged_data.Variables)
                 end
 
                 % keep the paramerter only if there is data for the applied wavelength
-                if sum(isnan(merged_data.Variables(i).Value(:,j)),1)< size(merged_data.Variables(i).Value(:,j),1)
+                if strcmp(var,'xxx')==0 & sum(isnan(merged_data.Variables(i).Value(:,j)),1)< size(merged_data.Variables(i).Value(:,j),1)
                     name_var=strcat(var,wv,pm,'_',inst); % parameter name
                     STN_rds.(name_var)=merged_data.Variables(i).Value(:,j);
                 end

@@ -139,7 +139,7 @@ colonne_res=5;
     case 'y'
         colonne_res=1;
     case 'month'
-        colunne_res=13;
+        colonne_res=13;
     otherwise
         error(' no plot because no seasonality was given')
 end
@@ -170,6 +170,8 @@ for i=1:size(data,1)
             colorT='r';
         elseif data.slope{i}(colonne_res) <0
             colorT='b';
+            elseif data.slope{i}(colonne_res) ==0
+            colorT=[0.7 0.7 0.7];
         elseif isnan(data.slope{i}(colonne_res))
             colorT='k';
         end

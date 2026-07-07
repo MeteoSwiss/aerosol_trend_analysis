@@ -8,6 +8,9 @@ function station_datD = read_betsy_2026(filename, STN)
 if strcmp(STN,'SUM2')
     station_dat = importfile_SUM2("C:\github_trend\raw_data\sum_neph_psap_clap2_clap10_AE16_AE33", [2, Inf]);
 station_dat.Properties.DimensionNames{1}='Time';
+elseif strcmp(STN,'SPL')
+    station_dat = read_SPL_actris(filename, [2, Inf]);
+station_dat.Properties.DimensionNames{1}='Time';
 else
 station_dat= read_spo_actris(filename);
 end
@@ -71,6 +74,7 @@ else
     end
 end
 
+%specail reading
 %erreur special pour AMY
 if strcmp(STN,'AMY')==1
     Cu=startsWith(names_var,'U');
@@ -79,14 +83,24 @@ if strcmp(STN,'AMY')==1
         ind=station_dat.(Nu{i})>990;
         station_dat.(Nu{i})(ind)=NaN;
     end
-end
 
 %erreur special pour PAL: false missing code for G and R Bbs
-if strcmp(STN,'PAL')==1
+elseif strcmp(STN,'PAL')==1
     station_dat.BbsG_S11(station_dat.BbsG_S11==100)=NaN;
     station_dat.BbsR_S11(station_dat.BbsR_S11==100)=NaN;
+
+% time treatment for SPL
+elseif strcmp(STN,'SPL')==1
+  
+    station_dat.SPL=[];
+    station_dat.Properties.VariableNames{1}='y';
+    station_dat.DOY=[];
+    station_dat=table2timetable(station_dat);
+station_dat.Properties.DimensionNames{1}='Time';
+
 end
 
+names_var=fieldnames(station_dat);
 CU=contains(names_var,'U');
 RH=names_var(CU);
 for i=1:length(RH)
