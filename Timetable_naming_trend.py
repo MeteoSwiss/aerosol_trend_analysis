@@ -61,21 +61,30 @@ def timetable_naming_trend(ds):
 
             # select wavelength
             wl_map = {370: "1",470: "2",520: "3",
-                590: "4",660: "5",880: "6",950: "7",}
+                    590: "4",660: "5",880: "6",950: "7",}
+            
+            if len(wavelength) in [3, 7, 10]:
 
-            if wl in wl_map:
-                wv = wl_map[wl]
+                if wl in wl_map:
+                    wv = wl_map[wl]
 
-            else:
-
-                if wl < 500:
-                    wv = "B"
-                elif wl < 600:
-                    wv = "G"
-                elif wl < 720:
-                    wv = "R"
                 else:
-                    wv = "Q"
+                    if wl < 500:
+                        wv = "B"
+                    elif wl < 600:
+                        wv = "G"
+                    elif wl < 720:
+                        wv = "R"
+                    else:
+                        wv = "Q"
+
+            elif set(wl_map).issubset(set(wavelength)):
+                if wl in wl_map:
+                    wv = wl_map[wl]
+                else:
+                    wv = int(wl)
+            else:
+                wv = int(wl)
 
             name = f"{prefix}{wv}{pm}_{inst}"
 
