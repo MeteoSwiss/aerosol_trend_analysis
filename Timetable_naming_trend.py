@@ -8,16 +8,22 @@ def timetable_naming_trend(ds):
 
     data["Time"] = pd.to_datetime(ds["time"].values)
 
-    wavelength = ds["d_Wavelength"].values
-
     for var_name in ds.data_vars:
 
         da = ds[var_name]
+
+        wavelength = ds["d_Wavelength"].values
 
         if "d_Wavelength" in da.dims:
             da = da.transpose("time", "d_Wavelength")
 
         values = da.values
+
+        # keep variable wavelengths
+        mask = ~np.isnan(values).all(axis=0)
+
+        wavelength = wavelength[mask]
+        values = values[:, mask]
 
         for j, wl in enumerate(wavelength):
 
@@ -89,6 +95,18 @@ def timetable_naming_trend(ds):
             name = f"{prefix}{wv}{pm}_{inst}"
 
             data[name] = col
+        
+        # save overlapped 660nm data in a new column
+        if prefix =='Ba':
+            for i in [0,1,2]:
+                if (f'Ba1{i}_A' in data and f'Ba5{i}_A' in data and
+                    np.count_nonzero(~np.isnan(data[f'Ba1{i}_A'])) < 
+                    np.count_nonzero(~np.isnan(data[f'Ba5{i}_A']))):
+
+                    mask = np.isnan(data[f'Ba1{i}_A'])
+
+                    data[f'Ba660{i}_A'] = np.where(mask, data[f'Ba5{i}_A'], np.nan)
+                    data[f'Ba5{i}_A'] = np.where(mask, np.nan, data[f'Ba5{i}_A'])
 
     df = pd.DataFrame(data)
 
