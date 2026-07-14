@@ -1,7 +1,14 @@
 function [Tresult_MK,Tresult_LMSlog,Tresult_LMSlin]= all_trend_STN(data_tr,data_st)
 
-%pour une station
-%fait tous les trends necessaires
+% Do all necessary trends for one station
+% including the present day trends with all potential decadal trends (10y, 20y, 30y, ..)
+% and time series of all potential 10 y trends
+% create a figure for all potential 10 y trends
+% save results
+
+% Dependency: call all3_trend & seasonalKendall_main_D
+%                   all3_trend call seasonalKendall_main_D and trend_LMS_D
+
 data_tr.y=year(data_tr.Time);
 names=fieldnames(data_tr);
 a=startsWith(names,["y";"Variable";"Time";"Proper"]);
@@ -66,24 +73,6 @@ for i=1:length(names)
     e=data_tr.y(e);
     nb_trend= e-s-8;
     if nb_trend>1
-        % % % for j=1:nb_trend
-        % % %     if e==max(data_trok.y)
-        % % %         if j==2
-        % % %             Tresult_MK_10y=seasonalKendall_main_D(data_trok,{names{i}}, inst, data_st.name, resolution, 'period',10,'end_year',e-j+1);
-        % % %         elseif e-j+1~=max(data_trok.y)
-        % % %             T=seasonalKendall_main_D(data_trok,{names{i}}, inst, data_st.name, resolution,'period',10,'end_year',e-j+1);
-        % % %
-        % % %             Tresult_MK_10y=[Tresult_MK_10y;T];
-        % % %         end
-        % % %     else
-        % % %         if j==1
-        % % %             Tresult_MK_10y=seasonalKendall_main_D(data_trok,{names{i}}, inst, data_st.name, resolution, 'period',10,'end_year',e-j+1);
-        % % %         elseif e-j+1~=max(data_trok.y)
-        % % %             T=seasonalKendall_main_D(data_trok,{names{i}}, inst, data_st.name, resolution, 'period',10,'end_year',e-j+1);
-        % % %             Tresult_MK_10y=[Tresult_MK_10y;T];
-        % % %         end
-        % % %     end
-        % % % end
         for j=2:nb_trend
             if j==2
                 Tresult_MK_10y=seasonalKendall_main_D(data_trok,{names{i}}, inst, data_st.name, resolution, 'period',10,'end_year',e-j+1);
@@ -100,26 +89,22 @@ for i=1:length(names)
         end
     elseif nb_trend==1
         Tresult_MKi=Tresult_MK_25;
-        % % %I think this is already done
-        % % elseif nb_trend<1 %too short time series not ending in 2025, but trend should anyhow be calculated
-        % %     % Tresulti=all3_trend(data_trok,{names{i}}, inst, data_st.name, resolution, 'period',10,'end_year',max(data_trok.y));
-        % %     [Tresult_MK,Tresult_GSMd,Tresult_LMSlog,Tresult_LMSlin]=all3_trend(data_trok,{names{i}}, inst, data_st.name, resolution,'period',10,'end_year',max(data_trok.y), 'fig',1);
     end
 
     if i==1
         Tresult_MK=Tresult_MKi;
-         % Tresult_GSMd=Tresult_GSMdi;
-         Tresult_LMSlog=Tresult_LMSlogi;
-         Tresult_LMSlin=Tresult_LMSlini;
-         % Tresult_LMSlog2=Tresult_LMSlog2i;
-         % Tresult_LMSlin2=Tresult_LMSlin2i;
+        % Tresult_GSMd=Tresult_GSMdi;
+        Tresult_LMSlog=Tresult_LMSlogi;
+        Tresult_LMSlin=Tresult_LMSlini;
+        % Tresult_LMSlog2=Tresult_LMSlog2i;
+        % Tresult_LMSlin2=Tresult_LMSlin2i;
     else
         Tresult_MK=[Tresult_MK;Tresult_MKi];
-         % Tresult_GSMd=[Tresult_GSMd;Tresult_GSMdi];
-         Tresult_LMSlog=[Tresult_LMSlog;Tresult_LMSlogi];
-         Tresult_LMSlin=[Tresult_LMSlin;Tresult_LMSlini];
-         % Tresult_LMSlog2=[Tresult_LMSlog2;Tresult_LMSlog2i];
-         % Tresult_LMSlin2=[Tresult_LMSlin2;Tresult_LMSlin2i];
+        % Tresult_GSMd=[Tresult_GSMd;Tresult_GSMdi];
+        Tresult_LMSlog=[Tresult_LMSlog;Tresult_LMSlogi];
+        Tresult_LMSlin=[Tresult_LMSlin;Tresult_LMSlini];
+        % Tresult_LMSlog2=[Tresult_LMSlog2;Tresult_LMSlog2i];
+        % Tresult_LMSlin2=[Tresult_LMSlin2;Tresult_LMSlin2i];
     end
 end
 
@@ -175,12 +160,3 @@ for i=1:size(data,1)
 end
 ylabel(strcat(data_st.name,'_', namesP));
 grid on;
-% if result_y.ss==95
-%     a=sizeM(3);
-% elseif result_y.ss==90
-%     a=sizeM(2);
-% else
-%     a=sizeM(1);
-% end
-% plot(t(end)+delta/2,result_y.(s),'g.','MarkerSize',a);
-% line([t(end)+delta/2 t(end)+delta/2 ],[result_y.(U);result_y.(L)],'color','g');

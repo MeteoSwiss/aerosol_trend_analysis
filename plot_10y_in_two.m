@@ -1,8 +1,12 @@
 function plot_10y_in_two(STN_result, STN_st, seasonality)
 
-%plot all the measured parameters in one fig (RH, scat, backscat,abs)
-%plot all the calculated parameters in another one (Backscat, expS, expA,
-%SSA
+%plot the 10y trends of all the measured parameters in one fig (RH, scat, backscat,abs)
+% and the 10y trends of all the calculated parameters in another one (Backscat, expS, expA, SSA)
+
+
+%% ATTENTION, PATH FOR SAVING THE FIGURE IN LINES 83-87. PLEASE ADAPT FOR YOUR USAGE
+
+
 select1=STN_result(STN_result.length_period==10 & strcmp(STN_result.MK_seasonality,seasonality)==1 & startsWith(STN_result.parameter,["U";"Bs";"Bbs";"Ba";])==1 & startsWith(STN_result.parameter,'BbsF')==0,:);
 names=unique(select1.parameter);
 Tmin=min(select1.end_time)-0.5;
@@ -10,37 +14,33 @@ Tmax=max(select1.end_time)+0.5;
 % measured parameters
 f=figure;
 hold on;
-
-% %     select2=select1(strcmp(select1.parameter,(names{i}))==1,:);
-% %     [s,ia]=unique(select2.end_time);
-% %     select2=select2(ia,:);
 subplot(4,1,1);
 c=startsWith(names,'U');
 if sum(c)>0
-plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'units',seasonality);
-ylabel('RH','FontSize',16);
+    plot_each_variable(select1, names,c,Tmin,Tmax,'units',seasonality);
+    ylabel('RH','FontSize',16);
 end
 title(STN_st.name,'FontSize',16);
 
 subplot(4,1,2);
 c=startsWith(names,'Bs');
 if sum(c)>0
-plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'units',seasonality);
-ylabel('Bs','FontSize',16);
+    plot_each_variable(select1, names,c,Tmin,Tmax,'units',seasonality);
+    ylabel('Bs','FontSize',16);
 end
 
 subplot(4,1,3);
 c=startsWith(names,'Bbs');
 if sum(c)>0
-plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'units',seasonality);
-ylabel('Bbs','FontSize',16);
+    plot_each_variable(select1, names,c,Tmin,Tmax,'units',seasonality);
+    ylabel('Bbs','FontSize',16);
 end
 
 subplot(4,1,4);
 c=startsWith(names,'Ba');
 if sum(c)>0
-plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'units',seasonality);
-ylabel('Ba','FontSize',16);
+    plot_each_variable(select1, names,c,Tmin,Tmax,'units',seasonality);
+    ylabel('Ba','FontSize',16);
 end
 hold off;
 
@@ -52,72 +52,49 @@ hold on;
 subplot(4,1,1);
 c=startsWith(names,'BbsF');
 if sum(c)>0
-plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'units',seasonality);
-ylabel('Backscat. fraction','FontSize',16);
-title(STN_st.name,'FontSize',16);
+    plot_each_variable(select1, names,c,Tmin,Tmax,'units',seasonality);
+    ylabel('Backscat. fraction','FontSize',16);
+    title(STN_st.name,'FontSize',16);
 end
 
 subplot(4,1,2);
 c=startsWith(names,'expS');
 if sum(c)>0
-plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'units',seasonality);
-ylabel('Scat exponent','FontSize',16);
+    plot_each_variable(select1, names,c,Tmin,Tmax,'units',seasonality);
+    ylabel('Scat exponent','FontSize',16);
 end
 
 subplot(4,1,3);
 c=startsWith(names,'expA');
 if sum(c)>0
-plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'units',seasonality);
-ylabel('Abs. exponent','FontSize',16);
+    plot_each_variable(select1, names,c,Tmin,Tmax,'units',seasonality);
+    ylabel('Abs. exponent','FontSize',16);
 end
 
 subplot(4,1,4);
 c=startsWith(names,'SSA');
 if sum(c)>0
-plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'units',seasonality);
-ylabel('SSA','FontSize',16);
+    plot_each_variable(select1, names,c,Tmin,Tmax,'units',seasonality);
+    ylabel('SSA','FontSize',16);
 end
 
-% % % figure in % for scat, abs and SSA
-% % select1=STN_result(STN_result.length_period==10 & strcmp(STN_result.MK_seasonality,'MetSea')==1 & startsWith(STN_result.parameter,["SSA";"Bs";"Ba";])==1 & startsWith(STN_result.parameter,'BbsF')==0,:);
-% % names=unique(select1.parameter);
-% % Tmin=min(select1.end_time)-0.5;
-% % Tmax=max(select1.end_time)+0.5;
-% % figure;
-% % hold on;
-% % c=startsWith(names,'Bs');
-% % if sum(c)>0
-% % plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'%');
-% % ylabel('Bs','FontSize',16);
-% % end
-% % c=startsWith(names,'Ba');
-% % if sum(c)>0
-% % plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'%');
-% % ylabel('Ba','FontSize',16);
-% % end
-% % c=startsWith(names,'SSA');
-% % if sum(c)>0
-% % plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,'%');
-% % ylabel('SSA','FontSize',16);
-% % end
-
-
+% save fig
 if ispc
-savefig(f,strcat('C:\github_trend\result\',(STN_st.name),'\',(STN_st.name),'_',(STN_st.name),'_MK_all10y_var.fig'));
-savefig(g,strcat('C:\github_trend\result\',(STN_st.name),'\',(STN_st.name),'_',(STN_st.name),'_MK_all10y_cal.fig'));
-    else
-savefig(f,strcat('/prod/pay/Aerosol_actris_trend/trend_2026/result/',(STN_st.name),'/',(STN_st.name),'_',(STN_st.name),'_MK_all10y_var.fig'));
-savefig(g,strcat('/prod/pay/Aerosol_actris_trend/trend_2026/result/',(STN_st.name),'/',(STN_st.name),'_',(STN_st.name),'_MK_all10y_cal.fig'));
-   
+    savefig(f,strcat('C:\github_trend\result\',(STN_st.name),'\',(STN_st.name),'_',(STN_st.name),'_MK_all10y_var.fig'));
+    savefig(g,strcat('C:\github_trend\result\',(STN_st.name),'\',(STN_st.name),'_',(STN_st.name),'_MK_all10y_cal.fig'));
+else
+    savefig(f,strcat('/prod/pay/Aerosol_actris_trend/trend_2026/result/',(STN_st.name),'/',(STN_st.name),'_',(STN_st.name),'_MK_all10y_var.fig'));
+    savefig(g,strcat('/prod/pay/Aerosol_actris_trend/trend_2026/result/',(STN_st.name),'/',(STN_st.name),'_',(STN_st.name),'_MK_all10y_cal.fig'));
+
 end
 %-------------------------------------
-function plot_each_variable(select1, names,c,STN_st,Tmin,Tmax,type, seasonality)
+function plot_each_variable(select1, names,c,Tmin,Tmax,type, seasonality)
 N=names(c);
 N=sortrows(N);
 for i=1:length(N)
     select2=select1(strcmp(select1.parameter,(N{i}))==1,:);
     hold on;
-    fig_seasonKendall_trend10_m(select2,STN_st,N(i),type,i,seasonality);
+    fig_seasonKendall_trend10_m(select2,N(i),type,i,seasonality);
     hold on;
 end
 xlim([Tmin,Tmax]);
@@ -132,10 +109,10 @@ elseif i==4
         [N(1) N(2) N(3) N(4)],'FontSize',12);
 end
 %-----------------------------
-function fig_seasonKendall_trend10_m(data,data_st,namesP,type,nb, seasonality)
+function fig_seasonKendall_trend10_m(data,namesP,type,nb, seasonality)
 switch seasonality
     case 'MetSea'
-colonne_res=5;
+        colonne_res=5;
     case 'y'
         colonne_res=1;
     case 'month'
@@ -170,7 +147,7 @@ for i=1:size(data,1)
             colorT='r';
         elseif data.slope{i}(colonne_res) <0
             colorT='b';
-            elseif data.slope{i}(colonne_res) ==0
+        elseif data.slope{i}(colonne_res) ==0
             colorT=[0.7 0.7 0.7];
         elseif isnan(data.slope{i}(colonne_res))
             colorT='k';
@@ -182,15 +159,8 @@ for i=1:size(data,1)
     hold on;
     plot(data.end_time(i),data.(s){i}(colonne_res),'Marker',markerM(nb),'Color',colorT,'MarkerSize',sizeR,'MarkerFaceColor',colorT,'DisplayName',(namesP{1}));
     hold on;
-    
-    %   line(repmat(data.end_time(i),2,1),[data.results{i}.(U)(5);data.results{i}.(L)(5)],'color',colorT);
-    %     if data.results{i}.Xhomo(5)==1
-    %         plot(data.end_time(i),data.results{i}.(s)(5),'rs','MarkerSize',sizeR);
-    %     end
-    
-end
 
-%legend(p(1),(namesP{1}));
+end
 
 grid on;
 
