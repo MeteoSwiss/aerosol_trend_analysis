@@ -72,13 +72,22 @@ for i=1:length(names)
     s=data_tr.y(s);
     e=data_tr.y(e);
     nb_trend= e-s-8;
+    % check potential year without data
+    for k=s:e
+        missing_year(k-s+1)=~all(isnan(data_trok.(names{i})(data_trok.y==k)));
+    end
+
     if nb_trend>1
-        for j=2:nb_trend
-            if j==2
-                Tresult_MK_10y=seasonalKendall_main_D(data_trok,{names{i}}, inst, data_st.name, resolution, 'period',10,'end_year',e-j+1);
-            else
-                T=seasonalKendall_main_D(data_trok,{names{i}}, inst, data_st.name, resolution, 'period',10,'end_year',e-j+1);
-                Tresult_MK_10y=[Tresult_MK_10y;T];
+        for j=2:nb_trend % 10y trend for last year is already computed
+            % trends are not computed if there is no data in the last year
+            % or if there is less than 8 years with data
+            if ~all(isnan(data_trok.(names{i})(data_trok.y==e-j+1))) && sum(missing_year(e-s+1-j+1-9:e-s+1-j+1))>7
+                if ~exist('Tresult_MK_10y','var')
+                    Tresult_MK_10y=seasonalKendall_main_D(data_trok,{names{i}}, inst, data_st.name, resolution, 'period',10,'end_year',e-j+1);
+                else
+                    T=seasonalKendall_main_D(data_trok,{names{i}}, inst, data_st.name, resolution, 'period',10,'end_year',e-j+1);
+                    Tresult_MK_10y=[Tresult_MK_10y;T];
+                end
             end
         end
 
