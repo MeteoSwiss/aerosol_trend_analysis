@@ -79,12 +79,75 @@ T_SPL_SSA_BP=make_table_breakpoints_def(break_SPL_SSA_BP); %[output:0faa47ba]
 %%
 % Make trend time series
 % not complete 2011 for both neph and abs --> begin in 2012
-% RH < 40% --> not necessary to compute dry trends
+% RH < 40% --> not necessary to compute RH and dry trends
+
+SPL_tr=SPL_rd;
+SPL_tr.y=year(SPL_tr.Time);
+
+P=timerange('2012-01-01','2026-01-01');
+SPL_tr=SPL_tr(P,:);
+
+% U < 5%: no trend in U and in dry
+%don't use abs: too short
+names=fieldnames(SPL_tr);
+c= startsWith(names,["U"]) | endsWith(names,'_dry') | endsWith(names,'psap');
+N=names(c);
+for i=1:length(N)
+    SPL_tr.(N{i})=[];
+end
+%%
+
+% compute variables
+SPL_cal2=compute_exp_SSA(SPL_tr,lambdaSC, lambdaAE);
+SPL_tr=outerjoin(SPL_tr, SPL_cal2);
+%%
+
+%compute scat trend on G and expS_gr
+SPL_tr.BsB0_S11=[];
+SPL_tr.BsR0_S11=[];
+SPL_tr.BsB1_S11=[];
+SPL_tr.BsR1_S11=[];
+
+SPL_tr.BbsB0_S11=[];
+SPL_tr.BbsR0_S11=[];
+SPL_tr.BbsB1_S11=[];
+SPL_tr.BbsR1_S11=[];
+
+SPL_tr.expS_br0=[];
+SPL_tr.expS_gr0=[];
+SPL_tr.expS_br1=[];
+SPL_tr.expS_gr1=[];
+
+% compute SSA on G
+
+% compute abs trend on 520 nm and expA_fit
+SPL_tr.BaB1_A12_clap=[];
+SPL_tr.BaR1_A12_clap=[];
+SPL_tr.BaB0_A12_clap=[];
+SPL_tr.BaR0_A12_clap=[];
+
+
+SPL_tr.expA_br0=[];
+SPL_tr.expA_gr0=[];
+SPL_tr.expA_br1=[];
+SPL_tr.expA_gr1=[];
+%%
+% save data in Netcdf
+timetable_to_netcdf(SPL_tr, 'C:/github_trend/result/SPL/SPL_tr.nc');
+%%
+[SPL_result_MK,SPL_result_LMSlog,SPL_result_LMSlin]=all_trend_STN(SPL_tr, SPL_st);
+plot_10y_in_two(SPL_result_MK,SPL_st,'y');
+writetable(SPL_result_MK,'SPL_result_MK.txt'); %, 'delimiter',',' )
+writetable(SPL_result_GSMd,'SPL_result_GSMd.txt'); 
+writetable(SPL_result_LMSlog,'SPL_result_LMSlog.txt'); 
+writetable(SPL_result_LMSlin,'SPL_result_LMSlin.txt'); 
+writetable(SPL_result_LMSlog2,'SPL_result_LMSlog2.txt'); 
+writetable(SPL_result_LMSlin2,'SPL_result_LMSlin2.txt'); 
 
 %[appendix]{"version":"1.0"}
 %---
 %[metadata:view]
-%   data: {"layout":"onright","rightPanelPercent":37}
+%   data: {"layout":"onright","rightPanelPercent":11.3}
 %---
 %[output:56104d36]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: Première colonne attendue \"DateTimeUTC\", trouvée \"SPL\"."}}

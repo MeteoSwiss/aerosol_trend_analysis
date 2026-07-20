@@ -1,4 +1,4 @@
-function [STN_rd, STN_st]=read_ebas_merged_STN(filename)
+function [STN_rd, STN_st]=read_ebas_merged_STN(filename, STN_name)
 % read the Netcdf file and adapt it to the naming convention for the trend
 % analysis 2026.
 
@@ -47,6 +47,8 @@ STN_st=struct();
 ind_gaw_id=contains({merged_data.Attributes.Name},'ebas_station_gaw_id');
 if sum(ind_gaw_id)>0
 STN_st.name=merged_data.Attributes(ind_gaw_id).Value;
+else
+    STN_st.name=STN_name;
 end
 
 %latitute, longitude and altitude
