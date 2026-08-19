@@ -27,9 +27,9 @@ data_cal=timetable(data.Time);
 if ~isempty(namesBs)
     if length(namesBs)== 1 & length(namesBbs)==1
         data_cal.BbsFG=data.(namesBbs{1})./data.(namesBs{1});
-        if ~isempty(namesBbs) & length(namesBbs)~=1
-            error('there is more backscat coef than scat coeff ')
-        end
+        % if ~isempty(namesBbs) & length(namesBbs)~=1
+        %     error('there is more backscat coef than scat coeff ')
+        % end
     elseif length(namesBs)== 3
         b=namesBs(startsWith(namesBs,'BsB'));
         g=namesBs(startsWith(namesBs,'BsG'));
@@ -45,9 +45,9 @@ if ~isempty(namesBs)
             Bg=namesBbs(startsWith(namesBbs,'BbsG'));
             Br=namesBbs(startsWith(namesBbs,'BbsR'));
 
-            data_cal.BsBFb=data.(Bb{1})./data.(b{1});
-            data_cal.BsBFg=data.(Bg{1})./data.(g{1});
-            data_cal.BsBFr=data.(Br{1})./data.(r{1});
+            data_cal.BbsFb=data.(Bb{1})./data.(b{1});
+            data_cal.BbsFg=data.(Bg{1})./data.(g{1});
+            data_cal.BbsFr=data.(Br{1})./data.(r{1});
         end
     elseif length(namesBs)== 6
         Cs(1,:)=contains(namesBs,'0_')& ~contains(namesBs,'dry') & ~contains(namesBs,'Q');
@@ -67,9 +67,11 @@ if ~isempty(namesBs)
         end
     end
 
-    if ~isempty(namesBbs)
+    if ~isempty(namesBbs) & ~contains(namesBbs,'BbsFg')
         Cbs(1,:)=contains(namesBbs,'0_');
         Cbs(2,:)=contains(namesBbs,'1_');
+        Cs(1,:)=contains(namesBs,'0_');
+        Cs(2,:)=contains(namesBs,'1_');
         for i=1:2
             namesBbsx=namesBbs(Cbs(i,:));
             Bb=namesBbsx(startsWith(namesBbsx,'BbsB'));
@@ -82,8 +84,8 @@ if ~isempty(namesBs)
             r=namesBsx(startsWith(namesBsx,'BsR'));
 
             N1=strcat('BbsFb', num2str(i-1));
-            N2=strcat('BbsFbg', num2str(i-1));
-            N3=strcat('BbsFbr', num2str(i-1));
+            N2=strcat('BbsFg', num2str(i-1));
+            N3=strcat('BbsFr', num2str(i-1));
             data_cal.(N1)=data.(Bb{1})./data.(b{1});
             data_cal.(N2)=data.(Bg{1})./data.(g{1});
             data_cal.(N3)=data.(Br{1})./data.(r{1});
@@ -145,16 +147,16 @@ if ~isempty(namesBa)
             error('the nb of wavelengths is different from the number of abs coef')
         end
 
-        b=namesBa(startsWith(namesBa,'Ba2'));
-        g=namesBa(startsWith(namesBa,'Ba3'));
-        r=namesBa(startsWith(namesBa,'Ba5'));
+        b=namesBa(contains(namesBa,'2_'));
+        g=namesBa(contains(namesBa,'3_'));
+        r=namesBa(contains(namesBa,'5_'));
         data_cal.expA_bgAE=real(-log(data.(b{1})./data.(g{1}))/log(470/520));
         data_cal.expA_brAE=real(-log(data.(b{1})./data.(r{1}))/log(470/660));
         data_cal.expA_grAE=real(-log(data.(g{1})./data.(r{1}))/log(520/660));
-        a1=namesBa(startsWith(namesBa,'Ba1'));
-        a4=namesBa(startsWith(namesBa,'Ba4'));
-        a6=namesBa(startsWith(namesBa,'Ba6'));
-        a7=namesBa(startsWith(namesBa,'Ba7'));
+        a1=namesBa(contains(namesBa,'1_'));
+        a4=namesBa(contains(namesBa,'4_'));
+        a6=namesBa(contains(namesBa,'6_'));
+        a7=namesBa(contains(namesBa,'7_'));
         all_Abs=[data.(a1{1}) data.(b{1}) data.(g{1}) data.(a4{1}) data.(r{1}) data.(a6{1}) data.(a7{1})];
         data_cal.expA_fit=Exp_AE_nan_regr(all_Abs);
     else
