@@ -8,7 +8,7 @@ function station_datD = read_betsy_2026(filename, STN)
 if strcmp(STN,'SUM2')
     station_dat = importfile_SUM2("C:\github_trend\raw_data\sum_neph_psap_clap2_clap10_AE16_AE33", [2, Inf]);
 station_dat.Properties.DimensionNames{1}='Time';
-elseif strcmp(STN,"SPL") || strcmp(STN, "UGR") 
+elseif strcmp(STN,"SPL") || strcmp(STN, "UGR") || strcmp(STN, "ATTO") || strcmp(STN, "APP")  || strcmp(STN, "MBO") || strcmp(STN, "CPR")
     station_dat = read_SPL_actris(filename, [2, Inf]);
 station_dat.Properties.DimensionNames{1}='Time';
 elseif  strcmp(STN, "MLO")
@@ -92,13 +92,25 @@ elseif strcmp(STN,'PAL')==1
     station_dat.BbsR_S11(station_dat.BbsR_S11==100)=NaN;
 
 % time treatment for SPL
-elseif strcmp(STN,'SPL')==1 || strcmp(STN,'UGR')==1 
+elseif strcmp(STN,'SPL')==1 || strcmp(STN,'UGR')==1  || strcmp(STN,'ATTO')==1  || strcmp(STN,'APP')==1 || strcmp(STN,'CPR')==1 
   
     station_dat.SPL=[];
     station_dat.Properties.VariableNames{1}='y';
     station_dat.DOY=[];
     station_dat=table2timetable(station_dat);
 station_dat.Properties.DimensionNames{1}='Time';
+elseif strcmp(STN, 'MBO')
+    station_dat.SPL=[];
+    station_dat.Properties.VariableNames{1}='y';
+    station_dat.DOY=[];
+    station_dat=table2timetable(station_dat);
+station_dat.Properties.DimensionNames{1}='Time';
+Cu=startsWith(names_var,["U";"B"]);
+    Nu=names_var(Cu);
+    for i=1:length(Nu)
+        ind=station_dat.(Nu{i})>880 | station_dat.(Nu{i})<=-99;
+        station_dat.(Nu{i})(ind)=NaN;
+    end
 elseif strcmp(STN,'MLO')==1 
 station_dat.Properties.DimensionNames{1}='Time';
 end
