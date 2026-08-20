@@ -71,7 +71,7 @@ fit_test=robustfit(MLO_rd.Bs2_S11_mse(P_mri_mse),MLO_rd.Bs2_S11_mri(P_mri_mse));
 % --> use a cte=0.85 (middle between median and robust fit)
 cte_mri_mse=0.85;
 %%
-% homogeneisation MRI-MSE
+% homogeneisation MSE-TSI
 P_mre_tsi=timerange('2000-05-01','2001-03-01');
 ratio_STN=nanstd(MLO_rd.Bs20_S11_tsi(P_mre_tsi)./MLO_rd.Bs2_S11_mse(P_mre_tsi)) % 8.8 very high !
 ratio_mean=nanmean(MLO_rd.Bs20_S11_tsi(P_mre_tsi))/nanmean(MLO_rd.Bs2_S11_mse(P_mre_tsi)) % 1.4932
