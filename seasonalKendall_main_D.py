@@ -122,6 +122,9 @@ def seasonalKendall_main_D(data, param, inst, station, resolution, granularity="
     #for each period
     results = []
 
+    fig_obj, axes = plt.subplots(2, 1, num=100, figsize=(10, 8))
+    ax1, ax2 = axes
+
     for i in range(nb_period):
         start = pd.Timestamp(end_year - period[i] + 1, 1, 1)
         end = pd.Timestamp(end_year + 1, 1, 1)
@@ -196,8 +199,6 @@ def seasonalKendall_main_D(data, param, inst, station, resolution, granularity="
 
         if fig:
 
-            fig_obj, axes = plt.subplots(2, 1, num=100, figsize=(10, 8))
-            ax1, ax2 = axes
             title = (f"{station} {name} {inst}" f"{end_year-period[i]+1}-{end_year}")
 
             fig_obj.suptitle(title)
@@ -269,7 +270,7 @@ def fig_seasonKendall_trend(t, result, result_y, type, delta):
     plt.plot(np.array(t)[ss.values == 20], result.loc[ss == 20, s], "cv", markersize=sizeM[0])
 
     for x, u, l in zip(t, result[U], result[L]):
-        plt.plot([x,x], [l,u], linewidth=1,color='b')
+        plt.plot([x,x], [l,u], linewidth=1, color='b')
 
     if result_y["ss"].iloc[0] == 95:
         a = sizeM[2]
@@ -281,7 +282,7 @@ def fig_seasonKendall_trend(t, result, result_y, type, delta):
     x_year = t[-1] + delta/2
 
     plt.plot(x_year, result_y[s].iloc[0], "g.", markersize=a)
-    plt.plot([x_year, x_year], [result_y[L].iloc[0], result_y[U].iloc[0]],color='g')
+    plt.plot([x_year, x_year], [result_y[L].iloc[0], result_y[U].iloc[0]], color='g')
 
     if len(t) == 13:
         plt.xlabel("Month", fontsize=14)
