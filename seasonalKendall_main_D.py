@@ -122,8 +122,9 @@ def seasonalKendall_main_D(data, param, inst, station, resolution, granularity="
     #for each period
     results = []
 
-    fig_obj, axes = plt.subplots(2, 1, num=100, figsize=(10, 8))
-    ax1, ax2 = axes
+    if fig:
+        fig_obj, axes = plt.subplots(2, 1, figsize=(10, 8))
+        ax1, ax2 = axes
 
     for i in range(nb_period):
         start = pd.Timestamp(end_year - period[i] + 1, 1, 1)
@@ -198,7 +199,6 @@ def seasonalKendall_main_D(data, param, inst, station, resolution, granularity="
         t_MS = np.arange(1,6) + i*delta
 
         if fig:
-
             title = (f"{station} {name} {inst}" f"{end_year-period[i]+1}-{end_year}")
 
             fig_obj.suptitle(title)
@@ -228,6 +228,7 @@ def seasonalKendall_main_D(data, param, inst, station, resolution, granularity="
     Tresult = pd.DataFrame(results)
 
     if fig:
+        fig_obj.tight_layout()
         if os.name == "nt":  # Windows
             save_path = (f"C:/github_trend/result/{station}/" f"{station}_{name}_MK.png")
         else:
