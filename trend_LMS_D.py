@@ -179,7 +179,7 @@ def trend_LMS_D(data,param,inst,station,distribution,end_year=2025,
         # create the table of results and do the figure only for lin distribution
         if i == nb_period-1:
             if fig:
-                fig_obj = plt.figure(num=203)
+                fig_obj = plt.figure(num=203, figsize=(9, 5.5))
                 fig_LMS(dataGa,name,Eplot,x_residue,b)
                 plt.subplot(2,2,1)
                 plt.title(f"{station} {name} LMS {inst}")
@@ -259,7 +259,7 @@ def fig_LMS(data, name, Eplot, x_residue, b):
     # 1) Data and fitted model
     plt.subplot(2, 2, 1)
     plt.grid(True)
-    plt.plot(data.index,data[name],"bo-",linewidth=0.5)
+    plt.plot(data.index,data[name],"bo-",linewidth=0.5,markerfacecolor="none")
     # complete LMS fit
     plt.plot(data.index,Eplot,"-r",linewidth=2)
     # linear trend only
@@ -276,7 +276,7 @@ def fig_LMS(data, name, Eplot, x_residue, b):
 
     # 3) Normal probability plot
     plt.subplot(2, 2, 3)
-    stats.probplot(np.real(x_residue),dist="norm",plot=plt)
+    normplot_matlab(x_residue)
     plt.title("normplot of residues")
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%y"))
 
@@ -287,3 +287,22 @@ def fig_LMS(data, name, Eplot, x_residue, b):
     plt.ylabel("cumsum of residue")
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%y"))
     plt.tight_layout()
+
+#_______________________________________________________________________
+def normplot_matlab(x_residue):
+
+    (quantiles, values), (slope, intercept, r) = stats.probplot(x_residue, dist='norm')
+
+    plt.plot(values, quantiles,'+')
+    plt.plot(quantiles * slope + intercept, quantiles, '-.r')
+
+    prob_ticks = np.array([0.01, 0.1, 1, 5, 10, 25,
+        50, 75, 90, 95, 99, 99.9]) / 100
+
+    plt.yticks(stats.norm.ppf(prob_ticks),
+        ["0.001", "0.01", "0.1", "0.5", "0.10", "0.25",
+         "0.50", "0.75", "0.90", "0.95", "0.99", "0.999"])
+
+    plt.ylabel("Probability")
+    plt.xlabel("Data")
+    plt.grid(True)
