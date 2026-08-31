@@ -2,7 +2,7 @@ ECO_st.name='ECO';
 ECO_st.lat=40.20;
 ECO_st.lon=18.07;
 ECO_st.alt=50;
-ECO_st.env='Coast';
+ECO_st.env='Con';
 ECO_st.footp='U';
 %%
 
@@ -25,8 +25,8 @@ names_abs={'BaR_Amaap'};
 break_ECO_abs_BP=change_point_analysis_Def(ECO_rd,names_abs,0.05,'ECO','Absorption MAAP'); %[output:187ac685] %[output:2e907980]
 T_ECO_abs_BP=make_table_breakpoints_def(break_ECO_abs_BP);
 %%
-% use MAAP data as it, 
-%recompute trend after answer if AE or 2025 are available
+% use MAAP data as it, no lightning destroy in Jan 2025
+% I don't know if AE is available for 2025, but prefer to keep with a sinlge instrument (potentially only one year more) 
 ECO_tr=ECO_rd;
 ECO_tr.eBC__g_m3_=[];
 %convert in Mm

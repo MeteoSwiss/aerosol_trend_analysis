@@ -83,10 +83,10 @@ break_BRW_scat_snht=change_point_analysis_SNHT_V1(BRW_rd_short,names_sc_short(1:
 T_BRW_scat_snht=make_table_breakpoints(break_BRW_scat_snht,names_sc_short(1:3));
 %%
 % idem variable for PM1
-BRW_rd_short.BsB1_S11=BRW_rd_short.Bs11_S11; 
-BRW_rd_short.BsG1_S11=BRW_rd_short.Bs21_S11; 
-BRW_rd_short.BsR1_S11=BRW_rd_short.Bs31_S11; 
-BRW_rd_short.BsQ1_S11=BRW_rd_short.Bs41_S11; 
+BRW_rd_short.BsB1_S11=BRW_rd.Bs11_S11; 
+BRW_rd_short.BsG1_S11=BRW_rd.Bs21_S11; 
+BRW_rd_short.BsR1_S11=BRW_rd.Bs31_S11; 
+BRW_rd_short.BsQ1_S11=BRW_rd.Bs41_S11; 
 %%
 
 %%
@@ -94,19 +94,19 @@ BRW_rd_short.BsQ1_S11=BRW_rd_short.Bs41_S11;
 % break point detection: 
 % use at it the S0 data for TSP
 
-BRW_rd_short.BbsB0_S11=BRW_rd_short.Bbs10_S11;
-BRW_rd_short.BbsG0_S11=BRW_rd_short.Bbs20_S11;
-BRW_rd_short.BbsR0_S11=BRW_rd_short.Bbs30_S11;
-BRW_rd_short.BbsQ0_S11=BRW_rd_short.Bbs40_S11;
+BRW_rd_short.BbsB0_S11=BRW_rd.Bbs10_S11;
+BRW_rd_short.BbsG0_S11=BRW_rd.Bbs20_S11;
+BRW_rd_short.BbsR0_S11=BRW_rd.Bbs30_S11;
+BRW_rd_short.BbsQ0_S11=BRW_rd.Bbs40_S11;
 %use the 1 data for PM1
-BRW_rd_short.BbsB1_S11=BRW_rd_short.Bbs11_S11;
-BRW_rd_short.BbsG1_S11=BRW_rd_short.Bbs21_S11;
-BRW_rd_short.BbsR1_S11=BRW_rd_short.Bbs31_S11;
-BRW_rd_short.BbsQ1_S11=BRW_rd_short.Bbs41_S11;
+BRW_rd_short.BbsB1_S11=BRW_rd.Bbs11_S11;
+BRW_rd_short.BbsG1_S11=BRW_rd.Bbs21_S11;
+BRW_rd_short.BbsR1_S11=BRW_rd.Bbs31_S11;
+BRW_rd_short.BbsQ1_S11=BRW_rd.Bbs41_S11;
 %%
 names_short=fieldnames(BRW_rd_short);
 
-names_delete=names_short(contains (names_short,{'Bs1_S11','2_S11','3_S11','4_S11','10_S11','20_S11','30_S11','40_S11'}));
+names_delete=names_short(contains (names_short,{'Bs1_S11','2_S11','3_S11','4_S11','10_S11','20_S11','30_S11','40_S11','11_S11','21_S11','31_S11','41_S11' }));
 BRW_rd_short=removevars(BRW_rd_short,names_delete);
 %%
 
@@ -128,7 +128,7 @@ T_BRW_abs_clap_snht=make_table_breakpoints(break_BRW_abs_clap_snht,names_abs_cla
 %%
 % remove non necessary neph variables
 names_short=fieldnames(BRW_rd_short);
-c=contains(names_short,{'dry','11_S11','21_S11','31_S11' ,'41_S11','Q'}); 
+c=contains(names_short,{'dry','41_S11','Q'}); 
 names_delete=names_short(c);
 BRW_rd_short=removevars(BRW_rd_short,names_delete);
 
@@ -167,12 +167,16 @@ BRW_rd_short.BaG0_homo1(P2a)=BRW_rd_short.BaG0_A11(P2a);
 % % % BRW_rd_short.BaG0_homo2(P1a)=BRW_rd_short.Bac1_A81(P1a).*0.82;
 % % % P2a=timerange('1997-08-01','2026-01-01');
 % % % BRW_rd_short.BaG0_homo2(P2a)=BRW_rd_short.BaG0_A11(P2a);
+
+% PM1 absorption has not to be homogeneised since AE16 sampled only PM10/TSP
+%%
+
 %%
 
 figure; %[output:1343ce23]
-plot(BRW_rd_short.Time,BRW_rd_short.BaG_homo1,'.'); %[output:1343ce23]
+plot(BRW_rd_short.Time,BRW_rd_short.BaG0_homo1,'.'); %[output:1343ce23]
 hold on; %[output:1343ce23]
-plot(BRW_rd_short.Time,BRW_rd_short.BaG_homo2,'.'); %[output:1343ce23]
+plot(BRW_rd_short.Time,BRW_rd_short.BaG0_homo2,'.'); %[output:1343ce23]
 ylabel('abs coef homogenised');
 legend('cte=0.76','cte=0.82');
 %%
@@ -345,41 +349,39 @@ BRW_tr=BRW_tr(P,:);
 
 % %U >50% for only few cases --> no trend in U and dry, not PM1
 names=fieldnames(BRW_tr);
-c= startsWith(names,["T1";"T0";"T_";"P_";"P1_";"P0_";"N";"Uu";"U";"Bax"]) | endsWith(names,["dry";"1_A11";"1_S11"]) | contains(names,'Q');
+c= startsWith(names,["T1";"T0";"T_";"P_";"P1_";"P0_";"N";"Uu";"U";"Bax"]) | endsWith(names,["dry"]) | contains(names,'Q');
 N=names(c);
 for i=1:length(N)
     BRW_tr.(N{i})=[];
 end
 %BsB_S: problem from 5.4.1993 to october 1997: to invalidate
-% potential probel for the same period in exp scat GR --> keep and test trend results ?
-Px=timerange('1993-04-05','1997-10-01');
-BRW_tr.BsB0_S1S10(Px)=NaN;
+% potential problem for the same period in exp scat GR --> keep and test
+% trend results ? Results fine, keep these data 
+% % Px=timerange('1993-04-05','1997-10-01');
+% % BRW_tr.BsB0_S1S10(Px)=NaN;
 %one time series for TSP and PM10
 
 %backscat and abs: 1998-2026 
 P2=timerange('1997-10-01','1998-01-01');
 BRW_tr.BbsG0_S11(P2)=NaN;
-%BRW_tr.BbsG1_S11(P2)=NaN;
-BRW_tr.BbsB0_S11=[];
-BRW_tr.BbsR0_S11=[];
-% BRW_tr.BbsB1_S11=[];
-% BRW_tr.BbsR1_S11=[];
+BRW_tr.BbsG1_S11(P2)=NaN;
+
 %Abs:
 BRW_tr.BaG0_A11(P2)=NaN;
-%BRW_tr.BaG1_A11(P2)=NaN;
+BRW_tr.BaG1_A11(P2)=NaN;
 BRW_tr.BaB0_A11(P2)=NaN;
-%BRW_tr.BaB1_A11(P2)=NaN;
+BRW_tr.BaB1_A11(P2)=NaN;
 BRW_tr.BaR0_A11(P2)=NaN;
-%BRW_tr.BaR1_A11(P2)=NaN;
+BRW_tr.BaR1_A11(P2)=NaN;
 BRW_tr.BaG0_homo1(P2)=NaN;
 %abs: invalidate 25.12.2009 to jan 2011 (end story leak)
 P3=timerange('2009-12-25','2011-01-01');
 BRW_tr.BaG0_A11(P3)=NaN;
-%BRW_tr.BaG1_A11(P3)=NaN;
+BRW_tr.BaG1_A11(P3)=NaN;
 BRW_tr.BaB0_A11(P3)=NaN;
-%BRW_tr.BaB1_A11(P3)=NaN;
+BRW_tr.BaB1_A11(P3)=NaN;
 BRW_tr.BaR0_A11(P3)=NaN;
-%BRW_tr.BaR1_A11(P3)=NaN;
+BRW_tr.BaR1_A11(P3)=NaN;
 BRW_tr.BaG0_homo1(P3)=NaN;
 %%
 %compute necessary exp, backscat fraction and SSA: use G and expS bg and
@@ -388,25 +390,40 @@ BRW_tr.BaG0_homo1(P3)=NaN;
 %exp + BbsF
 names_short=fieldnames(BRW_rd_short);
 names_neph=names_short(startsWith(names_short,{'Bs','Bbs'}));
-BRW_expS_cal=compute_exp_D(BRW_rd_short,names_neph,lambdaSC);
+BRW_expS_cal=compute_exp_D(BRW_tr,names_neph,lambdaSC);
 
 %compute abs exp
-names_3w=names_short(startsWith(names_short,{'Ba'}) & contains(names_short,{'0_A11'}));
-BRW_expA_cal=compute_exp_D(BRW_rd_short,names_3w,lambdaAE); %[output:98450c23]
+names_3w=names_short(startsWith(names_short,{'Ba'}) & contains(names_short,{'_A11'}));
+BRW_expA_cal=compute_exp_D(BRW_tr,names_3w,lambdaAE);
 
 % compute expA from AE31+33
 Ca7=startsWith(names_short,{'Bacx'}) & contains(names_short,{'_A8'});
 names_7w3133=names_short(Ca7);
-BRW_expAE_cal2=compute_exp_D(BRW_rd_short,names_7w3133,lambdaAE7); %[output:09a2f37b] %[output:2376b229] %[output:0ca296e1] %[output:3965de54] %[output:9b922ae4] %[output:5fa14e70] %[output:6df78528] %[output:6660adae] %[output:41b1540a] %[output:4930ca5f] %[output:47c93f6e] %[output:0364c28a] %[output:9f147c28] %[output:58e6774d] %[output:3e79bf00] %[output:1ee48409] %[output:7c760164] %[output:029bc713] %[output:75f9e04c] %[output:978da8e0] %[output:934940d8] %[output:7f42177f] %[output:774e4d2a] %[output:43dd921f] %[output:624e0fab] %[output:8053a40f] %[output:41331dce] %[output:64fa7b72] %[output:47778218] %[output:74372a75] %[output:96ea315b] %[output:05556658] %[output:35b96170] %[output:5ad1ec71] %[output:52ddc51e] %[output:6bb80cb3] %[output:34ab9ec3] %[output:0a152510] %[output:0115a49d] %[output:91f96e64] %[output:3b22d618] %[output:4793662f] %[output:1f0c69b2] %[output:82ee6987] %[output:6a609989] %[output:45e15f5a] %[output:3e7b5d93] %[output:091562a9] %[output:76de35e1] %[output:76f85a79] %[output:522c7e1d] %[output:986a34ff] %[output:5d14b4b3] %[output:2dfc0f80] %[output:73d22197] %[output:3c760eda] %[output:1e18f3f8]
+%BRW_expAE_cal2=compute_exp_D(BRW_tr,names_7w3133,lambdaAE7);
 BRW_exp=synchronize(BRW_expS_cal,BRW_expA_cal);
-BRW_exp=synchronize(BRW_exp,BRW_expAE_cal2);
+%BRW_exp=synchronize(BRW_exp,BRW_expAE_cal2);
 BRW_tr=synchronize(BRW_tr,BRW_exp);
 clear BRW_expAE_cal2 BRW_expS_cal BRW_expA_cal BRW_exp;
 %compute SSA
 
-BRW_tr.SSAG0_AE=BRW_rd_short.BsG0_S2S20./(BRW_rd_short.BsG0_S2S20+BRW_rd_short.Bacx3_A81);
-BRW_tr.SSAG0_aePsapClap=BRW_rd_short.BsG0_S2S20./(BRW_rd_short.BsG0_S2S20+BRW_rd_short.BaG0_homo1);
+BRW_tr.SSAG0_AE=BRW_tr.BsG0_S2S20./(BRW_tr.BsG0_S2S20+BRW_tr.Bacx3_A81);
+BRW_tr.SSAG0_aePsapClap=BRW_tr.BsG0_S2S20./(BRW_tr.BsG0_S2S20+BRW_tr.BaG0_homo1);
+BRW_tr.SSAG1_PsapClap=BRW_tr.BsG1_S11./(BRW_tr.BsG1_S11+BRW_tr.BaG1_A11);
+%%
 
+% trends in abs are very similar between AE31-AE33 and PSAP-CLAP --> use
+% only the AE8+AE16+PSAP+CLAP results 
+BRW_tr.SSAG0_AE=[];
+BRW_tr.Bacx3_A81=[];
+%BRW_tr.expA_fit=[]; %
+BRW_tr.BbsB0_S11=[];
+BRW_tr.BbsR0_S11=[];
+ BRW_tr.BbsB1_S11=[];
+ BRW_tr.BbsR1_S11=[];
+ BWR_tr.BbsFb1_S11=[];
+  BWR_tr.BbsFb0_S11=[];
+   BWR_tr.BbsFr1_S11=[];
+  BWR_tr.BbsFr0_S11=[];
 %%
 names_tr=fieldnames(BRW_tr);
 % compute neph only on G
@@ -415,13 +432,22 @@ names_tr=fieldnames(BRW_tr);
 %BRW_tr.BbsB0_S1S10=[];
 %BRW_tr.BbsR0_S11=[];
 %BRW_tr.BbsB0_S11=[];
-
+% compute neph only on G
+%BRW_tr.BsB1_S1S10=[];
+%BRW_tr.BsR1_S3S30=[];
+%BRW_tr.BbsB1_S1S10=[];
+%BRW_tr.BbsR1_S11=[];
+%BRW_tr.BbsB1_S11=[];
 
 
 %compute abs on homo and Bacx3 and SSA trends only on G, the longest time series
 BRW_tr.BaB0_A11=[];
+%%
 BRW_tr.BaG0_A11=[];
 BRW_tr.BaR0_A11=[];
+
+BRW_tr.BaB1_A11=[];
+BRW_tr.BaR1_A11=[];
 
 BRW_tr.Bacx1_A81=[];
 BRW_tr.Bacx2_A81=[];
@@ -440,13 +466,14 @@ BRW_tr.expS_bg1=[];
 %compute expA exponent only on BG and only since 1.1.2007 (whole year)
 Pexp=timerange('2006-01-01','2007-01-01');
 BRW_tr.expA_bg0(Pexp)=NaN;
-%BRW_tr.expA_bg1(Pexp)=NaN;
-BRW_tr.expA_br0=[]; %[output:2cb9f218]
-%BRW_tr.expA_br1=[];
+BRW_tr.expA_bg1(Pexp)=NaN;
+BRW_tr.expA_br0=[];
+BRW_tr.expA_br1=[];
 BRW_tr.expA_gr0=[];
-BRW_tr.expA_bgAE=[];
-BRW_tr.expA_brAE=[];
-BRW_tr.expA_grAE=[];
+BRW_tr.expA_gr1=[];
+% BRW_tr.expA_bgAE=[]; %[output:7b24b1ba]
+% BRW_tr.expA_brAE=[];
+% BRW_tr.expA_grAE=[];
 
 % exp S do the trend analysis with and without Aug 1993-Nov 1997 and compare the results for the full period and if there is a clear change in the 10y trends.
 %%
@@ -454,17 +481,22 @@ BRW_tr.expA_grAE=[];
 BRW_tr.BbsFb0=[];
 BRW_tr.BbsFr0=[];
 BRW_tr.BbsFb1=[];
-BRW_tr.BbsFg1=[];
+%BRW_tr.BbsFg1=[];
 BRW_tr.BbsFr1=[];
 
-
 %%
-[BRW_result_MK,BRW_result_LMSlog,BRW_result_LMSlin]=all_trend_STN(BRW_tr,BRW_st); %[output:1a6d931d] %[output:90bf4018] %[output:74accf82] %[output:8f6a210b] %[output:02c66054] %[output:275fae0b] %[output:68a84860] %[output:0e5e2927] %[output:6b329859] %[output:21853660] %[output:0ffe934c] %[output:8a0916d6] %[output:9d73ce37] %[output:633ef791] %[output:3c5fe4a0] %[output:47f9d4f4] %[output:3eb703dd] %[output:5dcd7821] %[output:27d03b35] %[output:1c17ca5d] %[output:767ec57e] %[output:806deac2] %[output:5d1ca422] %[output:0b31e208] %[output:60d29154] %[output:0087bb11] %[output:4ef60291] %[output:83b3a347] %[output:10f020f8] %[output:2aaaaf09] %[output:6b601709] %[output:4002a337] %[output:0da292be] %[output:34c77553] %[output:3f5cfa6a] %[output:2250e661] %[output:71f1d760] %[output:82b16049] %[output:32ca3c35] %[output:90a4cce6] %[output:862eeea8] %[output:78254fee] %[output:5af536c2] %[output:93e2212e] %[output:8d19b7b3] %[output:2856bd3b] %[output:564b1669] %[output:2f3e2c66] %[output:29e927b8] %[output:3813a8dc] %[output:2e2d94fb] %[output:4fb1dd73] %[output:590060cf] %[output:413172ea] %[output:29a3859e] %[output:484a7bec] %[output:6ed9ef45] %[output:1a6e0101] %[output:846b7d01] %[output:000e549e] %[output:1da35d86] %[output:82f20aa6] %[output:3d3b876c] %[output:31a277a7] %[output:8fe07ccf] %[output:40b2d253] %[output:17d1c91c] %[output:6f86febd] %[output:8e0ed078] %[output:7b911553] %[output:298ec69e] %[output:4ee779b1] %[output:248e1962] %[output:83bf22a4] %[output:84060908] %[output:08155abe] %[output:73710e2c] %[output:018dd32d] %[output:44d899d4] %[output:67388040] %[output:22a309cc] %[output:00e838d8] %[output:85d54d6a] %[output:993ae445] %[output:9b31a73d] %[output:36662d89] %[output:01d4841b] %[output:15201ad6] %[output:95d59e56] %[output:5cb5ef92] %[output:4a70d0e1] %[output:86b42ed4] %[output:1fd14807] %[output:34595fc6] %[output:938ffa44] %[output:44402cdf] %[output:01d04c02] %[output:7134ed46] %[output:9039e061] %[output:5ed933b6] %[output:565c79b9] %[output:7e2689a8] %[output:06e6c066] %[output:4171e70b] %[output:494ede43] %[output:7b004c68] %[output:874d8ec0] %[output:2dda597b] %[output:3ada91c6] %[output:128525a5] %[output:024dd3c2] %[output:9becd61c] %[output:348171fb] %[output:340be5b7] %[output:4c73e2a6] %[output:5b500bbc] %[output:93b6cf28] %[output:6c7e4d1e] %[output:937e65fa] %[output:9f12749d] %[output:14fedef7] %[output:7f8f71b8] %[output:43df0a2b] %[output:32d5edea] %[output:1568a178] %[output:393188c0] %[output:0e6bd3c2] %[output:3c75499d] %[output:92f7e111] %[output:32dc71af] %[output:87da0cfe] %[output:46e9006d] %[output:0f549bfe] %[output:5d19fc14] %[output:44484d29] %[output:13089376] %[output:1008e3de] %[output:0dfad22a] %[output:9e8c34ca] %[output:30f45b9b] %[output:51d0b936] %[output:89715877] %[output:0dc7802e] %[output:10733847] %[output:2b710032] %[output:5d5d6928] %[output:3753ca58] %[output:18baf1f7] %[output:8c3bab3d] %[output:65ff9912] %[output:6e9923ff] %[output:48540a2b] %[output:8db3c968] %[output:38ea5b7c] %[output:32e97787] %[output:2ff26752] %[output:42dc50e6] %[output:41376bf1] %[output:907db972] %[output:7981fd14] %[output:0b36dba7] %[output:34d214c2] %[output:5c93efdd] %[output:36b55a29] %[output:5d5bbf8d] %[output:4b16883e] %[output:7cbe1379] %[output:4d89d53b] %[output:9397a265] %[output:1b83538f] %[output:9bd1108c] %[output:93686c5b] %[output:860dd88f] %[output:1c489307] %[output:367decd9] %[output:546b111d] %[output:51142b55] %[output:8213be0b] %[output:90dc90d3] %[output:65f88126] %[output:5c0d4dc4] %[output:66e55553] %[output:3ce0b691] %[output:12129d59] %[output:95063375] %[output:2b869b28] %[output:031c6712] %[output:7cc6f0d7] %[output:0cc5f808] %[output:04817980] %[output:3080e591] %[output:95524bbf] %[output:54710bbd] %[output:9d06bcf8] %[output:077691bc] %[output:29b4bdd7] %[output:32035ee5] %[output:01853600] %[output:658072e6] %[output:2801f0a5] %[output:372b2fea] %[output:5554bccb] %[output:506bae5c] %[output:9126c750] %[output:4b24bfa1] %[output:89a59519] %[output:3494b737] %[output:2d1feeca] %[output:2ff4a3ca] %[output:6762415e] %[output:3e35ec14] %[output:96cdf2f1] %[output:5adb1609] %[output:89bbea40] %[output:8e63cdb7] %[output:585421c9] %[output:8a948b09] %[output:200ea141] %[output:8c92ee02] %[output:982c46b4] %[output:8f8834a4] %[output:704156ac] %[output:6a4c0247] %[output:47f151da] %[output:9d21ca6a] %[output:7fc53de5] %[output:772f5af7] %[output:7b54119c] %[output:51559519] %[output:69e42c04] %[output:3186ce1b] %[output:47547439] %[output:8e6bc093] %[output:9d134474] %[output:47231f80] %[output:2c0a50bc] %[output:078c1650] %[output:9d65e458] %[output:2c761628] %[output:62f1bbf8] %[output:59148269] %[output:9dce30cb] %[output:78ed7ead] %[output:4c07a296] %[output:06dc8a2f] %[output:445548e3] %[output:19eeab58] %[output:40debe50] %[output:544a3c5c] %[output:75ffc104] %[output:37c3ae91] %[output:67d65a07] %[output:196d887a] %[output:9809bce7] %[output:79fc8e81] %[output:34c31025] %[output:36558d63] %[output:4c536d58] %[output:2f1bc288] %[output:5f4a0cfc] %[output:3164b319] %[output:37e44cc3] %[output:062bea41] %[output:8a2e83b3] %[output:596aaa7e] %[output:05ede065] %[output:8d42046a] %[output:4ec52aa6] %[output:8d511a73] %[output:997613bb] %[output:6688afbb] %[output:4135bf82] %[output:26c9cd1d] %[output:2895fcf6] %[output:62d2836f] %[output:0ee813cc] %[output:142b0a16] %[output:67f38a16] %[output:34ac7265] %[output:4e51d712] %[output:64fe1588] %[output:3c2330cf] %[output:2a4c696d] %[output:6b30af8a] %[output:4fbb3e67] %[output:04e78057] %[output:4b6c3002] %[output:3024b889] %[output:43a1badd] %[output:481b0c93] %[output:3f3232c5] %[output:4cb41de4] %[output:213e149e] %[output:99a27963] %[output:59bca9f1] %[output:1edc1436] %[output:92e45a27] %[output:89a9978e] %[output:43a98f96] %[output:711bbcda] %[output:79e15497] %[output:19adfb2f] %[output:5637d336] %[output:7e671f54] %[output:12cdf73d] %[output:3bbddfad] %[output:76b100fe] %[output:390ccf2a] %[output:4469a233] %[output:30d4e6d7] %[output:713edae2] %[output:6dd81bf8] %[output:141220f3] %[output:06416cbf] %[output:3b25ddc8] %[output:313fa6c8] %[output:912241b9] %[output:14d949d6] %[output:64b1e93d] %[output:931bd380] %[output:4ad24684] %[output:233226df] %[output:9df1d2c2] %[output:9ab07325] %[output:216a19f9] %[output:7f6044e1] %[output:4a1f7854] %[output:8e9ee41e] %[output:7992a999] %[output:7b8ce3f5] %[output:8d883bbc] %[output:84193af1] %[output:297ca220] %[output:17703273] %[output:6d2fb422] %[output:831976a5] %[output:113f7888] %[output:233d1d1b] %[output:59c6040d] %[output:5b3e15e8] %[output:7400dfd6] %[output:801873b6] %[output:5c3fb85d] %[output:0ee00466] %[output:661c10e9] %[output:278dc67f] %[output:612d2e14] %[output:8a31ff0f] %[output:137e2f57] %[output:96b7b375] %[output:175c0342] %[output:7bf2a46a] %[output:325839f9] %[output:03ac8eff] %[output:9c6667b5] %[output:795d3d1f] %[output:22b85d3a] %[output:918473fb] %[output:11001239] %[output:984e4182] %[output:639ee66e] %[output:8b67ce71] %[output:9e78f5c5] %[output:56059f9f] %[output:87e9be89] %[output:6cb8b6ee] %[output:1d6c85c3] %[output:0dfe9da0] %[output:742b8293] %[output:7141f281] %[output:4afc3452] %[output:2623bc39] %[output:7fc0485c] %[output:4fb6c006] %[output:8561cd64] %[output:20d39efb] %[output:11431d9f] %[output:048e97ef] %[output:1852498f] %[output:9143a6f4] %[output:3380886d] %[output:47ffb32b] %[output:8588c821] %[output:135e38ff] %[output:454c7f7d] %[output:879c56fe] %[output:111bca2d] %[output:751c5705] %[output:5208834f] %[output:76b6c351] %[output:8bb63f0f] %[output:94b3a58d] %[output:8ce8b5ab] %[output:4bf4381a] %[output:79d6160f] %[output:969ef301] %[output:3773d76c] %[output:6dd507d9] %[output:9b0c1f72] %[output:2efecd0c] %[output:7599f9c9] %[output:0b9cde16] %[output:1cf8bdfa] %[output:8a595b1b] %[output:7c96b513] %[output:42879679] %[output:18d08194] %[output:0ec79177] %[output:27737cda] %[output:3b8b3559] %[output:7d2f958a] %[output:93559b24] %[output:470c9215] %[output:59c56c76] %[output:5237cd0e] %[output:508a7a92] %[output:4255bcda] %[output:7ec81959] %[output:0ade710f] %[output:5443e0d6] %[output:6c9e2418] %[output:875fd8b2] %[output:8b235608] %[output:3c8a13af] %[output:3e48f01d] %[output:3051d908] %[output:6b4dbad1] %[output:5644bfec] %[output:6c66ba1a] %[output:153e65a5] %[output:6e50782e] %[output:95bd2060] %[output:357ff63e] %[output:00b81aeb] %[output:12b8c40f] %[output:01d1f83d] %[output:33d2d9e1] %[output:6db989f8] %[output:25e66804] %[output:457f4c1a] %[output:7d574454] %[output:0db7d784] %[output:454b51c7] %[output:5c73b87f] %[output:39652ade] %[output:74357a07] %[output:5b2412d9] %[output:0903c4a8] %[output:234929f7] %[output:070a795f] %[output:99479e13] %[output:103d094a] %[output:0404a91a] %[output:4fa9468e] %[output:0bde47ba] %[output:85260890] %[output:10db9db0] %[output:4cdc6a3c] %[output:81963189] %[output:4b4c6db2] %[output:64f5ee8e] %[output:13139e4b] %[output:16cbb4eb] %[output:21ba8c85] %[output:3d0fb04c] %[output:8f126aca] %[output:8a2da152] %[output:311a487c] %[output:2170f141] %[output:6bddefc7] %[output:0da5f4ac] %[output:0817b4ed] %[output:0ee7b693] %[output:7a52dac7] %[output:7c16d95e] %[output:5195e48f] %[output:15c2e6a7] %[output:5d9bd20f] %[output:198efaba] %[output:80284d00] %[output:72e2ba8b] %[output:1835e793] %[output:4531b12e] %[output:1c381965] %[output:224b96be] %[output:635c9b22] %[output:445df048] %[output:6c09b771] %[output:80cf8149] %[output:3daa6ac9] %[output:90bb9036] %[output:758fd6f2] %[output:753ef725] %[output:7094ccf5] %[output:1ac20262] %[output:2169675d] %[output:187dec53] %[output:38b46c11] %[output:5c1cb559] %[output:7350707f] %[output:66461452] %[output:7cc48811] %[output:5b14209d] %[output:5b1610ef] %[output:112c2587] %[output:4de3aadc] %[output:008a21ee] %[output:43ad4fa1] %[output:4edaac14] %[output:8b903865] %[output:4d7cd259] %[output:15800c7c] %[output:6e9948b2] %[output:6f14ceca] %[output:883a501b] %[output:3c12e34d] %[output:7cb08fa9] %[output:469bc765] %[output:34071e90] %[output:0fadc2a5] %[output:97f618c7] %[output:1e270ebf] %[output:15b7c972] %[output:1d29dfc8] %[output:6a45d3fe] %[output:7c48b797] %[output:7a26972b] %[output:98a0eeee] %[output:1e52ecfd] %[output:34858ae1] %[output:6a5ad6af] %[output:1ccf8032] %[output:29198aa4] %[output:453264d7] %[output:6652ff6b] %[output:663158e8] %[output:833d3a1e] %[output:52afc33b] %[output:9965b3a1] %[output:65f3b8c0] %[output:4b734d75] %[output:8aa73ebc] %[output:99527e6a] %[output:8c00a7e1] %[output:82bf6ca1] %[output:83e751ea] %[output:959448c9] %[output:6046acdb] %[output:6d234253] %[output:2ab8be3f] %[output:9cfffedf] %[output:91fbd516] %[output:1ede8235] %[output:697cf7a9] %[output:547b319e] %[output:18430d68] %[output:16b30a3e] %[output:941a5882] %[output:3380b4bb] %[output:788649f7] %[output:1f54f3f4] %[output:06b5f3b9] %[output:2b2ef57a] %[output:1d6f898f] %[output:213aae46] %[output:22932d90] %[output:8f82340c] %[output:2f29075a] %[output:6b48a3f5] %[output:9c4369be] %[output:11a0a64f] %[output:5157b02b] %[output:9d6b948c] %[output:25fe6413] %[output:8386dd71] %[output:413d058a] %[output:3550837e] %[output:75fa8c8d] %[output:80ebbb5f] %[output:1aa4d602] %[output:12ea44e3] %[output:9a332fd1] %[output:091957ad] %[output:04d88352] %[output:2c6fb989] %[output:9f5e9c1d] %[output:72da9bba] %[output:1a9ba36d] %[output:42f90fcb] %[output:1e8345eb] %[output:15513712] %[output:8e53c04b] %[output:4c92f5a4] %[output:30b4837a] %[output:597192b1] %[output:73cfa7ea] %[output:14a98fd7] %[output:19e6b3fd] %[output:70003f97] %[output:06c51ea5] %[output:6c8bd1a7] %[output:1a0bcace] %[output:90364ea7] %[output:0251823f] %[output:40bdd972] %[output:7a040431] %[output:6acadad0] %[output:63115f0c] %[output:0801b24e] %[output:6d34fbf6] %[output:472e405b] %[output:31966b1b] %[output:5acb435e] %[output:7dea8a02] %[output:62a11b41] %[output:8f4f19a8] %[output:0608e2c1] %[output:4a8413df] %[output:60e8ca5b] %[output:9dd9441c] %[output:9dbcc9ad] %[output:5dfab478] %[output:582e4a1e] %[output:92d880f0] %[output:7d6d374f] %[output:948cde65] %[output:81af6044] %[output:8634c476] %[output:2b693640] %[output:3bafc0c4] %[output:971d3b0c] %[output:9bbea782] %[output:0aa815a4] %[output:623202dc] %[output:9e71f5e3] %[output:7dafc6ec] %[output:456551ba] %[output:38a604db] %[output:960579c1] %[output:5f59913f] %[output:6cc418b9] %[output:0c4e9014] %[output:21cc769b] %[output:9f24076b] %[output:636f52e4] %[output:0d7ea755] %[output:5e89a2d3] %[output:2483172f] %[output:88df6649] %[output:6334f9b0] %[output:330ad32a] %[output:2dc7fc8e] %[output:21c0df7a] %[output:8bb5f7ea] %[output:3051a516] %[output:336c33ea] %[output:0a085ee4] %[output:3c466ec0] %[output:015cb391] %[output:4b57dd35] %[output:18ac3c72] %[output:0da4bf13] %[output:30acf795] %[output:8ac12db5] %[output:3e21333c] %[output:19130dd3] %[output:0ac06016] %[output:0025699a] %[output:4c969a4b] %[output:3205fcd6] %[output:721da8fd] %[output:8d366bc5] %[output:983aa819] %[output:3f0b16eb] %[output:88db5cc2] %[output:6a51fa74] %[output:75d9574e] %[output:7f438b82] %[output:0f331783] %[output:9dc5979e] %[output:235cad5d] %[output:58b620ec] %[output:7b41c513] %[output:2ddb25f2] %[output:5ab2fc80] %[output:2f71bef0] %[output:37cf23e7] %[output:295c7b54] %[output:61077f08] %[output:2e4725a3] %[output:50878f63] %[output:7abb99b8] %[output:4e23b6c7] %[output:4278e853] %[output:7c936736] %[output:26a8f37b] %[output:8afe35af] %[output:6f7c22ed] %[output:50dc6dab] %[output:4d6c376d] %[output:3d9c5eab] %[output:49c72875] %[output:84ee9072] %[output:218cf845] %[output:2d1a72fb] %[output:8ad5b377] %[output:48e441d5] %[output:365b2f9b] %[output:36d3706e] %[output:18b338aa] %[output:5cf97442] %[output:4863cf71] %[output:2c592f84] %[output:34dd8e79] %[output:586a6115] %[output:488fb4b4] %[output:87fce924] %[output:0b207c75] %[output:3675ed46] %[output:43170eda] %[output:3251e38d] %[output:66d74be0] %[output:68b65577] %[output:7384198f] %[output:5ce446de] %[output:7698e34c] %[output:4474b738] %[output:191152a0] %[output:122b0f3b] %[output:5b03e27b] %[output:3e4b2265] %[output:2e2ff7bd] %[output:3965d6bd] %[output:0ffb08e2] %[output:2c147e00] %[output:34fde0c9] %[output:21ae4975] %[output:10b9104d] %[output:6566c6a0] %[output:5f904590] %[output:79bf07a8] %[output:0186dc17] %[output:363c88f7] %[output:36b180fc] %[output:58d87de9] %[output:8387a974] %[output:52c9e2c7] %[output:1831ac8b] %[output:66b7fcea] %[output:61607279] %[output:682774aa] %[output:28ced20c] %[output:752a74f9] %[output:6b516c0a] %[output:4094f7b9] %[output:506ff6e7] %[output:9336c533] %[output:8a8a2ede] %[output:967d09b3] %[output:8d5180de] %[output:74344efb] %[output:21aaddf9] %[output:71e11d2c] %[output:2d10f7e3] %[output:54be5c90] %[output:660ef67e] %[output:3398924f] %[output:169784af] %[output:56970fba] %[output:06b0e977] %[output:8a77ba81] %[output:4722ddaf] %[output:4e6de565] %[output:6a74debd] %[output:842a63d5] %[output:1d183d89] %[output:40de2c29] %[output:475024df] %[output:3a5a4286] %[output:76076ca3] %[output:8912acf4] %[output:0aefa498] %[output:2532de9b] %[output:6fa36ea3] %[output:8ceeb71c] %[output:80b37eb0] %[output:9417dabe] %[output:5a8c7a5d] %[output:87b7195e] %[output:8b698fa3] %[output:0dfda2b9] %[output:6c5ac0d7] %[output:1c185aa0] %[output:053ef558] %[output:7f12dde5] %[output:2e288b62] %[output:2edbd576] %[output:714aef69] %[output:49946398] %[output:7b78cc28] %[output:803b4b5d] %[output:7a4a7201] %[output:9327ad9a] %[output:1dabecb7] %[output:941aa8b6] %[output:93e78f5d] %[output:1448401d] %[output:49aab42f] %[output:4664b6ae] %[output:387f045f] %[output:24371ede] %[output:6cfb6040] %[output:3537b91a] %[output:0dcc4ea3] %[output:06638abe] %[output:88c538af] %[output:2462298d] %[output:4ef77851] %[output:8d5ffc95] %[output:0d81dbe2] %[output:0b080ef5] %[output:51290129] %[output:58623409] %[output:47d2303a] %[output:7c9fb410] %[output:2e7ed239] %[output:248e63cc] %[output:8638c5a2] %[output:6b284375] %[output:64c0ff0e] %[output:594ca13c] %[output:624d246b] %[output:2b0f3cfa] %[output:89588526] %[output:2505a68f] %[output:6e72b5f4] %[output:2f950a37] %[output:49dc6a9d] %[output:52f25e5a] %[output:92e68211] %[output:4b448e58] %[output:9f7c6739] %[output:7443477a] %[output:8027f5df] %[output:0a2a7959] %[output:9c60dee2] %[output:91c3db57] %[output:4f71c328] %[output:20a37044] %[output:4d127a48] %[output:4a03cd28] %[output:5aae1920] %[output:77fb2d40] %[output:18e5ffad] %[output:39dfb265] %[output:5caeece6] %[output:2c8dc615] %[output:07fd2a8d] %[output:6d4e90cc] %[output:0a545acc] %[output:8f37d48b] %[output:9f6022a0] %[output:275a974c] %[output:1f36175b] %[output:5906e80b] %[output:887499bc] %[output:1c4aea40] %[output:2793d475] %[output:1edb9035] %[output:6c7ae58d] %[output:3eb66204] %[output:0e363b82] %[output:6e92393d] %[output:11ccbdfa] %[output:587529f3] %[output:570e88e7] %[output:3900e64a] %[output:3575c0f9] %[output:2ad760b2] %[output:38cf78ae] %[output:0225c240] %[output:6a0488ba] %[output:4698c34d] %[output:89f194b4] %[output:7b7682da] %[output:31754962] %[output:2fbe3fed] %[output:2e2db140] %[output:12f9ea2b] %[output:16bbe101] %[output:31342d67] %[output:8e099250] %[output:82f43d66] %[output:68ac73ea] %[output:34721f8a] %[output:5942e1fe] %[output:006fe226] %[output:22545626] %[output:48cd084e] %[output:585bfd8c] %[output:1f6aef5e] %[output:2e2d6192] %[output:7557f411] %[output:95b6eee4] %[output:334cb600] %[output:20d579e6] %[output:254a64c0] %[output:13e374fe] %[output:4dd2fc4d] %[output:0855a80a] %[output:89775020] %[output:4faf8252] %[output:792b81d4] %[output:7155133c] %[output:58181a86] %[output:3c5bc103] %[output:4e1cfb09] %[output:1924c3bb] %[output:57f5f2e6] %[output:95d5428b] %[output:8bf89b19] %[output:4ddc9a86] %[output:6175de95] %[output:39fe8ddb] %[output:27c2871d] %[output:1837d5e0] %[output:7f25e7ac] %[output:0c2d92df] %[output:554cc82c] %[output:127911b7] %[output:29ac48cd] %[output:574e224b] %[output:45a4b885] %[output:7de238d1] %[output:4c7678b3] %[output:63c95266] %[output:2e8866ad] %[output:259a3e07] %[output:99abc3bc] %[output:87eaa7ef] %[output:85a3b8df] %[output:292ea369] %[output:92156ff3] %[output:2706e187] %[output:9fc54de2] %[output:597c3bd7] %[output:5ce550ef] %[output:2b2bdb07] %[output:5fb95bb7] %[output:1c1f91d3] %[output:88ecc3d7] %[output:6ce147c2] %[output:5f2f7ac8] %[output:93fe0ded] %[output:3b9f216d] %[output:5f667f47] %[output:5e2fa66c] %[output:2c58805a] %[output:83b4a87b] %[output:17d0ba2a] %[output:3f1f6d78] %[output:337611aa] %[output:66b4883d] %[output:8721a920] %[output:1d1581b1] %[output:60705e91] %[output:1cf2a9b5] %[output:516360a2] %[output:938e7d01] %[output:59b8d9ba] %[output:80e8f246] %[output:1950cda8] %[output:9a480775] %[output:976ba4c2] %[output:571549bb] %[output:4d5ebce1] %[output:822f0fdf] %[output:7bfd20d4] %[output:82c8b830] %[output:6a6f7ea2] %[output:34e17c9e] %[output:4ae1df08] %[output:8612d969] %[output:507d9e89] %[output:27533850] %[output:42aff600] %[output:2808f36b] %[output:1c1fd27c] %[output:0c83caf3] %[output:5be3ca54] %[output:88fda62e] %[output:77fb56cf] %[output:25ae451a] %[output:142011d3] %[output:149100a6] %[output:37a85aad] %[output:84cfd9d8] %[output:09cee69c] %[output:8792c568] %[output:9933e756] %[output:419746f4] %[output:79f87bf1] %[output:31b9d295] %[output:73151e9b] %[output:3969725e] %[output:6334ea98] %[output:00fb1fa9] %[output:4b8fcaa5] %[output:8b3d7c14] %[output:558d621c] %[output:62c51fd5] %[output:149ad87d] %[output:183cdfc6] %[output:73e4db2b] %[output:01a55b95] %[output:035add23] %[output:693605fe] %[output:8cdc2a0a] %[output:0ca93415] %[output:9553fce4] %[output:614b130b] %[output:3a5413b9] %[output:16f7fe47] %[output:3820925b] %[output:85d90bd8] %[output:9b26cc5a] %[output:75b252d4] %[output:5a30f061] %[output:84ad7612] %[output:2ebcbeb4] %[output:5b236c5b] %[output:1903177f] %[output:8b258047] %[output:12909183] %[output:49782fa3] %[output:49dc514c] %[output:26974022] %[output:16e80540] %[output:9213149d] %[output:16882105] %[output:49702400] %[output:93232c1a] %[output:20ffa0a1] %[output:16f84d9f] %[output:2cbbba97] %[output:20624876] %[output:47528640] %[output:44322dd4] %[output:52a7cbae] %[output:63b0d367] %[output:49be8e2b] %[output:2af5650f] %[output:9451822d] %[output:6ae73ee2] %[output:4fcee8dd] %[output:2a580ca8] %[output:393c3231] %[output:643bc4b2] %[output:451b5474] %[output:1e391f2b] %[output:29a99fc7] %[output:1ba3fb7a] %[output:91c5b0cb] %[output:1444427a] %[output:47034e22] %[output:77cce9d3] %[output:367bb50a] %[output:2bcf67b7] %[output:3a60695f] %[output:2c697b5a] %[output:6f3bbe72] %[output:21f632a2] %[output:13c77413] %[output:2f377d74] %[output:4be6877c] %[output:2bc77e66] %[output:9325c816] %[output:4459f20c] %[output:19803d9b] %[output:3aea5ef7] %[output:9d17b0a0] %[output:32b06ea8] %[output:831bf892] %[output:2b31a37d] %[output:2cdb3459] %[output:136f79ed] %[output:5490e1f0] %[output:797550e0] %[output:64978c26] %[output:54c675cf] %[output:46662cc7] %[output:457a8a73] %[output:3384717c] %[output:7c60e759] %[output:4ac55cb8] %[output:35d599c5] %[output:43bf38ba] %[output:770bc4c8] %[output:1f6ca1e1] %[output:1b2cfd90] %[output:1d2abde9] %[output:93151d9e] %[output:297189c7] %[output:134a2def] %[output:306ba9c8] %[output:65d6e7fb] %[output:03818a92] %[output:43c3bd7e] %[output:20ac780d] %[output:64547591] %[output:0828ae10] %[output:5a559b7e] %[output:9956869a] %[output:8e6ed4f4] %[output:645093b6] %[output:8e2234fc] %[output:06b92d0b] %[output:9047c90e] %[output:1fe031c4] %[output:1d2cbf9d] %[output:10e22b02] %[output:8e8e61eb] %[output:47b6c75e] %[output:3b262e29] %[output:54bc881e] %[output:64ead7e5] %[output:3de75cba] %[output:339585c1] %[output:5d38f3af] %[output:6d6ffd01] %[output:80e4e314] %[output:32b644ae] %[output:1d97f9c7] %[output:2941dc63] %[output:9c937f8c] %[output:0d577d2a] %[output:81d5fd03] %[output:98c2f4af] %[output:1093bee7] %[output:5f2679e1] %[output:74ec2644] %[output:69d38380] %[output:5b941da0] %[output:4f788cb6] %[output:4f4e71b4] %[output:12f2f3c8] %[output:9fce8c26] %[output:8e8acdd1] %[output:59e15eb0] %[output:62b3010b] %[output:5eabad07] %[output:4d2ce568] %[output:75696798] %[output:6afb3625] %[output:08d722eb] %[output:8c894d46] %[output:8429d51f] %[output:64b8861a] %[output:762dd105] %[output:4370906a] %[output:65bdfde5] %[output:1284b270] %[output:049bce27] %[output:5ec7eacd] %[output:2bd5c28d] %[output:64cf91d0] %[output:77bd1596] %[output:95c4cf8e] %[output:6e10772d] %[output:36cb4271] %[output:4432ddb3] %[output:318b240f] %[output:7c05cced] %[output:72691f80] %[output:29f350e8] %[output:6cccb46a] %[output:87053d98] %[output:90f70cbb] %[output:016de8a4] %[output:9be0c838] %[output:180fe098] %[output:9dc2d412] %[output:2d7488e6] %[output:64fd04d8] %[output:6adcddaa] %[output:3a65b52d] %[output:415f2770] %[output:262d8efe] %[output:161b01c6] %[output:2ca79f1f] %[output:1ecb8272] %[output:3806cca5] %[output:837753d3] %[output:9caa9acd] %[output:4b4fd6d8] %[output:3d115eb1] %[output:3bcb2e2d] %[output:698906f8] %[output:20d967a2] %[output:6b64e99d] %[output:134338bf] %[output:66d8092b] %[output:3ddad206] %[output:92a6b2b1] %[output:1be50e99] %[output:15341366] %[output:41c7f270] %[output:1cc42e2d] %[output:53ff2ee0] %[output:40f8d912] %[output:133a7222] %[output:50845773] %[output:34201cd3] %[output:07626141] %[output:600aaae9] %[output:0b18bfcb] %[output:4b98efdd] %[output:2908d658] %[output:7fbedf51] %[output:95794977] %[output:665a6e71] %[output:9a1b1d2e] %[output:216cc764] %[output:292d2644] %[output:2b697c46] %[output:31b41ca5] %[output:0506da1d] %[output:376c811a] %[output:488acef2] %[output:5cc8013d] %[output:0ff8c225] %[output:0724480f] %[output:235421d5] %[output:74f91fec] %[output:1c08d450] %[output:09afa47c] %[output:27b24d5f] %[output:3706599c] %[output:63019134] %[output:4b482c6e] %[output:47388617] %[output:4e851a44] %[output:27e50fef] %[output:448b63c3] %[output:4d63c7e0] %[output:08aa47d4] %[output:6d77c0d0] %[output:5db06ee2] %[output:59c85068] %[output:1c0712a6] %[output:0d629e19] %[output:6a6f634c] %[output:4132c1bb] %[output:45f9817a] %[output:640f8f1a] %[output:8ca598ed] %[output:759f3d8a] %[output:82089c30] %[output:5a3ee51e] %[output:7874c0ef] %[output:6a3aaa28] %[output:41fc1ba2] %[output:5b4f39bb] %[output:04f7f0cc] %[output:1e4e55ab] %[output:973717c7] %[output:4dec8759] %[output:8e9efc3b] %[output:6904849e] %[output:4946c2e5] %[output:8c6051ca] %[output:0951f871] %[output:15164b74] %[output:5a076e2f] %[output:020d1bbe] %[output:8fa77a60] %[output:96472f79] %[output:999ea3ab] %[output:025f8052] %[output:0b841185] %[output:23431ee5] %[output:1f1f4fc8] %[output:698074dc] %[output:4bf87e74] %[output:1623a8bf] %[output:31664ea2] %[output:26dd6d91] %[output:4b82ecf0] %[output:7aa0429e] %[output:33414c29] %[output:9ea249f3] %[output:1e15d10c] %[output:3fdedfa2] %[output:4a1dd1d8] %[output:8b95b246] %[output:14c2dd07] %[output:0876fae4] %[output:08d1e8d6] %[output:415c56cd] %[output:5708f700] %[output:86d52a14] %[output:3675ed81] %[output:28ce86f7] %[output:409b82bb] %[output:59b5e8bb] %[output:7570c643] %[output:69a79924] %[output:9ffd4381] %[output:39cb4046] %[output:7e5b1f12] %[output:46078d26] %[output:32350b6c] %[output:1126984d] %[output:611eb2e6] %[output:4bbdc540] %[output:5207df31] %[output:30055fa1] %[output:2373c263] %[output:3eb2ea88] %[output:45cdad1f] %[output:0af0c331] %[output:311128d8] %[output:08004ff4] %[output:742655d8] %[output:9e22d5b4] %[output:6044389a] %[output:4a20a12b] %[output:4de3e458] %[output:0975e141] %[output:6780b77f] %[output:343a86fd] %[output:82787bfe] %[output:7d4941d1] %[output:9d6748ca] %[output:33d34aaa] %[output:614a4538] %[output:55a82622] %[output:3f0a7ced] %[output:6fad765a] %[output:77ff3e93] %[output:3b03efe3] %[output:3646c97c] %[output:80b8fc47] %[output:78ab6f4b] %[output:08e32479] %[output:1e66b98f] %[output:38190043] %[output:38bb8c11] %[output:7811609c] %[output:82c8d038] %[output:8071b92e] %[output:8861bee4] %[output:03fda433] %[output:0861bfb8] %[output:09063253] %[output:38721af6] %[output:3878f7e8] %[output:61ea03b5] %[output:815ed6c6] %[output:41e2b519] %[output:49867fe3] %[output:3ac276c6] %[output:3f7ed5f3] %[output:0f01b1d9] %[output:51ead3b8] %[output:6954b36c] %[output:5eacbc6b] %[output:160eb0ef] %[output:70e85d0b] %[output:11acf8d2] %[output:4af6e2ee] %[output:4e997625] %[output:57109d9f] %[output:9014a0eb] %[output:5bbfa668] %[output:57aa0885] %[output:4823c304] %[output:4ce2860f] %[output:112a2c68] %[output:8e622b17] %[output:8138c763] %[output:98bf3f39] %[output:43a0ec4d] %[output:74bf838c] %[output:905c740a] %[output:158387e2] %[output:536df220] %[output:300f1eed] %[output:0c4ef80f] %[output:9304604c] %[output:196a9d10] %[output:46792483] %[output:37dba0d6] %[output:5fba7732] %[output:931b9515] %[output:734fb0ff] %[output:430e41ef] %[output:4ae5c49d] %[output:05a948ca] %[output:2beff939] %[output:1494941a] %[output:6d1544b8] %[output:4e83da6a] %[output:36736ebc] %[output:0ff5d822] %[output:3001f108] %[output:6eb06652] %[output:06160112] %[output:95c57c56] %[output:8c336f53] %[output:84290eb6] %[output:961d2d14] %[output:4bf02bcf] %[output:130d1473] %[output:5a28f104] %[output:17f8ba08] %[output:72771ad5] %[output:04da8cdc] %[output:4792d246] %[output:1379829e] %[output:2e096717] %[output:06615686] %[output:96b5604a] %[output:3a00294e] %[output:2be47f69] %[output:419be82b] %[output:4941d267] %[output:25fad3b3] %[output:1fe1a0ff] %[output:6ecd3117] %[output:31278e7c] %[output:976d4914] %[output:4a0aa4e3] %[output:463941c3] %[output:465729e7] %[output:3a654664] %[output:8368355e] %[output:9f8e31b5] %[output:97c13263] %[output:20ed1d48] %[output:41b33526] %[output:098163de] %[output:35f2d269] %[output:092ad1d4] %[output:67de3cc1] %[output:67c33165] %[output:920781d3] %[output:751c01f8] %[output:767fba1a] %[output:6d5cf8e8] %[output:88b98ccb] %[output:51acdd25] %[output:51f52304] %[output:4df58246] %[output:667645a4] %[output:333395fb] %[output:3cde3f37] %[output:02c0e161] %[output:2d18ebc1] %[output:2b78fa34] %[output:5846c457] %[output:5d317eb2] %[output:3da0030d] %[output:8f342e70] %[output:5921627a] %[output:2bb36146] %[output:74a00d3a] %[output:010de11b] %[output:1ca71d03] %[output:2ff7198c] %[output:3dbdefee] %[output:0ba9db33] %[output:82a4b16c] %[output:031ad614] %[output:8f755101] %[output:1c0bd465] %[output:8ee9e4a4] %[output:1b2792a1] %[output:2755528e] %[output:10f13a7d] %[output:50cf9a75] %[output:15e7d571] %[output:381d2c15] %[output:3ced0cd2] %[output:3034305f] %[output:6c9d9f9d] %[output:426c7b1f] %[output:7c9dfbc0] %[output:190b393c] %[output:74db290e] %[output:51974500] %[output:714530bf] %[output:6e4e60ed] %[output:15899809] %[output:333aefcc] %[output:71443a11] %[output:683b1ab2] %[output:4d02dcc1] %[output:5351b481] %[output:3deb909c] %[output:7d103324] %[output:1ae545aa] %[output:866198af] %[output:70023555] %[output:6404b111] %[output:8a6f2990] %[output:7bd9e406] %[output:0468ee64] %[output:4ec439ed] %[output:97afa3a5] %[output:0f886cb8] %[output:2ab8675c] %[output:21cc4258] %[output:8d4b1693] %[output:9700c28a] %[output:37ed52b2] %[output:6cd0d63d] %[output:06801188] %[output:8a77a511] %[output:76bb44b7] %[output:398ac965] %[output:55574715] %[output:5dc3be4b] %[output:6cbed04f] %[output:1c2d0c14] %[output:0858d5bf] %[output:1957b074] %[output:00160ca7] %[output:2231c7a9] %[output:6349738e] %[output:26d81c93] %[output:25138e8c] %[output:7d7e0380] %[output:7a5c39ca] %[output:453199f1] %[output:51dfbb4a] %[output:74f8b9e3] %[output:862b215d] %[output:8e3e4e8b] %[output:06bc1bb1] %[output:794f529f] %[output:0f1a0b54] %[output:3b33ae72] %[output:2dac6c13] %[output:45f25bc9] %[output:37771f7c] %[output:8d42183d] %[output:5c1f4605] %[output:82375a87] %[output:9779c5d3] %[output:4901e2f8] %[output:99d4fe90]
+% 27.8. too  many variables I don't know why
+BRW_tr.BsB0_S1S10=[];
+BRW_tr.BsG0_S3S30=[]; %[output:96dde337]
+BRW_tr.BsB1_S11=[];
+BRW_tr.BsR1_S11=[];
+%%
+[BRW_result_MK,BRW_result_LMSlog,BRW_result_LMSlin]=all_trend_STN(BRW_tr,BRW_st); %[output:1a6d931d] %[output:90bf4018] %[output:74accf82] %[output:8f6a210b] %[output:02c66054] %[output:275fae0b] %[output:68a84860] %[output:0e5e2927] %[output:6b329859] %[output:21853660] %[output:0ffe934c] %[output:8a0916d6] %[output:9d73ce37] %[output:633ef791] %[output:3c5fe4a0] %[output:47f9d4f4] %[output:3eb703dd] %[output:5dcd7821] %[output:27d03b35] %[output:1c17ca5d] %[output:767ec57e] %[output:806deac2] %[output:5d1ca422] %[output:0b31e208] %[output:60d29154] %[output:0087bb11] %[output:4ef60291] %[output:83b3a347] %[output:10f020f8] %[output:2aaaaf09] %[output:6b601709] %[output:4002a337] %[output:0da292be] %[output:34c77553] %[output:3f5cfa6a] %[output:2250e661] %[output:71f1d760] %[output:82b16049] %[output:32ca3c35] %[output:90a4cce6] %[output:862eeea8] %[output:78254fee] %[output:5af536c2] %[output:93e2212e] %[output:8d19b7b3] %[output:2856bd3b] %[output:564b1669] %[output:2f3e2c66] %[output:29e927b8] %[output:3813a8dc] %[output:2e2d94fb] %[output:4fb1dd73] %[output:590060cf] %[output:413172ea] %[output:29a3859e] %[output:484a7bec] %[output:6ed9ef45] %[output:1a6e0101] %[output:846b7d01] %[output:000e549e] %[output:1da35d86] %[output:82f20aa6] %[output:3d3b876c] %[output:31a277a7] %[output:8fe07ccf] %[output:40b2d253] %[output:17d1c91c] %[output:6f86febd] %[output:8e0ed078] %[output:7b911553] %[output:298ec69e] %[output:4ee779b1] %[output:248e1962] %[output:83bf22a4] %[output:84060908] %[output:08155abe] %[output:73710e2c] %[output:018dd32d] %[output:44d899d4] %[output:67388040] %[output:22a309cc] %[output:00e838d8] %[output:85d54d6a] %[output:993ae445] %[output:9b31a73d] %[output:36662d89] %[output:01d4841b] %[output:15201ad6] %[output:95d59e56] %[output:5cb5ef92] %[output:4a70d0e1] %[output:86b42ed4] %[output:1fd14807] %[output:34595fc6] %[output:938ffa44] %[output:44402cdf] %[output:01d04c02] %[output:7134ed46] %[output:9039e061] %[output:5ed933b6] %[output:565c79b9] %[output:7e2689a8] %[output:06e6c066] %[output:4171e70b] %[output:494ede43] %[output:7b004c68] %[output:874d8ec0] %[output:2dda597b] %[output:3ada91c6] %[output:128525a5] %[output:024dd3c2] %[output:9becd61c] %[output:348171fb] %[output:340be5b7] %[output:4c73e2a6] %[output:5b500bbc] %[output:93b6cf28] %[output:6c7e4d1e] %[output:937e65fa] %[output:9f12749d] %[output:14fedef7] %[output:7f8f71b8] %[output:43df0a2b] %[output:32d5edea] %[output:1568a178] %[output:393188c0] %[output:0e6bd3c2] %[output:3c75499d] %[output:92f7e111] %[output:32dc71af] %[output:87da0cfe] %[output:46e9006d] %[output:0f549bfe] %[output:5d19fc14] %[output:44484d29] %[output:13089376] %[output:1008e3de] %[output:0dfad22a] %[output:9e8c34ca] %[output:30f45b9b] %[output:51d0b936] %[output:89715877] %[output:0dc7802e] %[output:10733847] %[output:2b710032] %[output:5d5d6928] %[output:3753ca58] %[output:18baf1f7] %[output:8c3bab3d] %[output:65ff9912] %[output:6e9923ff] %[output:48540a2b] %[output:8db3c968] %[output:38ea5b7c] %[output:32e97787] %[output:2ff26752] %[output:42dc50e6] %[output:41376bf1] %[output:907db972] %[output:7981fd14] %[output:0b36dba7] %[output:34d214c2] %[output:5c93efdd] %[output:36b55a29] %[output:5d5bbf8d] %[output:4b16883e] %[output:7cbe1379] %[output:4d89d53b] %[output:9397a265] %[output:1b83538f] %[output:9bd1108c] %[output:93686c5b] %[output:860dd88f] %[output:1c489307] %[output:367decd9] %[output:546b111d] %[output:51142b55] %[output:8213be0b] %[output:90dc90d3] %[output:65f88126] %[output:5c0d4dc4] %[output:66e55553] %[output:3ce0b691] %[output:12129d59] %[output:95063375] %[output:2b869b28] %[output:031c6712] %[output:7cc6f0d7] %[output:0cc5f808] %[output:04817980] %[output:3080e591] %[output:95524bbf] %[output:54710bbd] %[output:9d06bcf8] %[output:077691bc] %[output:29b4bdd7] %[output:32035ee5] %[output:01853600] %[output:658072e6] %[output:2801f0a5] %[output:372b2fea] %[output:5554bccb] %[output:506bae5c] %[output:9126c750] %[output:4b24bfa1] %[output:89a59519] %[output:3494b737] %[output:2d1feeca] %[output:2ff4a3ca] %[output:6762415e] %[output:3e35ec14] %[output:96cdf2f1] %[output:5adb1609] %[output:89bbea40] %[output:8e63cdb7] %[output:585421c9] %[output:8a948b09] %[output:200ea141] %[output:8c92ee02] %[output:982c46b4] %[output:8f8834a4] %[output:704156ac] %[output:6a4c0247] %[output:47f151da] %[output:9d21ca6a] %[output:7fc53de5] %[output:772f5af7] %[output:7b54119c] %[output:51559519] %[output:69e42c04] %[output:3186ce1b] %[output:47547439] %[output:8e6bc093] %[output:9d134474] %[output:47231f80] %[output:2c0a50bc] %[output:078c1650] %[output:9d65e458] %[output:2c761628] %[output:62f1bbf8] %[output:59148269] %[output:9dce30cb] %[output:78ed7ead] %[output:4c07a296] %[output:06dc8a2f] %[output:445548e3] %[output:19eeab58] %[output:40debe50] %[output:544a3c5c] %[output:75ffc104] %[output:37c3ae91] %[output:67d65a07] %[output:196d887a] %[output:9809bce7] %[output:79fc8e81] %[output:34c31025] %[output:36558d63] %[output:4c536d58] %[output:2f1bc288] %[output:5f4a0cfc] %[output:3164b319] %[output:37e44cc3] %[output:062bea41] %[output:8a2e83b3] %[output:596aaa7e] %[output:05ede065] %[output:8d42046a] %[output:4ec52aa6] %[output:8d511a73] %[output:997613bb] %[output:6688afbb] %[output:4135bf82] %[output:26c9cd1d] %[output:2895fcf6] %[output:62d2836f] %[output:0ee813cc] %[output:142b0a16] %[output:67f38a16] %[output:34ac7265] %[output:4e51d712] %[output:64fe1588] %[output:3c2330cf] %[output:2a4c696d] %[output:6b30af8a] %[output:4fbb3e67] %[output:04e78057] %[output:4b6c3002] %[output:3024b889] %[output:43a1badd] %[output:481b0c93] %[output:3f3232c5] %[output:4cb41de4] %[output:213e149e] %[output:99a27963] %[output:59bca9f1] %[output:1edc1436] %[output:92e45a27] %[output:89a9978e] %[output:43a98f96] %[output:711bbcda] %[output:79e15497] %[output:19adfb2f] %[output:5637d336] %[output:7e671f54] %[output:12cdf73d] %[output:3bbddfad] %[output:76b100fe] %[output:390ccf2a] %[output:4469a233] %[output:30d4e6d7] %[output:713edae2] %[output:6dd81bf8] %[output:141220f3] %[output:06416cbf] %[output:3b25ddc8] %[output:313fa6c8] %[output:912241b9] %[output:14d949d6] %[output:64b1e93d] %[output:931bd380] %[output:4ad24684] %[output:233226df] %[output:9df1d2c2] %[output:9ab07325] %[output:216a19f9] %[output:7f6044e1] %[output:4a1f7854] %[output:8e9ee41e] %[output:7992a999] %[output:7b8ce3f5] %[output:8d883bbc] %[output:84193af1] %[output:297ca220] %[output:17703273] %[output:6d2fb422] %[output:831976a5] %[output:113f7888] %[output:233d1d1b] %[output:59c6040d] %[output:5b3e15e8] %[output:7400dfd6] %[output:801873b6] %[output:5c3fb85d] %[output:0ee00466] %[output:661c10e9] %[output:278dc67f] %[output:612d2e14] %[output:8a31ff0f] %[output:137e2f57] %[output:96b7b375] %[output:175c0342] %[output:7bf2a46a] %[output:325839f9] %[output:03ac8eff] %[output:9c6667b5] %[output:795d3d1f] %[output:22b85d3a] %[output:918473fb] %[output:11001239] %[output:984e4182] %[output:639ee66e] %[output:8b67ce71] %[output:9e78f5c5] %[output:56059f9f] %[output:87e9be89] %[output:6cb8b6ee] %[output:1d6c85c3] %[output:0dfe9da0] %[output:742b8293] %[output:7141f281] %[output:4afc3452] %[output:2623bc39] %[output:7fc0485c] %[output:4fb6c006] %[output:8561cd64] %[output:20d39efb] %[output:11431d9f] %[output:048e97ef] %[output:1852498f] %[output:9143a6f4] %[output:3380886d] %[output:47ffb32b] %[output:8588c821] %[output:135e38ff] %[output:454c7f7d] %[output:879c56fe] %[output:111bca2d] %[output:751c5705] %[output:5208834f] %[output:76b6c351] %[output:8bb63f0f] %[output:94b3a58d] %[output:8ce8b5ab] %[output:4bf4381a] %[output:79d6160f] %[output:969ef301] %[output:3773d76c] %[output:6dd507d9] %[output:9b0c1f72] %[output:2efecd0c] %[output:7599f9c9] %[output:0b9cde16] %[output:1cf8bdfa] %[output:8a595b1b] %[output:7c96b513] %[output:42879679] %[output:18d08194] %[output:0ec79177] %[output:27737cda] %[output:3b8b3559] %[output:7d2f958a] %[output:93559b24] %[output:470c9215] %[output:59c56c76] %[output:5237cd0e] %[output:508a7a92] %[output:4255bcda] %[output:7ec81959] %[output:0ade710f] %[output:5443e0d6] %[output:6c9e2418] %[output:875fd8b2] %[output:8b235608] %[output:3c8a13af] %[output:3e48f01d] %[output:3051d908] %[output:6b4dbad1] %[output:5644bfec] %[output:6c66ba1a] %[output:153e65a5] %[output:6e50782e] %[output:95bd2060] %[output:357ff63e] %[output:00b81aeb] %[output:12b8c40f] %[output:01d1f83d] %[output:33d2d9e1] %[output:6db989f8] %[output:25e66804] %[output:457f4c1a] %[output:7d574454] %[output:0db7d784] %[output:454b51c7] %[output:5c73b87f] %[output:39652ade] %[output:74357a07] %[output:5b2412d9] %[output:0903c4a8] %[output:234929f7] %[output:070a795f] %[output:99479e13] %[output:103d094a] %[output:0404a91a] %[output:4fa9468e] %[output:0bde47ba] %[output:85260890] %[output:10db9db0] %[output:4cdc6a3c] %[output:81963189] %[output:4b4c6db2] %[output:64f5ee8e] %[output:13139e4b] %[output:16cbb4eb] %[output:21ba8c85] %[output:3d0fb04c] %[output:8f126aca] %[output:8a2da152] %[output:311a487c] %[output:2170f141] %[output:6bddefc7] %[output:0da5f4ac] %[output:0817b4ed] %[output:0ee7b693] %[output:7a52dac7] %[output:7c16d95e] %[output:5195e48f] %[output:15c2e6a7] %[output:5d9bd20f] %[output:198efaba] %[output:80284d00] %[output:72e2ba8b] %[output:1835e793] %[output:4531b12e] %[output:1c381965] %[output:224b96be] %[output:635c9b22] %[output:445df048] %[output:6c09b771] %[output:80cf8149] %[output:3daa6ac9] %[output:90bb9036] %[output:758fd6f2] %[output:753ef725] %[output:7094ccf5] %[output:1ac20262] %[output:2169675d] %[output:187dec53] %[output:38b46c11] %[output:5c1cb559] %[output:7350707f] %[output:66461452] %[output:7cc48811] %[output:5b14209d] %[output:5b1610ef] %[output:112c2587] %[output:4de3aadc] %[output:008a21ee] %[output:43ad4fa1] %[output:4edaac14] %[output:8b903865] %[output:4d7cd259] %[output:15800c7c] %[output:6e9948b2] %[output:6f14ceca] %[output:883a501b] %[output:3c12e34d] %[output:7cb08fa9] %[output:469bc765] %[output:34071e90] %[output:0fadc2a5] %[output:97f618c7] %[output:1e270ebf] %[output:15b7c972] %[output:1d29dfc8] %[output:6a45d3fe] %[output:7c48b797] %[output:7a26972b] %[output:98a0eeee] %[output:1e52ecfd] %[output:34858ae1] %[output:6a5ad6af] %[output:1ccf8032] %[output:29198aa4] %[output:453264d7] %[output:6652ff6b] %[output:663158e8] %[output:833d3a1e] %[output:52afc33b] %[output:9965b3a1] %[output:65f3b8c0] %[output:4b734d75] %[output:8aa73ebc] %[output:99527e6a] %[output:8c00a7e1] %[output:82bf6ca1] %[output:83e751ea] %[output:959448c9] %[output:6046acdb] %[output:6d234253] %[output:2ab8be3f] %[output:9cfffedf] %[output:91fbd516] %[output:1ede8235] %[output:697cf7a9] %[output:547b319e] %[output:18430d68] %[output:16b30a3e] %[output:941a5882] %[output:3380b4bb] %[output:788649f7] %[output:1f54f3f4] %[output:06b5f3b9] %[output:2b2ef57a] %[output:1d6f898f] %[output:213aae46] %[output:22932d90] %[output:8f82340c] %[output:2f29075a] %[output:6b48a3f5] %[output:9c4369be] %[output:11a0a64f] %[output:5157b02b] %[output:9d6b948c] %[output:25fe6413] %[output:8386dd71] %[output:413d058a] %[output:3550837e] %[output:75fa8c8d] %[output:80ebbb5f] %[output:1aa4d602] %[output:12ea44e3] %[output:9a332fd1] %[output:091957ad] %[output:04d88352] %[output:2c6fb989] %[output:9f5e9c1d] %[output:72da9bba] %[output:1a9ba36d] %[output:42f90fcb] %[output:1e8345eb] %[output:15513712] %[output:8e53c04b] %[output:4c92f5a4] %[output:30b4837a] %[output:597192b1] %[output:73cfa7ea] %[output:14a98fd7] %[output:19e6b3fd] %[output:70003f97] %[output:06c51ea5] %[output:6c8bd1a7] %[output:1a0bcace] %[output:90364ea7] %[output:0251823f] %[output:40bdd972] %[output:7a040431] %[output:6acadad0] %[output:63115f0c] %[output:0801b24e] %[output:6d34fbf6] %[output:472e405b] %[output:31966b1b] %[output:5acb435e] %[output:7dea8a02] %[output:62a11b41] %[output:8f4f19a8] %[output:0608e2c1] %[output:4a8413df] %[output:60e8ca5b] %[output:9dd9441c] %[output:9dbcc9ad] %[output:5dfab478] %[output:582e4a1e] %[output:92d880f0] %[output:7d6d374f] %[output:948cde65] %[output:81af6044] %[output:8634c476] %[output:2b693640] %[output:3bafc0c4] %[output:971d3b0c] %[output:9bbea782] %[output:0aa815a4] %[output:623202dc] %[output:9e71f5e3] %[output:7dafc6ec] %[output:456551ba] %[output:38a604db] %[output:960579c1] %[output:5f59913f] %[output:6cc418b9] %[output:0c4e9014] %[output:21cc769b] %[output:9f24076b] %[output:636f52e4] %[output:0d7ea755] %[output:5e89a2d3] %[output:2483172f] %[output:88df6649] %[output:6334f9b0] %[output:330ad32a] %[output:2dc7fc8e] %[output:21c0df7a] %[output:8bb5f7ea] %[output:3051a516] %[output:336c33ea] %[output:0a085ee4] %[output:3c466ec0] %[output:015cb391] %[output:4b57dd35] %[output:18ac3c72] %[output:0da4bf13] %[output:30acf795] %[output:8ac12db5] %[output:3e21333c] %[output:19130dd3] %[output:0ac06016] %[output:0025699a] %[output:4c969a4b] %[output:3205fcd6] %[output:721da8fd] %[output:8d366bc5] %[output:983aa819] %[output:3f0b16eb] %[output:88db5cc2] %[output:6a51fa74] %[output:75d9574e] %[output:7f438b82] %[output:0f331783] %[output:9dc5979e] %[output:235cad5d] %[output:58b620ec] %[output:7b41c513] %[output:2ddb25f2] %[output:5ab2fc80] %[output:2f71bef0] %[output:37cf23e7] %[output:295c7b54] %[output:61077f08] %[output:2e4725a3] %[output:50878f63] %[output:7abb99b8] %[output:4e23b6c7] %[output:4278e853] %[output:7c936736] %[output:26a8f37b] %[output:8afe35af] %[output:6f7c22ed] %[output:50dc6dab] %[output:4d6c376d] %[output:3d9c5eab] %[output:49c72875] %[output:84ee9072] %[output:218cf845] %[output:2d1a72fb] %[output:8ad5b377] %[output:48e441d5] %[output:365b2f9b] %[output:36d3706e] %[output:18b338aa] %[output:5cf97442] %[output:4863cf71] %[output:2c592f84] %[output:34dd8e79] %[output:586a6115] %[output:488fb4b4] %[output:87fce924] %[output:0b207c75] %[output:3675ed46] %[output:43170eda] %[output:3251e38d] %[output:66d74be0] %[output:68b65577] %[output:7384198f] %[output:5ce446de] %[output:7698e34c] %[output:4474b738] %[output:191152a0] %[output:122b0f3b] %[output:5b03e27b] %[output:3e4b2265] %[output:2e2ff7bd] %[output:3965d6bd] %[output:0ffb08e2] %[output:2c147e00] %[output:34fde0c9] %[output:21ae4975] %[output:10b9104d] %[output:6566c6a0] %[output:5f904590] %[output:79bf07a8] %[output:0186dc17] %[output:363c88f7] %[output:36b180fc] %[output:58d87de9] %[output:8387a974] %[output:52c9e2c7] %[output:1831ac8b] %[output:66b7fcea] %[output:61607279] %[output:682774aa] %[output:28ced20c] %[output:752a74f9] %[output:6b516c0a] %[output:4094f7b9] %[output:506ff6e7] %[output:9336c533] %[output:8a8a2ede] %[output:967d09b3] %[output:8d5180de] %[output:74344efb] %[output:21aaddf9] %[output:71e11d2c] %[output:2d10f7e3] %[output:54be5c90] %[output:660ef67e] %[output:3398924f] %[output:169784af] %[output:56970fba] %[output:06b0e977] %[output:8a77ba81] %[output:4722ddaf] %[output:4e6de565] %[output:6a74debd] %[output:842a63d5] %[output:1d183d89] %[output:40de2c29] %[output:475024df] %[output:3a5a4286] %[output:76076ca3] %[output:8912acf4] %[output:0aefa498] %[output:2532de9b] %[output:6fa36ea3] %[output:8ceeb71c] %[output:80b37eb0] %[output:9417dabe] %[output:5a8c7a5d] %[output:87b7195e] %[output:8b698fa3] %[output:0dfda2b9] %[output:6c5ac0d7] %[output:1c185aa0] %[output:053ef558] %[output:7f12dde5] %[output:2e288b62] %[output:2edbd576] %[output:714aef69] %[output:49946398] %[output:7b78cc28] %[output:803b4b5d] %[output:7a4a7201] %[output:9327ad9a] %[output:1dabecb7] %[output:941aa8b6] %[output:93e78f5d] %[output:1448401d] %[output:49aab42f] %[output:4664b6ae] %[output:387f045f] %[output:24371ede] %[output:6cfb6040] %[output:3537b91a] %[output:0dcc4ea3] %[output:06638abe] %[output:88c538af] %[output:2462298d] %[output:4ef77851] %[output:8d5ffc95] %[output:0d81dbe2] %[output:0b080ef5] %[output:51290129] %[output:58623409] %[output:47d2303a] %[output:7c9fb410] %[output:2e7ed239] %[output:248e63cc] %[output:8638c5a2] %[output:6b284375] %[output:64c0ff0e] %[output:594ca13c] %[output:624d246b] %[output:2b0f3cfa] %[output:89588526] %[output:2505a68f] %[output:6e72b5f4] %[output:2f950a37] %[output:49dc6a9d] %[output:52f25e5a] %[output:92e68211] %[output:4b448e58] %[output:9f7c6739] %[output:7443477a] %[output:8027f5df] %[output:0a2a7959] %[output:9c60dee2] %[output:91c3db57] %[output:4f71c328] %[output:20a37044] %[output:4d127a48] %[output:4a03cd28] %[output:5aae1920] %[output:77fb2d40] %[output:18e5ffad] %[output:39dfb265] %[output:5caeece6] %[output:2c8dc615] %[output:07fd2a8d] %[output:6d4e90cc] %[output:0a545acc] %[output:8f37d48b] %[output:9f6022a0] %[output:275a974c] %[output:1f36175b] %[output:5906e80b] %[output:887499bc] %[output:1c4aea40] %[output:2793d475] %[output:1edb9035] %[output:6c7ae58d] %[output:3eb66204] %[output:0e363b82] %[output:6e92393d] %[output:11ccbdfa] %[output:587529f3] %[output:570e88e7] %[output:3900e64a] %[output:3575c0f9] %[output:2ad760b2] %[output:38cf78ae] %[output:0225c240] %[output:6a0488ba] %[output:4698c34d] %[output:89f194b4] %[output:7b7682da] %[output:31754962] %[output:2fbe3fed] %[output:2e2db140] %[output:12f9ea2b] %[output:16bbe101] %[output:31342d67] %[output:8e099250] %[output:82f43d66] %[output:68ac73ea] %[output:34721f8a] %[output:5942e1fe] %[output:006fe226] %[output:22545626] %[output:48cd084e] %[output:585bfd8c] %[output:1f6aef5e] %[output:2e2d6192] %[output:7557f411] %[output:95b6eee4] %[output:334cb600] %[output:20d579e6] %[output:254a64c0] %[output:13e374fe] %[output:4dd2fc4d] %[output:0855a80a] %[output:89775020] %[output:4faf8252] %[output:792b81d4] %[output:7155133c] %[output:58181a86] %[output:3c5bc103] %[output:4e1cfb09] %[output:1924c3bb] %[output:57f5f2e6] %[output:95d5428b] %[output:8bf89b19] %[output:4ddc9a86] %[output:6175de95] %[output:39fe8ddb] %[output:27c2871d] %[output:1837d5e0] %[output:7f25e7ac] %[output:0c2d92df] %[output:554cc82c] %[output:127911b7] %[output:29ac48cd] %[output:574e224b] %[output:45a4b885] %[output:7de238d1] %[output:4c7678b3] %[output:63c95266] %[output:2e8866ad] %[output:259a3e07] %[output:99abc3bc] %[output:87eaa7ef] %[output:85a3b8df] %[output:292ea369] %[output:92156ff3] %[output:2706e187] %[output:9fc54de2] %[output:597c3bd7] %[output:5ce550ef] %[output:2b2bdb07] %[output:5fb95bb7] %[output:1c1f91d3] %[output:88ecc3d7] %[output:6ce147c2] %[output:5f2f7ac8] %[output:93fe0ded] %[output:3b9f216d] %[output:5f667f47] %[output:5e2fa66c] %[output:2c58805a] %[output:83b4a87b] %[output:17d0ba2a] %[output:3f1f6d78] %[output:337611aa] %[output:66b4883d] %[output:8721a920] %[output:1d1581b1] %[output:60705e91] %[output:1cf2a9b5] %[output:516360a2] %[output:938e7d01] %[output:59b8d9ba] %[output:80e8f246] %[output:1950cda8] %[output:9a480775] %[output:976ba4c2] %[output:571549bb] %[output:4d5ebce1] %[output:822f0fdf] %[output:7bfd20d4] %[output:82c8b830] %[output:6a6f7ea2] %[output:34e17c9e] %[output:4ae1df08] %[output:8612d969] %[output:507d9e89] %[output:27533850] %[output:42aff600] %[output:2808f36b] %[output:1c1fd27c] %[output:0c83caf3] %[output:5be3ca54] %[output:88fda62e] %[output:77fb56cf] %[output:25ae451a] %[output:142011d3] %[output:149100a6] %[output:37a85aad] %[output:84cfd9d8] %[output:09cee69c] %[output:8792c568] %[output:9933e756] %[output:419746f4] %[output:79f87bf1] %[output:31b9d295] %[output:73151e9b] %[output:3969725e] %[output:6334ea98] %[output:00fb1fa9] %[output:4b8fcaa5] %[output:8b3d7c14] %[output:558d621c] %[output:62c51fd5] %[output:149ad87d] %[output:183cdfc6] %[output:73e4db2b] %[output:01a55b95] %[output:035add23] %[output:693605fe] %[output:8cdc2a0a] %[output:0ca93415] %[output:9553fce4] %[output:614b130b] %[output:3a5413b9] %[output:16f7fe47] %[output:3820925b] %[output:85d90bd8] %[output:9b26cc5a] %[output:75b252d4] %[output:5a30f061] %[output:84ad7612] %[output:2ebcbeb4] %[output:5b236c5b] %[output:1903177f] %[output:8b258047] %[output:12909183] %[output:49782fa3] %[output:49dc514c] %[output:26974022] %[output:16e80540] %[output:9213149d] %[output:16882105] %[output:49702400] %[output:93232c1a] %[output:20ffa0a1] %[output:16f84d9f] %[output:2cbbba97] %[output:20624876] %[output:47528640] %[output:44322dd4] %[output:52a7cbae] %[output:63b0d367] %[output:49be8e2b] %[output:2af5650f] %[output:9451822d] %[output:6ae73ee2] %[output:4fcee8dd] %[output:2a580ca8] %[output:393c3231] %[output:643bc4b2] %[output:451b5474] %[output:1e391f2b] %[output:29a99fc7] %[output:1ba3fb7a] %[output:91c5b0cb] %[output:1444427a] %[output:47034e22] %[output:77cce9d3] %[output:367bb50a] %[output:2bcf67b7] %[output:3a60695f] %[output:2c697b5a] %[output:6f3bbe72] %[output:21f632a2] %[output:13c77413] %[output:2f377d74] %[output:4be6877c] %[output:2bc77e66] %[output:9325c816] %[output:4459f20c] %[output:19803d9b] %[output:3aea5ef7] %[output:9d17b0a0] %[output:32b06ea8] %[output:831bf892] %[output:2b31a37d] %[output:2cdb3459] %[output:136f79ed] %[output:5490e1f0] %[output:797550e0] %[output:64978c26] %[output:54c675cf] %[output:46662cc7] %[output:457a8a73] %[output:3384717c] %[output:7c60e759] %[output:4ac55cb8] %[output:35d599c5] %[output:43bf38ba] %[output:770bc4c8] %[output:1f6ca1e1] %[output:1b2cfd90] %[output:1d2abde9] %[output:93151d9e] %[output:297189c7] %[output:134a2def] %[output:306ba9c8] %[output:65d6e7fb] %[output:03818a92] %[output:43c3bd7e] %[output:20ac780d] %[output:64547591] %[output:0828ae10] %[output:5a559b7e] %[output:9956869a] %[output:8e6ed4f4] %[output:645093b6] %[output:8e2234fc] %[output:06b92d0b] %[output:9047c90e] %[output:1fe031c4] %[output:1d2cbf9d] %[output:10e22b02] %[output:8e8e61eb] %[output:47b6c75e] %[output:3b262e29] %[output:54bc881e] %[output:64ead7e5] %[output:3de75cba] %[output:339585c1] %[output:5d38f3af] %[output:6d6ffd01] %[output:80e4e314] %[output:32b644ae] %[output:1d97f9c7] %[output:2941dc63] %[output:9c937f8c] %[output:0d577d2a] %[output:81d5fd03] %[output:98c2f4af] %[output:1093bee7] %[output:5f2679e1] %[output:74ec2644] %[output:69d38380] %[output:5b941da0] %[output:4f788cb6] %[output:4f4e71b4] %[output:12f2f3c8] %[output:67d4649f] %[output:9e0cdda0] %[output:0b6d3039] %[output:665d457a] %[output:76148732] %[output:9fbaba72] %[output:9de1d054] %[output:99598631] %[output:99a888c1] %[output:1935039b] %[output:2764cea3] %[output:8d9e61d0] %[output:761d0d20] %[output:3f61426e] %[output:43474f7f] %[output:0677bebb] %[output:7246af85] %[output:137ff240] %[output:07303485] %[output:63c4e12f] %[output:3ceac80d] %[output:1623d026] %[output:5862ddd2] %[output:46976e3e] %[output:95cf5821] %[output:1ebeed9f] %[output:374a7a19] %[output:30c12796] %[output:2e41aadb] %[output:2972a2dc] %[output:98fa4d2b] %[output:72571873] %[output:50a01290] %[output:326b8715] %[output:72fea0ab] %[output:2ffeb845] %[output:43e83f4b] %[output:75ee40ca] %[output:5c99078b] %[output:9097e384] %[output:812dc5eb] %[output:1a62274f] %[output:43eed418] %[output:204680d3] %[output:9775e68f] %[output:0c3855df] %[output:25e33875] %[output:5e806063] %[output:9ea7c506] %[output:30d15316] %[output:495a2236] %[output:10d7acc6] %[output:6071fc59] %[output:5d614f7c] %[output:9e7cb58a] %[output:0c48a3cc] %[output:37ce7784] %[output:583e5487] %[output:343ab644] %[output:497623aa] %[output:3e48d93f] %[output:5cd7547e] %[output:5d0b0ff4] %[output:9e54eab1] %[output:1b723b65] %[output:2047c511] %[output:87b50185] %[output:6ec126cb] %[output:01edad82] %[output:01f13939] %[output:2e91b473] %[output:90426e8c] %[output:2db378ef] %[output:6eb51b03] %[output:0b7cac90] %[output:27b08062] %[output:53448ab6] %[output:2f5eae9e] %[output:6d4851d3] %[output:68260f97] %[output:00433012] %[output:03a2d693] %[output:48128d6a] %[output:3042d64c] %[output:8a5e9051] %[output:23c19e0c] %[output:420497b8] %[output:7452df56] %[output:7a736a82] %[output:76fe587f] %[output:7dfde792] %[output:59cbd61f] %[output:40f048b9] %[output:18aadaba] %[output:413b3f92] %[output:5d10677a] %[output:32c834c1] %[output:3e9b45ce] %[output:5ac1acb4] %[output:925368cb] %[output:5b7b5d88] %[output:7ad62ba6] %[output:2117c05d] %[output:79165849] %[output:05ab930e] %[output:226a1551] %[output:4f13862e] %[output:505359ba] %[output:30a55861] %[output:9df1eb23] %[output:05db6a0b] %[output:50a68c5b] %[output:58bf8f3c] %[output:494a2544] %[output:5c7fa512] %[output:88439206] %[output:402cd7fa] %[output:6d727988] %[output:8e52e816] %[output:6c3c05c2] %[output:225e283c] %[output:4d075d6c] %[output:6a852b34] %[output:9dd8819e] %[output:9416bc8e] %[output:9a21e657] %[output:17bf66eb] %[output:5c9f6557] %[output:7deb8f7a] %[output:0b3568db] %[output:0bd65661] %[output:85f53734] %[output:387e1835] %[output:50f99c17] %[output:5c2c9cce] %[output:79f2d8a5] %[output:1640effb] %[output:30bad384] %[output:622f2875] %[output:2a6db916] %[output:0bc7e39b] %[output:1d9aa334] %[output:6822ab16] %[output:1d78aa78] %[output:513b5870] %[output:16d85161] %[output:3b8a08dd] %[output:6d447256] %[output:01b7c5cf] %[output:529e6bf9] %[output:0a2bdb55] %[output:0e8aaaf5] %[output:4db64809] %[output:23883739] %[output:57c19e61] %[output:761647bd] %[output:13e0d75a] %[output:1307ef03] %[output:6960a139] %[output:642d79d3] %[output:4817e881] %[output:6b411a3d] %[output:32d574fb] %[output:5d5d6f3e] %[output:80b83034] %[output:6cc388f7] %[output:9b58a23c] %[output:351821d8] %[output:799097b0] %[output:799a2222] %[output:751187aa] %[output:93c84f38] %[output:4ab507e0] %[output:27fc40c2] %[output:0cd7f1a6] %[output:0ce166ee] %[output:7af87bf1] %[output:7a0a17ca] %[output:92ab2c20] %[output:6288e5e7] %[output:0a6e18f7] %[output:0a176729] %[output:6e628886] %[output:659c02bd] %[output:33ff1abe] %[output:15b24b94] %[output:4dbe7346] %[output:26d28852] %[output:14486678] %[output:1c8dbbdd] %[output:25446015] %[output:8a26ff36] %[output:1079d9d5] %[output:532b75d8] %[output:594b51c6] %[output:1e030c7b] %[output:24f94620] %[output:6f22a0e4] %[output:9f875c39] %[output:23bc46ed] %[output:89e084da] %[output:60680960] %[output:95bbfda0] %[output:61c2c8ee] %[output:7f0eb7d1] %[output:618c5168] %[output:14be3dfa] %[output:38627e4c] %[output:0d726a71] %[output:2432710f] %[output:29d789ca] %[output:1a81a99d] %[output:0e5ba1ac] %[output:3fe4140f] %[output:22bc5f8e] %[output:6a2be139] %[output:98b7854f] %[output:97daa11c] %[output:3de97246] %[output:90d3f02f] %[output:3169c5e4] %[output:8cab4c98] %[output:6f8cacdb] %[output:669c3baa] %[output:75abd782] %[output:79558ee9] %[output:878b3c2f] %[output:39376864] %[output:494dc585] %[output:7bf9cbe3] %[output:5c76acaf] %[output:5ee6f087] %[output:35dffbc2] %[output:2f7a0691] %[output:1771c5f5] %[output:9a52888a] %[output:588a5069] %[output:1094d469] %[output:0bddb1a1] %[output:069a3b96] %[output:96e85c40] %[output:42e7542b] %[output:0dfbdc8b] %[output:6a4f5f2b] %[output:489cd351] %[output:9e31f403] %[output:1341bf5d] %[output:804f7253] %[output:40035a89] %[output:0670583c] %[output:4d2b7df1] %[output:92114223] %[output:8ece0d9f] %[output:1fc1adf7] %[output:1285432b] %[output:33a705b2] %[output:5d8dd318] %[output:1a765f3e] %[output:7f30baa3] %[output:254a4d00] %[output:35056cc3] %[output:12083e87] %[output:323b064b] %[output:855404f3] %[output:4655327e] %[output:8b0d5cbf] %[output:45eb5feb] %[output:8e7b94db] %[output:56a167fc] %[output:48fc1d9b] %[output:002181ae] %[output:53c4d703] %[output:96c83a29] %[output:1cc98398] %[output:2f373d5a] %[output:8dfa3675] %[output:3f7de47a] %[output:8ab75b05] %[output:78d01d21] %[output:13ccb897] %[output:6390c0fd] %[output:28c1feba] %[output:079374d7] %[output:5da4659e] %[output:1d882d06] %[output:6df06c49] %[output:64f922dc] %[output:9207c7f1] %[output:7ffa277b] %[output:6a9daaf7] %[output:6339c644] %[output:78bbd259] %[output:02d2b3ca] %[output:5845d840] %[output:350b65bf] %[output:2684b348] %[output:9ecb2ca2] %[output:89f08391] %[output:30ad95e5] %[output:2cc87424] %[output:4f28d897] %[output:0cb25264] %[output:2482bc12] %[output:8b90400e] %[output:6742217e] %[output:02656923] %[output:6e4ee37f] %[output:09f121b4] %[output:922375a8] %[output:5f085ef2] %[output:453aef2c] %[output:7b8de5bf] %[output:5afdf3ba] %[output:8a3f2782] %[output:1da5c1c7] %[output:3f6183e4] %[output:8283c67a] %[output:29ae0c19] %[output:8ca58c23] %[output:9fbe16fe] %[output:5f25d80d] %[output:8cf93ee7] %[output:6e8f14b8] %[output:76a0f9bf] %[output:9fd6209f] %[output:61d6acd8] %[output:3a8cce0c] %[output:197dc401] %[output:44bf8509] %[output:89e0773f] %[output:348f40ee] %[output:64fa1a60] %[output:81b04c90] %[output:51da59dc] %[output:25b6a4ef] %[output:3732c93f] %[output:142feeb8] %[output:60292b2d] %[output:646cf396] %[output:72a495af] %[output:5de2c74f] %[output:1781cb6c] %[output:01691c52] %[output:1be70811] %[output:847b0d16] %[output:2f97abd9] %[output:47dae02b] %[output:8677fd68] %[output:9cc0d729] %[output:5d61aaf4] %[output:58cee9be] %[output:01fcf444] %[output:194e2fc7] %[output:52a95ed6] %[output:4c5328bb] %[output:993c1df4] %[output:790ddd1c] %[output:706628e6] %[output:55853ada] %[output:5cd73f0e] %[output:1a1662c4] %[output:471c26ce] %[output:27f30a75] %[output:13eabec7] %[output:7c8f710c] %[output:99a6eb62] %[output:7e32c918] %[output:15c9d771] %[output:7752e6ba] %[output:9721c460] %[output:7ec915a9] %[output:9d631b47] %[output:581aec3f] %[output:6974ba62] %[output:71bd74e2] %[output:7c9b23aa] %[output:2ecec322] %[output:4d9f796f] %[output:571b729e] %[output:97e718cf] %[output:72485a3d] %[output:9a327883] %[output:419dedf1] %[output:88fbbca5] %[output:523e9971] %[output:86795c12] %[output:389fc8e6] %[output:0eff3809] %[output:35bcab0b] %[output:839c4d90] %[output:485f12a3] %[output:74a60b48] %[output:472bca99] %[output:8d8b7e28] %[output:23757618] %[output:4a24609d] %[output:6eba130f] %[output:008b2ee0] %[output:93b99ca4] %[output:4b81ff2e] %[output:7722cfc0] %[output:4a7c87ff] %[output:0df96489] %[output:166f89de] %[output:0ec7b580] %[output:82e38465] %[output:05c35e82] %[output:3e24637d] %[output:649e55f1] %[output:5985f94c] %[output:03d9874f] %[output:00b802f5] %[output:515739af] %[output:3e37efd3] %[output:06e48b48] %[output:1307e453] %[output:7a52dc21] %[output:78c32ff0] %[output:21bbdd1c] %[output:4709fb01] %[output:4c6945db] %[output:0dc8ca2c] %[output:7b0608da] %[output:4c5ec070] %[output:851ed762] %[output:59b338a9] %[output:6c484356] %[output:0c56a874] %[output:6aba0c4e] %[output:4381e90c] %[output:744b45c2] %[output:65d4d8a6] %[output:40e6b0aa] %[output:5ee4043f] %[output:1227cc3c] %[output:75aad05f] %[output:4df85a43] %[output:444fdf86] %[output:1d906467] %[output:8a15888e] %[output:9adaf37a] %[output:6b8efe90] %[output:821b0184] %[output:6471534b] %[output:95fac716] %[output:522e6250] %[output:1e36e552] %[output:13dc14f4] %[output:51ed18bf] %[output:45d7858c] %[output:6410adcd] %[output:6c817e89] %[output:1d3f73c0] %[output:071ee91f] %[output:93760aaa] %[output:07e0d602] %[output:5947e9a7] %[output:34d35ca0] %[output:1bc72563] %[output:31357896] %[output:60fbdd18] %[output:874a956f] %[output:2ac32125] %[output:7c425f8d] %[output:7828c641] %[output:7c925f22] %[output:62be5cc2] %[output:579a0b45] %[output:5675d56b] %[output:297119c8] %[output:06f94e52] %[output:239bcabe] %[output:54f79a2e] %[output:7b603af7] %[output:42791e4b] %[output:992c3f08] %[output:64c653d0] %[output:8b530051] %[output:20bcca1a] %[output:11bcec20] %[output:05d75d5e] %[output:6ced4381] %[output:6c3a5ff1] %[output:5e56df8b] %[output:43ee64f2] %[output:97434ce9] %[output:49e68588] %[output:59786baa] %[output:5b1e622c] %[output:07042ed2] %[output:8658390a] %[output:7a7a99f8] %[output:0a37aa50] %[output:975f28a7] %[output:2d2d6a85] %[output:278b81a0] %[output:6dc65d00] %[output:0b493abe] %[output:23f79076] %[output:89184c2e] %[output:407c20c9] %[output:177860ac] %[output:3cf3f165] %[output:78fa46bd] %[output:93fb6416] %[output:94863d74] %[output:11ba9b4c] %[output:4f97591e] %[output:66ba48f6] %[output:5d453ff0] %[output:5910b602] %[output:71fcc425] %[output:92906f6b] %[output:40c6b934] %[output:27de264b] %[output:145b9841] %[output:40b9fc49] %[output:976ecd41] %[output:009b9d83] %[output:62f64890] %[output:6b538123] %[output:8efabc44] %[output:4fb948ee] %[output:53c2b438] %[output:92a51c96] %[output:6f8aae92] %[output:26de4ece] %[output:9814d4b4] %[output:670bb8ab] %[output:244b0e9b] %[output:5a665ac9] %[output:86aa6b35] %[output:91ed1a99] %[output:395d78c8] %[output:799cd3a3] %[output:5630bb82] %[output:13743b4b] %[output:7a4199a0] %[output:34119526] %[output:4479e3b8] %[output:0beac469] %[output:4a10c6bd] %[output:5db1a1f1] %[output:614e2e40] %[output:8e06d8e3] %[output:22c53bcf] %[output:1c96f001] %[output:62ace964] %[output:8e1c68bf] %[output:8a8c186b] %[output:14e74ae1] %[output:69854e3e] %[output:55704137] %[output:63dca84c] %[output:39180e8b] %[output:7856fa49] %[output:81b8313d] %[output:2586ba6b] %[output:15196897] %[output:641aa428] %[output:07828f93] %[output:2814c7a3] %[output:0f5652ad] %[output:9cba3311] %[output:1df52f65] %[output:48719809] %[output:700678fd] %[output:293250da] %[output:20789b6f] %[output:9fd94820] %[output:03d062d5] %[output:164d12c1] %[output:2131ddf9] %[output:2be64074] %[output:578fdf12] %[output:68e7d81a] %[output:93bea9a8] %[output:7774f180] %[output:495fb57a] %[output:7c57f034] %[output:0b24147d] %[output:24369605] %[output:7db1dba9] %[output:80e5033a] %[output:1043d283] %[output:51176c6a] %[output:48b94a28] %[output:0f044448] %[output:3b44c548] %[output:8a7c4199] %[output:31a4b364] %[output:0b0787b0] %[output:0a83c526] %[output:773d97aa] %[output:47c2d859] %[output:60da6422] %[output:0c9f3a0b] %[output:4cd27df9] %[output:379436fe] %[output:68d7579f] %[output:4a11aa6f] %[output:765817dd] %[output:88ba3736] %[output:9b539c0c] %[output:88cc8ac2] %[output:55155896] %[output:3cc8d5b2] %[output:1759c647] %[output:1ecce73a] %[output:57f9c687] %[output:2f4789b9] %[output:4f682b8a] %[output:4d5d1de9] %[output:0b416b7d] %[output:270240f2] %[output:723c5045] %[output:86f73dfc] %[output:33e84adc] %[output:60d2ced1] %[output:0bad9679] %[output:26d9778e] %[output:699a18c9] %[output:89d21e33] %[output:2dbb107d] %[output:0f729257] %[output:1316a092] %[output:9ffd965d] %[output:89a5fbd4] %[output:58acac1f] %[output:6ca9239f] %[output:7988adf9] %[output:45e4edce] %[output:4a1f824b] %[output:959819b0] %[output:92120768] %[output:49f70b33] %[output:67432884] %[output:895c42a2] %[output:812df8d7] %[output:16e488e3] %[output:41f2923d] %[output:7f334eeb] %[output:5eeff1a4] %[output:2ab71e87] %[output:07e28390] %[output:22038812] %[output:736acd05] %[output:70f830f5] %[output:51b12777] %[output:35bf91a2] %[output:88828cfe] %[output:1db79aaf] %[output:68583dfb] %[output:23f92763] %[output:0f6e0587] %[output:066e3c5a] %[output:99a44186] %[output:572f7343] %[output:34176f95] %[output:0d287aa0] %[output:0c7129e5] %[output:149d493c] %[output:0e4f977d] %[output:1bd17cfd] %[output:2856ad6d] %[output:592dc527] %[output:6f471478] %[output:95738865] %[output:0c5e54ca] %[output:4b92eefb] %[output:17d8bf04] %[output:2f99ea5e] %[output:6ff8ae3f] %[output:9ff4fcc2] %[output:5fe4665b] %[output:9b77d868] %[output:6ce3a7a6] %[output:5b8b01e5] %[output:200e7cb7] %[output:7b7369f4] %[output:0dc3c9d3] %[output:39dec4a8] %[output:7953c2e6] %[output:49693945] %[output:16422f80] %[output:70430658] %[output:3cae4c1e] %[output:9edd77cf] %[output:6127f0f1] %[output:8ef2719e] %[output:279542f7] %[output:50a8d3bb] %[output:0bcd6429] %[output:4beeb40e] %[output:77648f37] %[output:59e0d2c5] %[output:580b4dc1] %[output:5fa5857f] %[output:1c977cae] %[output:8eafcaf9] %[output:6ca64294] %[output:72c65301] %[output:1d7f94b5] %[output:04130bff] %[output:0e30a1ab] %[output:18e9e11f] %[output:27674809] %[output:9d7002d4] %[output:418f95ce] %[output:2c811d35] %[output:8ee28afc] %[output:3f6f4d48] %[output:96757d87] %[output:04b1952f] %[output:9226e66e] %[output:928c2ff6] %[output:8f277d4a] %[output:940f7643] %[output:63fde13e] %[output:1b09f981] %[output:738a7a29] %[output:8a1aa569] %[output:9ef87133] %[output:3279a919] %[output:0ae29569] %[output:03c972c5] %[output:9f1c3495] %[output:5f1d3331] %[output:3ea129a5] %[output:30cf2c9a] %[output:1d783524] %[output:663e1ee1] %[output:52a01cad] %[output:1b0da752] %[output:32c370c1] %[output:0f352396] %[output:0be73d84] %[output:2825f824] %[output:455165c8] %[output:0014d4bd] %[output:03504aae] %[output:7669f20d] %[output:3fa3440e] %[output:6f6d0f3e] %[output:51f8cd54] %[output:75ce3df8] %[output:786c44c0] %[output:91e365c6] %[output:80b86e44] %[output:2eb70ff2] %[output:014ecd58] %[output:3369c2b9] %[output:815b35d4] %[output:9452b033] %[output:150c3479] %[output:6b4347c6] %[output:35a8ac56] %[output:8b890b43] %[output:97331f43] %[output:7ce9c94d] %[output:481f71e1] %[output:3371e760] %[output:9b850a5a] %[output:2e5c4886] %[output:25ba1ac9] %[output:938ee6b8] %[output:064e3e42] %[output:664dfb89] %[output:6217d75d] %[output:51b66828] %[output:222b49be] %[output:86d9d598] %[output:55cbaaa3] %[output:2feac792] %[output:8340fa75] %[output:086fc12c] %[output:1fce6c76] %[output:3c7c2096] %[output:59de9faf] %[output:6ac47599] %[output:539f56f8] %[output:6252c30e] %[output:368df944] %[output:8c333f62] %[output:679b3d76] %[output:6a5837b6] %[output:345c63db] %[output:5405f067] %[output:4da1c54a] %[output:7378e65c] %[output:39a03f01] %[output:5265e380] %[output:76aee1eb] %[output:55de75f6] %[output:864337b4] %[output:5e399c31] %[output:0e2c4766] %[output:9b3dcc7c] %[output:47176382] %[output:929e2be5] %[output:3b5456fa] %[output:699f0ac0] %[output:1d6e9e86] %[output:8ea78f57] %[output:6da35736] %[output:88d0fa8f] %[output:8f4c0949] %[output:1e55e069] %[output:4eccc0d3] %[output:22c2f0ab] %[output:77ab0f69] %[output:61b578e3] %[output:4418a538] %[output:577b3ad2] %[output:06185cef] %[output:8f508b40] %[output:586897f1] %[output:77f5e924] %[output:39e8a051] %[output:6cd885ef] %[output:907e2d0f] %[output:206a6d7c] %[output:928d7028] %[output:3ecd7a8f] %[output:4d583c4c] %[output:930a3f1e] %[output:285110be] %[output:120ecb89] %[output:0bfe3b70] %[output:4f2147ad] %[output:6c45117f] %[output:82dbbd37] %[output:544a9231] %[output:8be28180] %[output:0bc8f7c1] %[output:1fee6824] %[output:4072a0fc] %[output:505367bc] %[output:9a9bc25f] %[output:542fe636] %[output:934ab92d] %[output:917aab98] %[output:65a6f6c6] %[output:16fe68b3] %[output:2fe359fe] %[output:7067095d] %[output:97db2197] %[output:8573531d] %[output:361314f1] %[output:55f218c8] %[output:486ba7ca] %[output:70b0a8ae] %[output:8296999d] %[output:453bfa31] %[output:7c656203] %[output:0f271821] %[output:0be699fb] %[output:4d23f8e6] %[output:201d73d4] %[output:9b67e889] %[output:9c87c3f2] %[output:3bf84064] %[output:7f92fba3] %[output:17540ef7] %[output:42504ecd] %[output:8e31910e] %[output:3e024ea5] %[output:0abbff9f] %[output:2919cae3] %[output:83f77888] %[output:478ec03e] %[output:0f37217c] %[output:022ae550] %[output:12032b4a] %[output:05ebef81] %[output:655bcabd] %[output:05820577] %[output:1c6e7405] %[output:415a0e41] %[output:715bed63] %[output:2bf5cf70] %[output:5b31e1e5] %[output:60c616ff] %[output:78163ffb] %[output:79209768] %[output:297a5b07] %[output:806cb1a1] %[output:7a42be28] %[output:94612da5] %[output:6c64e8f1] %[output:98f9dcbe] %[output:6eb97f16] %[output:5de2cc45] %[output:44cb88ca] %[output:5d8e6622] %[output:5aa2a68b] %[output:8cae9f00] %[output:4c9f7998] %[output:8d7ee1ea] %[output:221d3d10] %[output:343ac351] %[output:308a2c72] %[output:552567d1] %[output:689da17a] %[output:24cc3bc6] %[output:36943925] %[output:5c0ca563] %[output:976ef4f7] %[output:2f5060a5] %[output:3371b0fc] %[output:47aa55af] %[output:016220bf] %[output:7f616a67] %[output:88404826] %[output:2220331e] %[output:849a735f] %[output:506c223f] %[output:0afabfdc] %[output:7d9d64a7] %[output:13c0459b] %[output:5ae7143e] %[output:30734195] %[output:80562a9d] %[output:8b3dbc4d] %[output:61e2410b] %[output:41311589] %[output:42c1bc90] %[output:0de4d03f] %[output:6b39fca8] %[output:4c95a6e3] %[output:0b12b34d] %[output:5fc18053] %[output:8b5adb59] %[output:020647e0] %[output:66698d0d] %[output:80c380d3] %[output:2e23abdd] %[output:806fad47] %[output:623ed63b] %[output:03bf74cd] %[output:84dcdca4] %[output:8760e01c] %[output:1145aa2c] %[output:3f7c03ed] %[output:99b1b93f] %[output:2b68b300] %[output:7c12e1d7] %[output:14aae969] %[output:4b601021] %[output:084d9598] %[output:19a8ed18] %[output:65a49127] %[output:611152ed] %[output:4a961c66] %[output:64d5fe13] %[output:22ab7464] %[output:1b5c0dd0] %[output:99c54a1a] %[output:91bfb35c] %[output:79611708] %[output:006b7de0] %[output:61a15a78] %[output:01d57ae2] %[output:1205d11e] %[output:8d5c0c10] %[output:35206373] %[output:5d7defcd] %[output:4c211be5] %[output:3be6e255] %[output:74414eb2] %[output:1e431866] %[output:4dfcf25e] %[output:0458d482] %[output:359c584c] %[output:5667cf60] %[output:9687c67e] %[output:33528839] %[output:1f0c8b52] %[output:7da91a73] %[output:179bf83b] %[output:02895f06] %[output:9677e3c6] %[output:90a77b41] %[output:1ed3464c] %[output:66601631] %[output:176a0ac5] %[output:31ca3fd8] %[output:0b6c612e] %[output:286834a9] %[output:9189f8ad] %[output:71d55744] %[output:51463443] %[output:9efa67fc] %[output:83f712c1] %[output:7f8609ea] %[output:991f70d2] %[output:3637cba7] %[output:77d350c2] %[output:9d172f85] %[output:5daf6efe] %[output:90fa2ae6] %[output:16ebe48a] %[output:76295b78] %[output:6406f22b] %[output:3cf51fb2] %[output:5d740cd9] %[output:878dcc2f] %[output:8203641d] %[output:4e78cad9] %[output:570cc0a8] %[output:3c7d5b4c] %[output:9a184af6] %[output:3f8bde14] %[output:746c199f] %[output:316f8a74] %[output:7fed47cc] %[output:3cbb0e2d] %[output:9a51ba0c] %[output:24903316] %[output:69491921] %[output:0994489c] %[output:5a8c7f1a] %[output:46a0cf4f] %[output:0922354f] %[output:4e17a5f3] %[output:16f186a4] %[output:3d27272b] %[output:2cdad14d] %[output:733d9ed6] %[output:6a6bcdd4] %[output:1ff773a3] %[output:563f32a9] %[output:4acf3a67] %[output:9c708e0e] %[output:92d63e72] %[output:6070f6f7] %[output:711b6604] %[output:10ee5620] %[output:77769871] %[output:4be26cd8] %[output:73f0e7a9] %[output:598219a6] %[output:0b58b3a8] %[output:7d5cc8dd] %[output:6d794174] %[output:106e1883] %[output:84f5e974] %[output:5f6cb2b1] %[output:908f0d98] %[output:4f994b9e] %[output:36f30acc] %[output:0b43684e] %[output:1f9adec4] %[output:2b8d9e1e] %[output:8383f4cb] %[output:5705358f] %[output:04412afc] %[output:21884795] %[output:3ed89835] %[output:263274ad] %[output:3e5a20c2] %[output:1b836e91] %[output:7e8f1cdb] %[output:8cf78d7e] %[output:46ee256a] %[output:0d9a0261] %[output:1eafd698] %[output:739af566] %[output:47d0aff7] %[output:41beb7f4] %[output:0c1e3a4d] %[output:564cb46b] %[output:40b12c44] %[output:0ff329d8] %[output:502bfe75] %[output:604335c8] %[output:75988d4b] %[output:3a99c051] %[output:4395a1b5] %[output:0b32b2f2] %[output:885f9a17] %[output:03c23071] %[output:67d8966c] %[output:02cc1c29] %[output:2a006c80] %[output:0343c1d2] %[output:4feaec59] %[output:7eaac0e3] %[output:3a7a6647] %[output:7e176b3e] %[output:9d30311a] %[output:9938efa8] %[output:590e3702] %[output:6b346380] %[output:2d40d8d6] %[output:64b2a5c8] %[output:7255f7d9] %[output:251aca26] %[output:699921ae] %[output:13a5a259] %[output:6769b710] %[output:9e57fca6] %[output:9f2f05ac] %[output:9f15c02d] %[output:214ac371] %[output:0582a2e6] %[output:60bb2e9c] %[output:2f12491e] %[output:102dac56] %[output:474ead07] %[output:6377e7b4] %[output:79f94a8f] %[output:49238d14] %[output:3b8657ad] %[output:83efc422] %[output:3c02e4fe] %[output:82fc39d2] %[output:018719c8] %[output:49d53b42] %[output:61f32cee] %[output:676c34f2] %[output:9b92e358] %[output:4300a1b9] %[output:8852d368] %[output:58d48393] %[output:92888563] %[output:6d270f07] %[output:6ede0ae1] %[output:9657f593] %[output:0db46d5d] %[output:6ace1df8] %[output:59c165cf] %[output:65954e35] %[output:92f3f4a7] %[output:2bc8cedd] %[output:68005111] %[output:0fb71617] %[output:838bae79] %[output:29ecd218] %[output:13bc4764] %[output:89542deb] %[output:870df706] %[output:2e0c0dd5] %[output:7cd00b02] %[output:41a19d04] %[output:476d05c5] %[output:592bd887] %[output:9b1c18e2] %[output:1f4720cd] %[output:865ad4db] %[output:4a29de84] %[output:3f59608f] %[output:60fcd37e] %[output:54c9233b] %[output:402f46e8] %[output:2b3ed03c] %[output:75952393] %[output:600d18ed] %[output:386244e9] %[output:04f8b022] %[output:356d799b] %[output:7887a45b] %[output:2bce111a] %[output:3c76a8a0] %[output:7a1aa8d3] %[output:5554110c] %[output:41a6ff2c] %[output:2167e7a6] %[output:44b3ad23] %[output:08c52778] %[output:1c076e3a] %[output:80fa801e] %[output:3ece19b5] %[output:72cd91b1] %[output:3dd42aa4] %[output:48b75621] %[output:5668f291] %[output:99da434b] %[output:22dbe781] %[output:4920a59e] %[output:0815c34a] %[output:4b4c0a1a] %[output:93eaa66f] %[output:9a111cee] %[output:30277a71] %[output:715b88c7] %[output:39cc4efc] %[output:5f6b0367] %[output:7d8f13c9] %[output:2bc82a96] %[output:58a9f715] %[output:22145044] %[output:25ec02e3] %[output:5a6959d1] %[output:2c0f3800] %[output:39559fbc] %[output:54d3baf9] %[output:8751b890] %[output:61c740af] %[output:53c0d092] %[output:0ddec3ae] %[output:49a6e21c] %[output:4f3a1d87] %[output:43f9d36c] %[output:0421ff82] %[output:6e1f1c09] %[output:4d8efceb] %[output:5e00dcdb] %[output:3055157d] %[output:00702609] %[output:24f86491] %[output:7d793125] %[output:4184e867] %[output:00f6d864] %[output:2de978aa] %[output:3d11c38e] %[output:5a4228c4] %[output:4c98fc52] %[output:046d2c79] %[output:073913c5] %[output:30b61fcc] %[output:2ee3a0e2] %[output:7c1a143c] %[output:5ae0f6ab] %[output:66bd86ee] %[output:79e2321c] %[output:709570a1] %[output:0ace55ed] %[output:087ae413] %[output:424eb910] %[output:821a2de2] %[output:75ac041a] %[output:00c007be] %[output:590b7eb5] %[output:7a205f10] %[output:3cad810f] %[output:35368708] %[output:02a95d27] %[output:8a5c3afa] %[output:5c54bba8] %[output:7e87085b] %[output:3c47212c] %[output:658aaf53] %[output:57a3eb5d] %[output:79d2af63] %[output:55efc2a8] %[output:5bd0bf4e] %[output:213ad7c3] %[output:02ff7c33] %[output:093a1bd3] %[output:1dffe339] %[output:24130a6a] %[output:9e2bebc2] %[output:169cdf94] %[output:721fa7a9] %[output:51b7d3d7] %[output:6aba5b27] %[output:7938cb75] %[output:2d52858a] %[output:5fcb7ac3] %[output:024cb691] %[output:31200853] %[output:0468cd59] %[output:7e464482] %[output:8832dcf1] %[output:0ad9b5a8] %[output:0df9c6a0] %[output:7bd85080] %[output:633bf38f] %[output:9b5a7284] %[output:1b4831cc] %[output:51f06e47] %[output:85d711a5] %[output:0ed7535c] %[output:91c278ed] %[output:89361c39] %[output:4008e51b] %[output:57b2f2b9] %[output:6c05fecd] %[output:62c107fd] %[output:111cf61e] %[output:9ea26089] %[output:1dee75a6] %[output:26ec1fc9] %[output:1babf915] %[output:706ee142] %[output:61250b9f] %[output:37a490b8] %[output:1afb9e40] %[output:28078cb0] %[output:17f31a0a] %[output:6a9028d9] %[output:68cd74c6] %[output:8b149626] %[output:893c0444] %[output:1fbe7c79] %[output:4d6ccfe5] %[output:38f56e36] %[output:09f191d2] %[output:1db13420] %[output:4ff1894c] %[output:9bf7b9d2] %[output:31c9bc36] %[output:4606d532] %[output:298dfcff] %[output:8d6a919c] %[output:535f6997] %[output:08ce0c22] %[output:5703d082] %[output:4b32fe83] %[output:66999e9a] %[output:22dca6cb] %[output:24fa7434] %[output:2c4b0100] %[output:4e2529f2] %[output:0588bc36] %[output:16b71ef6] %[output:49897c8f] %[output:47843b1e] %[output:4842cb19] %[output:4158372b] %[output:3aa935a3] %[output:23cd4afe] %[output:2add4f6a] %[output:865dac48] %[output:07096dca] %[output:3e320d26] %[output:82571362] %[output:1a94c68c] %[output:4ca6c68b] %[output:28d29e9c] %[output:37edbc0d] %[output:5381b18a] %[output:3b1e27a2] %[output:734e04a4] %[output:5b2986ff] %[output:79cf1fa8] %[output:093a6d00] %[output:1c1c4cf9] %[output:46057be4] %[output:6cdce246] %[output:63b387dd] %[output:1722da1e] %[output:388f03a4] %[output:8bfce059] %[output:28fb07cb] %[output:0b80b429] %[output:45487beb] %[output:3a16e380] %[output:38eaf689] %[output:33ea1b6c] %[output:589f6e2b] %[output:48c93fba] %[output:843fb569] %[output:65750b31] %[output:08ba0b54] %[output:909675fa] %[output:722d7810] %[output:94c3ed31] %[output:64c9ddee] %[output:97462cef] %[output:9398f049] %[output:7aea6f6f] %[output:16dfb84a] %[output:2f0a648d] %[output:0622d5c9] %[output:78548862] %[output:8e912464] %[output:750ed7b5] %[output:16bf5d11] %[output:90b5d124] %[output:5d16e62d] %[output:8f6d345a] %[output:707e2dcb] %[output:4192cb1b] %[output:063abb5b] %[output:91fdbe84] %[output:1577f30a] %[output:05fc40c4] %[output:0df41ef1] %[output:06ffde5e] %[output:86fed95a] %[output:57344ad5] %[output:689a5670] %[output:812f0c88] %[output:904bb949] %[output:51eb1117] %[output:646c7645] %[output:5ac928ac] %[output:13803640] %[output:5ac8edae] %[output:1b6f8c64] %[output:4d8f4e88] %[output:245c330f] %[output:721ac259] %[output:13bd1f48] %[output:5e00aa14] %[output:5bc22594] %[output:0f0b47c7] %[output:484c5697] %[output:24ee5ada] %[output:6cad27ea] %[output:22f346a8] %[output:920c0952] %[output:4652c92d] %[output:453377dc] %[output:86f6365b] %[output:30da2edf] %[output:558314cb] %[output:57e02254] %[output:33302f5f] %[output:461fa8ff] %[output:619d5838] %[output:7e83ce73] %[output:690b0601] %[output:1f5e6ae3] %[output:375af545] %[output:5acd97dc] %[output:8f775984] %[output:3f3fd046] %[output:6ab4b36e] %[output:620176b8] %[output:9bf0bc5e] %[output:6e2e667f] %[output:69e8bca5] %[output:64699c2f] %[output:8e185787] %[output:5efca3c3] %[output:3e09cbcd] %[output:6efe8e03] %[output:55e4428f] %[output:14ea59e2] %[output:4721f82f] %[output:14c3e4a5] %[output:7eba562a] %[output:8c52dd73] %[output:8f4d9b5d] %[output:85aed559] %[output:8c247199] %[output:3d096e62] %[output:3783947b] %[output:073e552b] %[output:1f368d7d] %[output:84c20b0b] %[output:90a67ff0] %[output:70b921c8] %[output:08a998df] %[output:6aa2d867] %[output:7f1cabb8] %[output:70a8dc83] %[output:0be9e313] %[output:6ce5d7b6] %[output:09bc691c] %[output:8addb485] %[output:31c7c518] %[output:783f8641] %[output:4b0b5def] %[output:1b5d39d0] %[output:1e576b5e] %[output:3d8f2e07] %[output:7cbcd797] %[output:7589a3fa] %[output:33763879] %[output:46289344] %[output:95ff2c8f] %[output:4402cfcf] %[output:1ed32b5c] %[output:33feed3c] %[output:8388b5ec] %[output:08f0e7f3] %[output:57d5ec0f] %[output:7fc8e9ac] %[output:6269ef0c] %[output:97e4734f] %[output:2786407f] %[output:40006de6] %[output:8c98918c] %[output:5dd675f5] %[output:00d7c778] %[output:74ef0e45] %[output:49759a53] %[output:250dadcb] %[output:455d35ea] %[output:42055a3e] %[output:5068a527] %[output:349c7b4b] %[output:2815bbe9] %[output:070a9fde] %[output:2b2cd0e6] %[output:75939c1f] %[output:023f4171] %[output:5b81c394] %[output:7a080eec] %[output:22a89b3a] %[output:1114074f] %[output:7a2805fe] %[output:34df9843] %[output:7ed08f86] %[output:18f1bef0] %[output:3ce26393] %[output:6703a486] %[output:62a987c5] %[output:87e70052] %[output:9dab620e] %[output:726fccaa] %[output:78eb80fe] %[output:83bc0459] %[output:5b385a18] %[output:0ee466de] %[output:3175a2c9] %[output:2b495cd3] %[output:77305892] %[output:3ad1cd0d] %[output:23b2d10e] %[output:030445d4] %[output:3337ae6c] %[output:020b80f4] %[output:51f83c4f] %[output:39ad28ad] %[output:11e3dcdb] %[output:6f952a58] %[output:7c47ac64] %[output:85c1e2eb] %[output:2d052ed3] %[output:0760d073] %[output:7a788e0d] %[output:65b706d0] %[output:66cabff3] %[output:8352370b] %[output:1f4ceda0] %[output:107a2530] %[output:682a480b] %[output:05956480] %[output:4d7dc8d5] %[output:6224b1c7] %[output:5016fdfb] %[output:99dce67a] %[output:8a0bbe20] %[output:8129ec73] %[output:1afad042] %[output:583d47d5] %[output:368c5043] %[output:49407185] %[output:9d6b6953] %[output:4c507994] %[output:24e9d3ee] %[output:55f08081] %[output:048ef0cf] %[output:395feee0] %[output:8b15310d]
 
 writetable(BRW_result_MK,'BRW_res_MK.txt'); %, 'delimiter',',' )
 writetable(BRW_result_LMSlog,'BRW_res_LMSlog.txt'); 
 writetable(BRW_result_LMSlin,'BRW_res_LMSlin.txt'); 
-plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b]
+plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:6dac349e] %[output:8db59851]
 %%
 
 
@@ -731,182 +763,11 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %[output:42366ccb]
 %   data: {"dataType":"error","outputData":{"errorType":"runtime","text":"Out of memory.\n\nError in <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('multiple_breakpoints_while_one_snht', 'C:\\github_trend\\aerosol_trend_analysis\\multiple_breakpoints_while_one_snht.m', 57)\" style=\"font-weight:bold\">multiple_breakpoints_while_one_snht<\/a> (<a href=\"matlab: opentoline('C:\\github_trend\\aerosol_trend_analysis\\multiple_breakpoints_while_one_snht.m',57,0)\">line 57<\/a>)\n                    result.PrctDiff(k,:)=PrctDiff;\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nError in <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('change_point_analysis_SNHT_V1', 'C:\\github_trend\\aerosol_trend_analysis\\change_point_analysis_SNHT_V1.m', 80)\" style=\"font-weight:bold\">change_point_analysis_SNHT_V1<\/a> (<a href=\"matlab: opentoline('C:\\github_trend\\aerosol_trend_analysis\\change_point_analysis_SNHT_V1.m',80,0)\">line 80<\/a>)\n    result_m = multiple_breakpoints_while_one_snht(data_m_deseason,{param{i}}, 12, 0.05);\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<a href=\"matlab:helpview('matlab','error_nomem')\" style=\"font-weight:bold\">Related documentation<\/a>"}}
 %---
-%[output:98450c23]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the number of abs coef does not allow to understand the instrument type"}}
+%[output:7b24b1ba]
+%   data: {"dataType":"error","outputData":{"errorType":"runtime","text":"Error using <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('tabular\/dotAssign', 'C:\\Program Files\\MATLAB\\R2025b\\toolbox\\matlab\\datatypes\\tabular\\@tabular\\dotAssign.m', 508)\" style=\"font-weight:bold\"> . <\/a> (<a href=\"matlab: opentoline('C:\\Program Files\\MATLAB\\R2025b\\toolbox\\matlab\\datatypes\\tabular\\@tabular\\dotAssign.m',508,0)\">line 508<\/a>)\nCannot delete 'expA_bgAE' from the table because it does not exist. Assigning the literal value [] to a variable in a table deletes the variable. To create a new variable in the table with the value [], use T.expA_bgAE = zeros(0) or assign first to a temporary workspace variable."}}
 %---
-%[output:09a2f37b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:2376b229]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:0ca296e1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:3965de54]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:9b922ae4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:5fa14e70]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:6df78528]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:6660adae]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:41b1540a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:4930ca5f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:47c93f6e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:0364c28a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:9f147c28]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:58e6774d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:3e79bf00]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:1ee48409]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:7c760164]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:029bc713]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:75f9e04c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:978da8e0]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:934940d8]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:7f42177f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:774e4d2a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:43dd921f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:624e0fab]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:8053a40f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:41331dce]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:64fa7b72]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:47778218]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:74372a75]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:96ea315b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:05556658]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:35b96170]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:5ad1ec71]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:52ddc51e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:6bb80cb3]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:34ab9ec3]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:0a152510]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:0115a49d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:91f96e64]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:3b22d618]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:4793662f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:1f0c69b2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:82ee6987]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:6a609989]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:45e15f5a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:3e7b5d93]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:091562a9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:76de35e1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:76f85a79]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:522c7e1d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:986a34ff]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:5d14b4b3]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:2dfc0f80]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:73d22197]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:3c760eda]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:1e18f3f8]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
-%---
-%[output:2cb9f218]
-%   data: {"dataType":"error","outputData":{"errorType":"runtime","text":"Error using <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('tabular\/dotAssign', 'C:\\Program Files\\MATLAB\\R2025b\\toolbox\\matlab\\datatypes\\tabular\\@tabular\\dotAssign.m', 508)\" style=\"font-weight:bold\"> . <\/a> (<a href=\"matlab: opentoline('C:\\Program Files\\MATLAB\\R2025b\\toolbox\\matlab\\datatypes\\tabular\\@tabular\\dotAssign.m',508,0)\">line 508<\/a>)\nCannot delete 'expA_br0' from the table because it does not exist. Assigning the literal value [] to a variable in a table deletes the variable. To create a new variable in the table with the value [], use T.expA_br0 = zeros(0) or assign first to a temporary workspace variable."}}
+%[output:96dde337]
+%   data: {"dataType":"error","outputData":{"errorType":"runtime","text":"Error using <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('tabular\/dotAssign', 'C:\\Program Files\\MATLAB\\R2025b\\toolbox\\matlab\\datatypes\\tabular\\@tabular\\dotAssign.m', 508)\" style=\"font-weight:bold\"> . <\/a> (<a href=\"matlab: opentoline('C:\\Program Files\\MATLAB\\R2025b\\toolbox\\matlab\\datatypes\\tabular\\@tabular\\dotAssign.m',508,0)\">line 508<\/a>)\nCannot delete 'BsG0_S3S30' from the table because it does not exist. Assigning the literal value [] to a variable in a table deletes the variable. To create a new variable in the table with the value [], use T.BsG0_S3S30 = zeros(0) or assign first to a temporary workspace variable."}}
 %---
 %[output:1a6d931d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1098,7 +959,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:31a277a7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8fe07ccf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1107,10 +968,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:17d1c91c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6f86febd]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8e0ed078]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1119,10 +980,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:298ec69e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4ee779b1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:248e1962]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1131,10 +992,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:84060908]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:08155abe]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:73710e2c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1143,10 +1004,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:44d899d4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:67388040]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:22a309cc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1155,10 +1016,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:85d54d6a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:993ae445]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:9b31a73d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1167,10 +1028,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:01d4841b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:15201ad6]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:95d59e56]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1179,10 +1040,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4a70d0e1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:86b42ed4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:1fd14807]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1191,7 +1052,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:938ffa44]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:44402cdf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1227,7 +1088,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:874d8ec0]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2dda597b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1236,10 +1097,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:128525a5]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:024dd3c2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:9becd61c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1248,10 +1109,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:340be5b7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4c73e2a6]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:5b500bbc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1260,10 +1121,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6c7e4d1e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:937e65fa]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:9f12749d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1272,10 +1133,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7f8f71b8]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:43df0a2b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:32d5edea]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1284,10 +1145,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:393188c0]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0e6bd3c2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:3c75499d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1296,10 +1157,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:32dc71af]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:87da0cfe]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:46e9006d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1308,10 +1169,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5d19fc14]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:44484d29]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:13089376]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1320,10 +1181,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0dfad22a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9e8c34ca]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:30f45b9b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1332,10 +1193,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:89715877]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0dc7802e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:10733847]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1344,10 +1205,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5d5d6928]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3753ca58]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:18baf1f7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1356,10 +1217,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:65ff9912]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6e9923ff]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:48540a2b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1368,10 +1229,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:38ea5b7c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:32e97787]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2ff26752]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1380,10 +1241,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:41376bf1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:907db972]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7981fd14]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1392,10 +1253,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:34d214c2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5c93efdd]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:36b55a29]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1404,10 +1265,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4b16883e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7cbe1379]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:4d89d53b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1416,10 +1277,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1b83538f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9bd1108c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:93686c5b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1428,10 +1289,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1c489307]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:367decd9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:546b111d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1440,10 +1301,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8213be0b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:90dc90d3]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:65f88126]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1452,10 +1313,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:66e55553]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3ce0b691]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:12129d59]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1464,10 +1325,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2b869b28]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:031c6712]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7cc6f0d7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1476,10 +1337,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:04817980]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3080e591]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:95524bbf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1488,10 +1349,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9d06bcf8]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:077691bc]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:29b4bdd7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1500,10 +1361,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:01853600]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:658072e6]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2801f0a5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1512,10 +1373,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5554bccb]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:506bae5c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:9126c750]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1524,10 +1385,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:89a59519]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3494b737]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2d1feeca]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1536,10 +1397,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6762415e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3e35ec14]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:96cdf2f1]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1548,7 +1409,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:89bbea40]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8e63cdb7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1656,7 +1517,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:75ffc104]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:37c3ae91]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1665,10 +1526,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:196d887a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9809bce7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:79fc8e81]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1677,7 +1538,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:36558d63]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4c536d58]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1716,85 +1577,85 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:997613bb]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6688afbb]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4135bf82]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:26c9cd1d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2895fcf6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:62d2836f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0ee813cc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:142b0a16]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:67f38a16]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:34ac7265]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4e51d712]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:64fe1588]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:3c2330cf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2a4c696d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6b30af8a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4fbb3e67]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:04e78057]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4b6c3002]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3024b889]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:43a1badd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:481b0c93]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3f3232c5]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4cb41de4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:213e149e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:99a27963]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:59bca9f1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1edc1436]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:92e45a27]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
@@ -1941,7 +1802,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:661c10e9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:278dc67f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1950,10 +1811,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8a31ff0f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:137e2f57]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:96b7b375]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1962,10 +1823,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7bf2a46a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:325839f9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:03ac8eff]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1974,10 +1835,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:795d3d1f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:22b85d3a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:918473fb]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1986,10 +1847,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:984e4182]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:639ee66e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8b67ce71]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -1998,10 +1859,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:56059f9f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:87e9be89]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6cb8b6ee]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2013,55 +1874,55 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:742b8293]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7141f281]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4afc3452]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2623bc39]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7fc0485c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:4fb6c006]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8561cd64]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:20d39efb]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:11431d9f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:048e97ef]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1852498f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9143a6f4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3380886d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:47ffb32b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8588c821]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:135e38ff]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:454c7f7d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:879c56fe]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2073,10 +1934,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5208834f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:76b6c351]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8bb63f0f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2085,10 +1946,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8ce8b5ab]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:4bf4381a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:79d6160f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2097,10 +1958,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3773d76c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6dd507d9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9b0c1f72]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2112,64 +1973,64 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0b9cde16]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1cf8bdfa]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8a595b1b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7c96b513]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:42879679]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:18d08194]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0ec79177]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:27737cda]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3b8b3559]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7d2f958a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:93559b24]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:470c9215]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:59c56c76]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5237cd0e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:508a7a92]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:4255bcda]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7ec81959]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0ade710f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5443e0d6]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6c9e2418]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:875fd8b2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
@@ -2223,58 +2084,58 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:25e66804]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:457f4c1a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7d574454]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0db7d784]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:454b51c7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:5c73b87f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:39652ade]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:74357a07]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:5b2412d9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0903c4a8]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:234929f7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:070a795f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:99479e13]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:103d094a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0404a91a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4fa9468e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0bde47ba]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:85260890]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:10db9db0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2286,10 +2147,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4b4c6db2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:64f5ee8e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:13139e4b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2298,10 +2159,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:21ba8c85]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:3d0fb04c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8f126aca]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2310,10 +2171,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:311a487c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2170f141]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6bddefc7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2322,10 +2183,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0817b4ed]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0ee7b693]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7a52dac7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2334,10 +2195,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5195e48f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:15c2e6a7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5d9bd20f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2346,10 +2207,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:80284d00]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:72e2ba8b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1835e793]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2358,10 +2219,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1c381965]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:224b96be]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:635c9b22]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2370,10 +2231,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6c09b771]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:80cf8149]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3daa6ac9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2382,10 +2243,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:758fd6f2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:753ef725]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7094ccf5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2394,10 +2255,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2169675d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:187dec53]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:38b46c11]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2406,10 +2267,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7350707f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:66461452]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7cc48811]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2421,19 +2282,19 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:112c2587]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4de3aadc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:008a21ee]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:43ad4fa1]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4edaac14]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8b903865]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2445,10 +2306,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6e9948b2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6f14ceca]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:883a501b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2457,10 +2318,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7cb08fa9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:469bc765]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:34071e90]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2469,10 +2330,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:97f618c7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1e270ebf]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:15b7c972]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2481,10 +2342,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6a45d3fe]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7c48b797]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7a26972b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2493,10 +2354,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1e52ecfd]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:34858ae1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6a5ad6af]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2505,10 +2366,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:29198aa4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:453264d7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6652ff6b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2517,10 +2378,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:833d3a1e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:52afc33b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:9965b3a1]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2529,10 +2390,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4b734d75]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8aa73ebc]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:99527e6a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2541,10 +2402,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:82bf6ca1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:83e751ea]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:959448c9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2553,10 +2414,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6d234253]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2ab8be3f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:9cfffedf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2565,7 +2426,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1ede8235]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:697cf7a9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2652,7 +2513,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:9a332fd1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:091957ad]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2661,10 +2522,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2c6fb989]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:9f5e9c1d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:72da9bba]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2673,43 +2534,43 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:42f90fcb]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
-%---
-%[output:1e8345eb]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
+%[output:1e8345eb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
 %[output:15513712]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8e53c04b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4c92f5a4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:30b4837a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:597192b1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:73cfa7ea]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:14a98fd7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:19e6b3fd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:70003f97]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:06c51ea5]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6c8bd1a7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:1a0bcace]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2718,10 +2579,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0251823f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:40bdd972]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7a040431]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2730,10 +2591,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:63115f0c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0801b24e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6d34fbf6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2745,7 +2606,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5acb435e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7dea8a02]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2754,10 +2615,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8f4f19a8]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0608e2c1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:4a8413df]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2781,7 +2642,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7d6d374f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:948cde65]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2808,7 +2669,7 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:623202dc]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9e71f5e3]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2817,10 +2678,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:456551ba]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:38a604db]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:960579c1]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2829,79 +2690,79 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6cc418b9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
-%---
-%[output:0c4e9014]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
+%[output:0c4e9014]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
 %[output:21cc769b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9f24076b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:636f52e4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0d7ea755]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5e89a2d3]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2483172f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:88df6649]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6334f9b0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:330ad32a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2dc7fc8e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:21c0df7a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8bb5f7ea]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3051a516]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:336c33ea]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0a085ee4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:3c466ec0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:015cb391]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4b57dd35]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:18ac3c72]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0da4bf13]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:30acf795]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8ac12db5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3e21333c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:19130dd3]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2913,10 +2774,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4c969a4b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:3205fcd6]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:721da8fd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2925,10 +2786,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:983aa819]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:3f0b16eb]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:88db5cc2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2937,10 +2798,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:75d9574e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7f438b82]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0f331783]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2949,10 +2810,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:235cad5d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:58b620ec]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7b41c513]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2961,10 +2822,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5ab2fc80]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2f71bef0]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:37cf23e7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2973,10 +2834,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:61077f08]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2e4725a3]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:50878f63]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2985,10 +2846,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4e23b6c7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:4278e853]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7c936736]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -2997,10 +2858,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8afe35af]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6f7c22ed]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:50dc6dab]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3009,10 +2870,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3d9c5eab]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:49c72875]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:84ee9072]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3021,10 +2882,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2d1a72fb]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8ad5b377]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:48e441d5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3033,10 +2894,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:36d3706e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:18b338aa]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5cf97442]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3045,10 +2906,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2c592f84]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:34dd8e79]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:586a6115]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3057,13 +2918,13 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:87fce924]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0b207c75]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:3675ed46]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:43170eda]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3072,10 +2933,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:66d74be0]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:68b65577]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7384198f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3084,10 +2945,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7698e34c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4474b738]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:191152a0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3096,10 +2957,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5b03e27b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3e4b2265]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2e2ff7bd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3108,43 +2969,43 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0ffb08e2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2c147e00]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:34fde0c9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:21ae4975]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:10b9104d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6566c6a0]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:5f904590]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:79bf07a8]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0186dc17]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:363c88f7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:36b180fc]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:58d87de9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8387a974]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:52c9e2c7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3153,10 +3014,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:66b7fcea]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:61607279]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:682774aa]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3165,10 +3026,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:752a74f9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6b516c0a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4094f7b9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3177,10 +3038,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9336c533]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8a8a2ede]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:967d09b3]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3189,10 +3050,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:74344efb]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:21aaddf9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:71e11d2c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3201,10 +3062,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:54be5c90]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:660ef67e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3398924f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3213,10 +3074,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:56970fba]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:06b0e977]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8a77ba81]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3225,10 +3086,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4e6de565]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6a74debd]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:842a63d5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3237,10 +3098,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:40de2c29]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:475024df]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3a5a4286]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3249,10 +3110,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8912acf4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0aefa498]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2532de9b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3261,10 +3122,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8ceeb71c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:80b37eb0]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9417dabe]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3273,10 +3134,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:87b7195e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8b698fa3]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0dfda2b9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3285,10 +3146,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1c185aa0]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:053ef558]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7f12dde5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3297,10 +3158,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2edbd576]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:714aef69]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:49946398]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3309,10 +3170,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:803b4b5d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7a4a7201]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9327ad9a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3321,10 +3182,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:941aa8b6]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:93e78f5d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1448401d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3333,10 +3194,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4664b6ae]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:387f045f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:24371ede]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3345,10 +3206,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3537b91a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0dcc4ea3]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:06638abe]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3360,25 +3221,25 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4ef77851]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8d5ffc95]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0d81dbe2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0b080ef5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:51290129]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:58623409]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:47d2303a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7c9fb410]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3390,10 +3251,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8638c5a2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6b284375]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:64c0ff0e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3402,10 +3263,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:624d246b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2b0f3cfa]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:89588526]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3414,10 +3275,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6e72b5f4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2f950a37]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:49dc6a9d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3426,10 +3287,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:92e68211]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:4b448e58]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9f7c6739]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3438,10 +3299,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8027f5df]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0a2a7959]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9c60dee2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3450,10 +3311,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4f71c328]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:20a37044]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4d127a48]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3462,10 +3323,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5aae1920]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:77fb2d40]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:18e5ffad]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3474,10 +3335,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5caeece6]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2c8dc615]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:07fd2a8d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3486,10 +3347,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0a545acc]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8f37d48b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9f6022a0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3498,10 +3359,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1f36175b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:5906e80b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:887499bc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3510,10 +3371,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2793d475]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:1edb9035]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6c7ae58d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3522,10 +3383,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0e363b82]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6e92393d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:11ccbdfa]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3534,10 +3395,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:570e88e7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:3900e64a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3575c0f9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3546,10 +3407,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:38cf78ae]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:0225c240]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6a0488ba]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3558,10 +3419,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:89f194b4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:7b7682da]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:31754962]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3570,10 +3431,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2e2db140]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:12f9ea2b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:16bbe101]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3582,10 +3443,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8e099250]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:82f43d66]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:68ac73ea]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3594,10 +3455,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5942e1fe]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:006fe226]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:22545626]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3606,10 +3467,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:585bfd8c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:1f6aef5e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2e2d6192]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3618,10 +3479,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:95b6eee4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:334cb600]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:20d579e6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3630,10 +3491,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:13e374fe]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:4dd2fc4d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0855a80a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3642,10 +3503,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4faf8252]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:792b81d4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7155133c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3654,10 +3515,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3c5bc103]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:4e1cfb09]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1924c3bb]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3666,10 +3527,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:95d5428b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8bf89b19]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4ddc9a86]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3678,10 +3539,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:39fe8ddb]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:27c2871d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1837d5e0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3690,10 +3551,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0c2d92df]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:554cc82c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:127911b7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3702,10 +3563,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:574e224b]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:45a4b885]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7de238d1]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3714,10 +3575,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:63c95266]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2e8866ad]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:259a3e07]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3726,10 +3587,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:87eaa7ef]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:85a3b8df]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:292ea369]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3738,10 +3599,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2706e187]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:9fc54de2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:597c3bd7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3750,10 +3611,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2b2bdb07]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:5fb95bb7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1c1f91d3]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3762,10 +3623,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:6ce147c2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:5f2f7ac8]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:93fe0ded]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3774,10 +3635,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5f667f47]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:5e2fa66c]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2c58805a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3789,67 +3650,67 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3f1f6d78]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:337611aa]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:66b4883d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:8721a920]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1d1581b1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:60705e91]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1cf2a9b5]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:516360a2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:938e7d01]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:59b8d9ba]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:80e8f246]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:1950cda8]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9a480775]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:976ba4c2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:571549bb]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:4d5ebce1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:822f0fdf]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:7bfd20d4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:82c8b830]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6a6f7ea2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:34e17c9e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4ae1df08]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3861,10 +3722,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:27533850]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:42aff600]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2808f36b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -3873,16 +3734,16 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0c83caf3]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5be3ca54]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:88fda62e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:77fb56cf]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:25ae451a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4107,22 +3968,22 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:367bb50a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2bcf67b7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3a60695f]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:2c697b5a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6f3bbe72]
+%[output:2c697b5a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
+%[output:6f3bbe72]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
 %[output:21f632a2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:13c77413]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4134,31 +3995,31 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2bc77e66]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:9325c816]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
-%---
-%[output:4459f20c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:19803d9b]
+%[output:9325c816]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4459f20c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:19803d9b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3aea5ef7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9d17b0a0]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:32b06ea8]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:831bf892]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2b31a37d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:2cdb3459]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4167,22 +4028,22 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:5490e1f0]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:797550e0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:64978c26]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:54c675cf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:46662cc7]
+%[output:54c675cf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
+%[output:46662cc7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
 %[output:457a8a73]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3384717c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4194,31 +4055,31 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:35d599c5]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:43bf38ba]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
-%---
-%[output:770bc4c8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1f6ca1e1]
+%[output:43bf38ba]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:770bc4c8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1f6ca1e1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1b2cfd90]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1d2abde9]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:93151d9e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:297189c7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:134a2def]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:306ba9c8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4227,22 +4088,22 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:03818a92]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:43c3bd7e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:20ac780d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:64547591]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0828ae10]
+%[output:64547591]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
+%[output:0828ae10]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
 %[output:5a559b7e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9956869a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4254,31 +4115,31 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8e2234fc]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:06b92d0b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:9047c90e]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:1fe031c4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1d2cbf9d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:10e22b02]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:8e8e61eb]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:47b6c75e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:3b262e29]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:54bc881e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4290,10 +4151,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:339585c1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5d38f3af]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:6d6ffd01]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4302,10 +4163,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:32b644ae]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:1d97f9c7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:2941dc63]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4314,10 +4175,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:0d577d2a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:81d5fd03]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:98c2f4af]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4326,10 +4187,10 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:5f2679e1]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:74ec2644]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:69d38380]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
@@ -4338,1235 +4199,4667 @@ plot_10y_in_two(BRW_result_MK, BRW_st,'y'); %[output:2b5e2d53] %[output:8dcac29b
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4f788cb6]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
 %[output:4f4e71b4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
 %[output:12f2f3c8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9fce8c26]
+%[output:67d4649f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8e8acdd1]
+%[output:9e0cdda0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0b6d3039]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:665d457a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:76148732]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9fbaba72]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9de1d054]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:99598631]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:99a888c1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1935039b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2764cea3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8d9e61d0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:761d0d20]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3f61426e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:43474f7f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0677bebb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7246af85]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:137ff240]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:07303485]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:63c4e12f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3ceac80d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1623d026]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5862ddd2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:46976e3e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:95cf5821]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1ebeed9f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:374a7a19]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:30c12796]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2e41aadb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2972a2dc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:98fa4d2b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:72571873]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:50a01290]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:326b8715]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:72fea0ab]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2ffeb845]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:43e83f4b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:75ee40ca]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5c99078b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9097e384]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:812dc5eb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1a62274f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:43eed418]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:204680d3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9775e68f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0c3855df]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:25e33875]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5e806063]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9ea7c506]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:30d15316]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:495a2236]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:10d7acc6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6071fc59]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5d614f7c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9e7cb58a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0c48a3cc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:37ce7784]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:583e5487]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:343ab644]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:497623aa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3e48d93f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5cd7547e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5d0b0ff4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9e54eab1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1b723b65]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2047c511]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:87b50185]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6ec126cb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:01edad82]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:01f13939]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2e91b473]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:90426e8c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2db378ef]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6eb51b03]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0b7cac90]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:27b08062]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:53448ab6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2f5eae9e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6d4851d3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:68260f97]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:00433012]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:03a2d693]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:48128d6a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3042d64c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8a5e9051]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:23c19e0c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:420497b8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7452df56]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7a736a82]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:76fe587f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7dfde792]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:59cbd61f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:40f048b9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:18aadaba]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:413b3f92]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5d10677a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:32c834c1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3e9b45ce]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5ac1acb4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:925368cb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5b7b5d88]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7ad62ba6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2117c05d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:79165849]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:05ab930e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:226a1551]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4f13862e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:505359ba]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:30a55861]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9df1eb23]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:05db6a0b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:50a68c5b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:58bf8f3c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:494a2544]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5c7fa512]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:88439206]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:402cd7fa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6d727988]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8e52e816]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6c3c05c2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:225e283c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4d075d6c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6a852b34]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9dd8819e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9416bc8e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9a21e657]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:17bf66eb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5c9f6557]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7deb8f7a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0b3568db]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0bd65661]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:85f53734]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:387e1835]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:50f99c17]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5c2c9cce]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:79f2d8a5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1640effb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:30bad384]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:622f2875]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2a6db916]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0bc7e39b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1d9aa334]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6822ab16]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1d78aa78]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:513b5870]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:16d85161]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3b8a08dd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6d447256]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:01b7c5cf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:529e6bf9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0a2bdb55]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0e8aaaf5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4db64809]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:23883739]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:57c19e61]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:761647bd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:13e0d75a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1307ef03]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6960a139]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:642d79d3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4817e881]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6b411a3d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:32d574fb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5d5d6f3e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:80b83034]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6cc388f7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9b58a23c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:351821d8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:799097b0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:799a2222]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:751187aa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:93c84f38]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4ab507e0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:27fc40c2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0cd7f1a6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0ce166ee]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7af87bf1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7a0a17ca]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:92ab2c20]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6288e5e7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0a6e18f7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0a176729]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6e628886]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:659c02bd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:33ff1abe]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:15b24b94]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4dbe7346]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:26d28852]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:14486678]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1c8dbbdd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:25446015]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8a26ff36]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1079d9d5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:532b75d8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:594b51c6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1e030c7b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:24f94620]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6f22a0e4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9f875c39]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:23bc46ed]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:89e084da]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:60680960]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:95bbfda0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:61c2c8ee]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7f0eb7d1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:618c5168]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:14be3dfa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:38627e4c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0d726a71]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2432710f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:29d789ca]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1a81a99d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0e5ba1ac]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3fe4140f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:22bc5f8e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6a2be139]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:98b7854f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:97daa11c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3de97246]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:90d3f02f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3169c5e4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8cab4c98]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6f8cacdb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:669c3baa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:75abd782]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:79558ee9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:878b3c2f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:39376864]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:494dc585]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7bf9cbe3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5c76acaf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5ee6f087]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:35dffbc2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2f7a0691]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1771c5f5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9a52888a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:588a5069]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1094d469]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0bddb1a1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:069a3b96]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:96e85c40]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:42e7542b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0dfbdc8b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6a4f5f2b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:489cd351]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9e31f403]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1341bf5d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:804f7253]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:40035a89]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0670583c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4d2b7df1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:92114223]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8ece0d9f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1fc1adf7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1285432b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:33a705b2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5d8dd318]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1a765f3e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7f30baa3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:254a4d00]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:35056cc3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:12083e87]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:323b064b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:855404f3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4655327e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8b0d5cbf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:59e15eb0]
+%[output:45eb5feb]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:62b3010b]
+%[output:8e7b94db]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5eabad07]
+%[output:56a167fc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4d2ce568]
+%[output:48fc1d9b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:75696798]
+%[output:002181ae]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6afb3625]
+%[output:53c4d703]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:08d722eb]
+%[output:96c83a29]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8c894d46]
+%[output:1cc98398]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:8429d51f]
+%[output:2f373d5a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:64b8861a]
+%[output:8dfa3675]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:762dd105]
+%[output:3f7de47a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4370906a]
+%[output:8ab75b05]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:65bdfde5]
+%[output:78d01d21]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1284b270]
+%[output:13ccb897]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:049bce27]
+%[output:6390c0fd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5ec7eacd]
+%[output:28c1feba]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:2bd5c28d]
+%[output:079374d7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:64cf91d0]
+%[output:5da4659e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:77bd1596]
+%[output:1d882d06]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:95c4cf8e]
+%[output:6df06c49]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:6e10772d]
+%[output:64f922dc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:36cb4271]
+%[output:9207c7f1]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4432ddb3]
+%[output:7ffa277b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:318b240f]
+%[output:6a9daaf7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:7c05cced]
+%[output:6339c644]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:72691f80]
+%[output:78bbd259]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:29f350e8]
+%[output:02d2b3ca]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6cccb46a]
+%[output:5845d840]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:87053d98]
+%[output:350b65bf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:90f70cbb]
+%[output:2684b348]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:016de8a4]
+%[output:9ecb2ca2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9be0c838]
+%[output:89f08391]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:30ad95e5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2cc87424]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4f28d897]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:180fe098]
+%[output:0cb25264]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9dc2d412]
+%[output:2482bc12]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2d7488e6]
+%[output:8b90400e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:64fd04d8]
+%[output:6742217e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:6adcddaa]
+%[output:02656923]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3a65b52d]
+%[output:6e4ee37f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:415f2770]
+%[output:09f121b4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:262d8efe]
+%[output:922375a8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:161b01c6]
+%[output:5f085ef2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2ca79f1f]
+%[output:453aef2c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1ecb8272]
+%[output:7b8de5bf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3806cca5]
+%[output:5afdf3ba]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:837753d3]
+%[output:8a3f2782]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9caa9acd]
+%[output:1da5c1c7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4b4fd6d8]
+%[output:3f6183e4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3d115eb1]
+%[output:8283c67a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:3bcb2e2d]
+%[output:29ae0c19]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:698906f8]
+%[output:8ca58c23]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:20d967a2]
+%[output:9fbe16fe]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6b64e99d]
+%[output:5f25d80d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8cf93ee7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6e8f14b8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:76a0f9bf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:134338bf]
+%[output:9fd6209f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:66d8092b]
+%[output:61d6acd8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3ddad206]
+%[output:3a8cce0c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:92a6b2b1]
+%[output:197dc401]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:1be50e99]
+%[output:44bf8509]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:15341366]
+%[output:89e0773f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:41c7f270]
+%[output:348f40ee]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1cc42e2d]
+%[output:64fa1a60]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:53ff2ee0]
+%[output:81b04c90]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:40f8d912]
+%[output:51da59dc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:133a7222]
+%[output:25b6a4ef]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:50845773]
+%[output:3732c93f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:34201cd3]
+%[output:142feeb8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:07626141]
+%[output:60292b2d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:600aaae9]
+%[output:646cf396]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0b18bfcb]
+%[output:72a495af]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:4b98efdd]
+%[output:5de2c74f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2908d658]
+%[output:1781cb6c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:7fbedf51]
+%[output:01691c52]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:95794977]
+%[output:1be70811]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:665a6e71]
+%[output:847b0d16]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9a1b1d2e]
+%[output:2f97abd9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:216cc764]
+%[output:47dae02b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:292d2644]
+%[output:8677fd68]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:2b697c46]
+%[output:9cc0d729]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:31b41ca5]
+%[output:5d61aaf4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0506da1d]
+%[output:58cee9be]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:376c811a]
+%[output:01fcf444]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:488acef2]
+%[output:194e2fc7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5cc8013d]
+%[output:52a95ed6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0ff8c225]
+%[output:4c5328bb]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0724480f]
+%[output:993c1df4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:235421d5]
+%[output:790ddd1c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:74f91fec]
+%[output:706628e6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1c08d450]
+%[output:55853ada]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:09afa47c]
+%[output:5cd73f0e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:27b24d5f]
+%[output:1a1662c4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3706599c]
+%[output:471c26ce]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:63019134]
+%[output:27f30a75]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4b482c6e]
+%[output:13eabec7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:47388617]
+%[output:7c8f710c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4e851a44]
+%[output:99a6eb62]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:27e50fef]
+%[output:7e32c918]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:448b63c3]
+%[output:15c9d771]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:4d63c7e0]
+%[output:7752e6ba]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:08aa47d4]
+%[output:9721c460]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6d77c0d0]
+%[output:7ec915a9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5db06ee2]
+%[output:9d631b47]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:59c85068]
+%[output:581aec3f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1c0712a6]
+%[output:6974ba62]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0d629e19]
+%[output:71bd74e2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6a6f634c]
+%[output:7c9b23aa]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:4132c1bb]
+%[output:2ecec322]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:45f9817a]
+%[output:4d9f796f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:640f8f1a]
+%[output:571b729e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8ca598ed]
+%[output:97e718cf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:759f3d8a]
+%[output:72485a3d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:82089c30]
+%[output:9a327883]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5a3ee51e]
+%[output:419dedf1]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:7874c0ef]
+%[output:88fbbca5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:6a3aaa28]
+%[output:523e9971]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:41fc1ba2]
+%[output:86795c12]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5b4f39bb]
+%[output:389fc8e6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:04f7f0cc]
+%[output:0eff3809]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:1e4e55ab]
+%[output:35bcab0b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:973717c7]
+%[output:839c4d90]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4dec8759]
+%[output:485f12a3]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8e9efc3b]
+%[output:74a60b48]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:6904849e]
+%[output:472bca99]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4946c2e5]
+%[output:8d8b7e28]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8c6051ca]
+%[output:23757618]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0951f871]
+%[output:4a24609d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:15164b74]
+%[output:6eba130f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5a076e2f]
+%[output:008b2ee0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:020d1bbe]
+%[output:93b99ca4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8fa77a60]
+%[output:4b81ff2e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:96472f79]
+%[output:7722cfc0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:999ea3ab]
+%[output:4a7c87ff]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:025f8052]
+%[output:0df96489]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0b841185]
+%[output:166f89de]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:23431ee5]
+%[output:0ec7b580]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1f1f4fc8]
+%[output:82e38465]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:698074dc]
+%[output:05c35e82]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4bf87e74]
+%[output:3e24637d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:1623a8bf]
+%[output:649e55f1]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:31664ea2]
+%[output:5985f94c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:26dd6d91]
+%[output:03d9874f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4b82ecf0]
+%[output:00b802f5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:515739af]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3e37efd3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:06e48b48]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:7aa0429e]
+%[output:1307e453]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:33414c29]
+%[output:7a52dc21]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9ea249f3]
+%[output:78c32ff0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1e15d10c]
+%[output:21bbdd1c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:3fdedfa2]
+%[output:4709fb01]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4a1dd1d8]
+%[output:4c6945db]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8b95b246]
+%[output:0dc8ca2c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:14c2dd07]
+%[output:7b0608da]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:0876fae4]
+%[output:4c5ec070]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:08d1e8d6]
+%[output:851ed762]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:415c56cd]
+%[output:59b338a9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5708f700]
+%[output:6c484356]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:86d52a14]
+%[output:0c56a874]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3675ed81]
+%[output:6aba0c4e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:28ce86f7]
+%[output:4381e90c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:409b82bb]
+%[output:744b45c2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:59b5e8bb]
+%[output:65d4d8a6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:7570c643]
+%[output:40e6b0aa]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:69a79924]
+%[output:5ee4043f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9ffd4381]
+%[output:1227cc3c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:39cb4046]
+%[output:75aad05f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:7e5b1f12]
+%[output:4df85a43]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:46078d26]
+%[output:444fdf86]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:32350b6c]
+%[output:1d906467]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:1126984d]
+%[output:8a15888e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:611eb2e6]
+%[output:9adaf37a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4bbdc540]
+%[output:6b8efe90]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5207df31]
+%[output:821b0184]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:30055fa1]
+%[output:6471534b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2373c263]
+%[output:95fac716]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3eb2ea88]
+%[output:522e6250]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:45cdad1f]
+%[output:1e36e552]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:0af0c331]
+%[output:13dc14f4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:311128d8]
+%[output:51ed18bf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:08004ff4]
+%[output:45d7858c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:742655d8]
+%[output:6410adcd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:9e22d5b4]
+%[output:6c817e89]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6044389a]
+%[output:1d3f73c0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4a20a12b]
+%[output:071ee91f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4de3e458]
+%[output:93760aaa]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:0975e141]
+%[output:07e0d602]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6780b77f]
+%[output:5947e9a7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:343a86fd]
+%[output:34d35ca0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:82787bfe]
+%[output:1bc72563]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:7d4941d1]
+%[output:31357896]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9d6748ca]
+%[output:60fbdd18]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:33d34aaa]
+%[output:874a956f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:614a4538]
+%[output:2ac32125]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:55a82622]
+%[output:7c425f8d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3f0a7ced]
+%[output:7828c641]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6fad765a]
+%[output:7c925f22]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:77ff3e93]
+%[output:62be5cc2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:3b03efe3]
+%[output:579a0b45]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3646c97c]
+%[output:5675d56b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:80b8fc47]
+%[output:297119c8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:78ab6f4b]
+%[output:06f94e52]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:08e32479]
+%[output:239bcabe]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1e66b98f]
+%[output:54f79a2e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:38190043]
+%[output:7b603af7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:38bb8c11]
+%[output:42791e4b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:7811609c]
+%[output:992c3f08]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:82c8d038]
+%[output:64c653d0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8071b92e]
+%[output:8b530051]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8861bee4]
+%[output:20bcca1a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:03fda433]
+%[output:11bcec20]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0861bfb8]
+%[output:05d75d5e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:09063253]
+%[output:6ced4381]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:38721af6]
+%[output:6c3a5ff1]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:3878f7e8]
+%[output:5e56df8b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:61ea03b5]
+%[output:43ee64f2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:815ed6c6]
+%[output:97434ce9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:41e2b519]
+%[output:49e68588]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:49867fe3]
+%[output:59786baa]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3ac276c6]
+%[output:5b1e622c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3f7ed5f3]
+%[output:07042ed2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0f01b1d9]
+%[output:8658390a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:51ead3b8]
+%[output:7a7a99f8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6954b36c]
+%[output:0a37aa50]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5eacbc6b]
+%[output:975f28a7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:160eb0ef]
+%[output:2d2d6a85]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:70e85d0b]
+%[output:278b81a0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:11acf8d2]
+%[output:6dc65d00]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4af6e2ee]
+%[output:0b493abe]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4e997625]
+%[output:23f79076]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:57109d9f]
+%[output:89184c2e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9014a0eb]
+%[output:407c20c9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5bbfa668]
+%[output:177860ac]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:57aa0885]
+%[output:3cf3f165]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:4823c304]
+%[output:78fa46bd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4ce2860f]
+%[output:93fb6416]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:112a2c68]
+%[output:94863d74]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8e622b17]
+%[output:11ba9b4c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:8138c763]
+%[output:4f97591e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:98bf3f39]
+%[output:66ba48f6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:43a0ec4d]
+%[output:5d453ff0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:74bf838c]
+%[output:5910b602]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:905c740a]
+%[output:71fcc425]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:158387e2]
+%[output:92906f6b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:536df220]
+%[output:40c6b934]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:300f1eed]
+%[output:27de264b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:0c4ef80f]
+%[output:145b9841]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9304604c]
+%[output:40b9fc49]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:196a9d10]
+%[output:976ecd41]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:46792483]
+%[output:009b9d83]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:37dba0d6]
+%[output:62f64890]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5fba7732]
+%[output:6b538123]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:931b9515]
+%[output:8efabc44]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:734fb0ff]
+%[output:4fb948ee]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:53c2b438]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:92a51c96]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:430e41ef]
+%[output:6f8aae92]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4ae5c49d]
+%[output:26de4ece]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9814d4b4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:670bb8ab]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:05a948ca]
+%[output:244b0e9b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2beff939]
+%[output:5a665ac9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:86aa6b35]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:91ed1a99]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1494941a]
+%[output:395d78c8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6d1544b8]
+%[output:799cd3a3]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5630bb82]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:13743b4b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4e83da6a]
+%[output:7a4199a0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:36736ebc]
+%[output:34119526]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:0ff5d822]
+%[output:4479e3b8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:3001f108]
+%[output:0beac469]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6eb06652]
+%[output:4a10c6bd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5db1a1f1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:614e2e40]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8e06d8e3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:22c53bcf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1c96f001]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:62ace964]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8e1c68bf]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:06160112]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:95c57c56]
+%[output:8a8c186b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8c336f53]
+%[output:14e74ae1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:69854e3e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:55704137]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:63dca84c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:39180e8b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7856fa49]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:81b8313d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2586ba6b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:84290eb6]
+%[output:15196897]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:641aa428]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:07828f93]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2814c7a3]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:961d2d14]
+%[output:0f5652ad]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9cba3311]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1df52f65]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:48719809]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:700678fd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:4bf02bcf]
+%[output:293250da]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:130d1473]
+%[output:20789b6f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9fd94820]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:03d062d5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:164d12c1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2131ddf9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2be64074]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:578fdf12]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:5a28f104]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:17f8ba08]
+%[output:68e7d81a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:72771ad5]
+%[output:93bea9a8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7774f180]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:495fb57a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7c57f034]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0b24147d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:24369605]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7db1dba9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:04da8cdc]
+%[output:80e5033a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1043d283]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:51176c6a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:48b94a28]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:4792d246]
+%[output:0f044448]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3b44c548]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8a7c4199]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:31a4b364]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0b0787b0]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:1379829e]
+%[output:0a83c526]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2e096717]
+%[output:773d97aa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:47c2d859]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:60da6422]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0c9f3a0b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4cd27df9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:379436fe]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:68d7579f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4a11aa6f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:06615686]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:96b5604a]
+%[output:765817dd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3a00294e]
+%[output:88ba3736]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9b539c0c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:88cc8ac2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:55155896]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3cc8d5b2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1759c647]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1ecce73a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:57f9c687]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2f4789b9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4f682b8a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4d5d1de9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0b416b7d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:270240f2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:723c5045]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:86f73dfc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:33e84adc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:60d2ced1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0bad9679]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:26d9778e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:699a18c9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:89d21e33]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2dbb107d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0f729257]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1316a092]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9ffd965d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:89a5fbd4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:58acac1f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6ca9239f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7988adf9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:45e4edce]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4a1f824b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:959819b0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:92120768]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:49f70b33]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:67432884]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:895c42a2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:812df8d7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:16e488e3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:41f2923d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7f334eeb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5eeff1a4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2ab71e87]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:07e28390]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:22038812]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:736acd05]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:70f830f5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:51b12777]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:35bf91a2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:88828cfe]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1db79aaf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:68583dfb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:23f92763]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0f6e0587]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:066e3c5a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:99a44186]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:572f7343]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:34176f95]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0d287aa0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0c7129e5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:149d493c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0e4f977d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1bd17cfd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2856ad6d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:592dc527]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6f471478]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:95738865]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0c5e54ca]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4b92eefb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:17d8bf04]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2f99ea5e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6ff8ae3f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9ff4fcc2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5fe4665b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9b77d868]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6ce3a7a6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5b8b01e5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:200e7cb7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7b7369f4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0dc3c9d3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:39dec4a8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7953c2e6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:49693945]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:16422f80]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:70430658]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3cae4c1e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9edd77cf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6127f0f1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8ef2719e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:279542f7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:50a8d3bb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0bcd6429]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4beeb40e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:77648f37]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:59e0d2c5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:580b4dc1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5fa5857f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1c977cae]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8eafcaf9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6ca64294]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:72c65301]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1d7f94b5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:04130bff]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0e30a1ab]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:18e9e11f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:27674809]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9d7002d4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:418f95ce]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2c811d35]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8ee28afc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3f6f4d48]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:96757d87]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:04b1952f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9226e66e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:928c2ff6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8f277d4a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:940f7643]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:63fde13e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1b09f981]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:738a7a29]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8a1aa569]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9ef87133]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3279a919]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0ae29569]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:03c972c5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9f1c3495]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5f1d3331]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3ea129a5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:30cf2c9a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1d783524]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:663e1ee1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:52a01cad]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1b0da752]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:32c370c1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0f352396]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0be73d84]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2825f824]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:455165c8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0014d4bd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:03504aae]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7669f20d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3fa3440e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6f6d0f3e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:51f8cd54]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:75ce3df8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:786c44c0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:91e365c6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:80b86e44]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2eb70ff2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:014ecd58]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3369c2b9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:815b35d4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9452b033]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:150c3479]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6b4347c6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:35a8ac56]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8b890b43]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:97331f43]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7ce9c94d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:481f71e1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3371e760]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9b850a5a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2e5c4886]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:25ba1ac9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:938ee6b8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:064e3e42]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:664dfb89]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6217d75d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:51b66828]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:222b49be]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:86d9d598]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:55cbaaa3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2feac792]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8340fa75]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:086fc12c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1fce6c76]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3c7c2096]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:59de9faf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6ac47599]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:539f56f8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6252c30e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:368df944]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8c333f62]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:679b3d76]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6a5837b6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:345c63db]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5405f067]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4da1c54a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7378e65c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:39a03f01]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5265e380]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:76aee1eb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:55de75f6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:864337b4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5e399c31]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0e2c4766]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9b3dcc7c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:47176382]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:929e2be5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3b5456fa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:699f0ac0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1d6e9e86]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8ea78f57]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6da35736]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:88d0fa8f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8f4c0949]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1e55e069]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4eccc0d3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:22c2f0ab]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:77ab0f69]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:61b578e3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4418a538]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:577b3ad2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:06185cef]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8f508b40]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:586897f1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:77f5e924]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:39e8a051]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6cd885ef]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:907e2d0f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:206a6d7c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:928d7028]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3ecd7a8f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4d583c4c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:930a3f1e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:285110be]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:120ecb89]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0bfe3b70]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4f2147ad]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6c45117f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:82dbbd37]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:544a9231]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8be28180]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0bc8f7c1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1fee6824]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4072a0fc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:505367bc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9a9bc25f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:542fe636]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:934ab92d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:917aab98]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:65a6f6c6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:16fe68b3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2fe359fe]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7067095d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:97db2197]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8573531d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:361314f1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:55f218c8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:486ba7ca]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:70b0a8ae]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8296999d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:453bfa31]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7c656203]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0f271821]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0be699fb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4d23f8e6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:201d73d4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9b67e889]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9c87c3f2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3bf84064]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7f92fba3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:17540ef7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:42504ecd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8e31910e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3e024ea5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0abbff9f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2919cae3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:83f77888]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:478ec03e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0f37217c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:022ae550]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:12032b4a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:05ebef81]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:655bcabd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:05820577]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1c6e7405]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:415a0e41]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:715bed63]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2bf5cf70]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5b31e1e5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:60c616ff]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:78163ffb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:79209768]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:297a5b07]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:806cb1a1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7a42be28]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:94612da5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:2be47f69]
+%[output:6c64e8f1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:98f9dcbe]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:419be82b]
+%[output:6eb97f16]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5de2cc45]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:44cb88ca]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5d8e6622]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5aa2a68b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8cae9f00]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4c9f7998]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8d7ee1ea]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:221d3d10]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:343ac351]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:308a2c72]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:552567d1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:689da17a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:24cc3bc6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:36943925]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5c0ca563]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:976ef4f7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2f5060a5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3371b0fc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:47aa55af]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:016220bf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7f616a67]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:88404826]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2220331e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:849a735f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:506c223f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0afabfdc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7d9d64a7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:13c0459b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5ae7143e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:30734195]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:80562a9d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8b3dbc4d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:61e2410b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:41311589]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:42c1bc90]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0de4d03f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6b39fca8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4c95a6e3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0b12b34d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5fc18053]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8b5adb59]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:020647e0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:66698d0d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:80c380d3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2e23abdd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:806fad47]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:623ed63b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:03bf74cd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:84dcdca4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8760e01c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1145aa2c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3f7c03ed]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:99b1b93f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2b68b300]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7c12e1d7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:14aae969]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4b601021]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:084d9598]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:19a8ed18]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:65a49127]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:611152ed]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4a961c66]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:64d5fe13]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:22ab7464]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1b5c0dd0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:99c54a1a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:91bfb35c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:79611708]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:006b7de0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:61a15a78]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:01d57ae2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1205d11e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8d5c0c10]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:35206373]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:4941d267]
+%[output:5d7defcd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:25fad3b3]
+%[output:4c211be5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3be6e255]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:74414eb2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1e431866]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:1fe1a0ff]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:6ecd3117]
+%[output:4dfcf25e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:31278e7c]
+%[output:0458d482]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:359c584c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5667cf60]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9687c67e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:976d4914]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:4a0aa4e3]
+%[output:33528839]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:463941c3]
+%[output:1f0c8b52]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7da91a73]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:179bf83b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:02895f06]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:465729e7]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:3a654664]
+%[output:9677e3c6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8368355e]
+%[output:90a77b41]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1ed3464c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:66601631]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:176a0ac5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:9f8e31b5]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:97c13263]
+%[output:31ca3fd8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:20ed1d48]
+%[output:0b6c612e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:286834a9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9189f8ad]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:71d55744]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:41b33526]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:098163de]
+%[output:51463443]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:35f2d269]
+%[output:9efa67fc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:83f712c1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7f8609ea]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:991f70d2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:092ad1d4]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:67de3cc1]
+%[output:3637cba7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:67c33165]
+%[output:77d350c2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9d172f85]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5daf6efe]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:90fa2ae6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:920781d3]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:751c01f8]
+%[output:16ebe48a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:767fba1a]
+%[output:76295b78]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6406f22b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3cf51fb2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5d740cd9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:6d5cf8e8]
+%[output:878dcc2f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8203641d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:88b98ccb]
+%[output:4e78cad9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:570cc0a8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3c7d5b4c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:51acdd25]
+%[output:9a184af6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:51f52304]
+%[output:3f8bde14]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4df58246]
+%[output:746c199f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:667645a4]
+%[output:316f8a74]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:333395fb]
+%[output:7fed47cc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3cde3f37]
+%[output:3cbb0e2d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:02c0e161]
+%[output:9a51ba0c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2d18ebc1]
+%[output:24903316]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:2b78fa34]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
-%---
-%[output:5846c457]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
-%---
-%[output:5d317eb2]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
-%---
-%[output:3da0030d]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:8f342e70]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
-%---
-%[output:5921627a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
-%---
-%[output:2bb36146]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
-%---
-%[output:74a00d3a]
-%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
-%---
-%[output:010de11b]
+%[output:69491921]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:1ca71d03]
+%[output:0994489c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2ff7198c]
+%[output:5a8c7f1a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3dbdefee]
+%[output:46a0cf4f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0ba9db33]
+%[output:0922354f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:82a4b16c]
+%[output:4e17a5f3]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:031ad614]
+%[output:16f186a4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8f755101]
+%[output:3d27272b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1c0bd465]
+%[output:2cdad14d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:8ee9e4a4]
+%[output:733d9ed6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1b2792a1]
+%[output:6a6bcdd4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2755528e]
+%[output:1ff773a3]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:10f13a7d]
+%[output:563f32a9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:50cf9a75]
+%[output:4acf3a67]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:15e7d571]
+%[output:9c708e0e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:381d2c15]
+%[output:92d63e72]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3ced0cd2]
+%[output:6070f6f7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:3034305f]
+%[output:711b6604]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6c9d9f9d]
+%[output:10ee5620]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:426c7b1f]
+%[output:77769871]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:7c9dfbc0]
+%[output:4be26cd8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:190b393c]
+%[output:73f0e7a9]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:74db290e]
+%[output:598219a6]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:51974500]
+%[output:0b58b3a8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:714530bf]
+%[output:7d5cc8dd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:6e4e60ed]
+%[output:6d794174]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:15899809]
+%[output:106e1883]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:333aefcc]
+%[output:84f5e974]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:71443a11]
+%[output:5f6cb2b1]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:683b1ab2]
+%[output:908f0d98]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:4d02dcc1]
+%[output:4f994b9e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5351b481]
+%[output:36f30acc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3deb909c]
+%[output:0b43684e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:7d103324]
+%[output:1f9adec4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1ae545aa]
+%[output:2b8d9e1e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:866198af]
+%[output:8383f4cb]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:70023555]
+%[output:5705358f]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:6404b111]
+%[output:04412afc]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8a6f2990]
+%[output:21884795]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:7bd9e406]
+%[output:3ed89835]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0468ee64]
+%[output:263274ad]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:4ec439ed]
+%[output:3e5a20c2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:97afa3a5]
+%[output:1b836e91]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0f886cb8]
+%[output:7e8f1cdb]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2ab8675c]
+%[output:8cf78d7e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:21cc4258]
+%[output:46ee256a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8d4b1693]
+%[output:0d9a0261]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:9700c28a]
+%[output:1eafd698]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:37ed52b2]
+%[output:739af566]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:6cd0d63d]
+%[output:47d0aff7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:06801188]
+%[output:41beb7f4]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8a77a511]
+%[output:0c1e3a4d]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:76bb44b7]
+%[output:564cb46b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:398ac965]
+%[output:40b12c44]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:55574715]
+%[output:0ff329d8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5dc3be4b]
+%[output:502bfe75]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6cbed04f]
+%[output:604335c8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:1c2d0c14]
+%[output:75988d4b]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:0858d5bf]
+%[output:3a99c051]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:1957b074]
+%[output:4395a1b5]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:00160ca7]
+%[output:0b32b2f2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:2231c7a9]
+%[output:885f9a17]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:6349738e]
+%[output:03c23071]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:26d81c93]
+%[output:67d8966c]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:25138e8c]
+%[output:02cc1c29]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:7d7e0380]
+%[output:2a006c80]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:7a5c39ca]
+%[output:0343c1d2]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:453199f1]
+%[output:4feaec59]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:51dfbb4a]
+%[output:7eaac0e3]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:74f8b9e3]
+%[output:3a7a6647]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:862b215d]
+%[output:7e176b3e]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8e3e4e8b]
+%[output:9d30311a]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:06bc1bb1]
+%[output:9938efa8]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:794f529f]
+%[output:590e3702]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6b346380]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2d40d8d6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:64b2a5c8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7255f7d9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:251aca26]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:699921ae]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:13a5a259]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6769b710]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9e57fca6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9f2f05ac]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9f15c02d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:214ac371]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0582a2e6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:60bb2e9c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2f12491e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:102dac56]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:474ead07]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6377e7b4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:79f94a8f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:49238d14]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3b8657ad]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:83efc422]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3c02e4fe]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:82fc39d2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:018719c8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:49d53b42]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:61f32cee]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:676c34f2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9b92e358]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4300a1b9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8852d368]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:58d48393]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:92888563]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6d270f07]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6ede0ae1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9657f593]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0db46d5d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6ace1df8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:59c165cf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:65954e35]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:0f1a0b54]
+%[output:92f3f4a7]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:3b33ae72]
+%[output:2bc8cedd]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2dac6c13]
+%[output:68005111]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:45f25bc9]
+%[output:0fb71617]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:37771f7c]
+%[output:838bae79]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8d42183d]
+%[output:29ecd218]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:5c1f4605]
+%[output:13bc4764]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:82375a87]
+%[output:89542deb]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
 %---
-%[output:9779c5d3]
-%   data: {"dataType":"tabular","outputData":{"columnNames":["station","end_time","length_period","granularity","parameter","instrument","MK_seasonality","method","ss","slope","UCL","LCL"],"columns":12,"dataTypes":["cellstr","double","double","cellstr","cellstr","cellstr","cellstr","cellstr","cell","cell","cell","cell"],"header":"3594×12 table","name":"BRW_result_MK","rows":3594,"type":"table","value":[["'BRW'","2025","10","'daily'","'BsG0_S2S20'","'neph'","'y'","'MK'","-1","-0.0349","0.0198","-0.0901"],["'BRW'","2025","10","'daily'","'BsG0_S2S20'","'neph'","'MetSea'","'MK'","[-2;-1;0;0;-1]","[0.0989;-0.0297;-0.1580;-0.1420;NaN]","[0.1971;0.0263;0.0508;0.0375;NaN]","[-0.0007;-0.0890;-0.3692;-0.3233;NaN]"],["'BRW'","2025","10","'daily'","'BsG0_S2S20'","'neph'","'month'","'MK'","13×1 double","13×1 double","13×1 double","13×1 double"],["'BRW'","2025","20","'daily'","'BsG0_S2S20'","'neph'","'y'","'MK'","95","-0.0566","-0.0352","-0.0781"],["'BRW'","2025","20","'daily'","'BsG0_S2S20'","'neph'","'MetSea'","'MK'","[-1;-1;-1;95;95]","[-0.0471;-0.0054;-0.0454;-0.1967;NaN]","[-0.0028;0.0152;0.0230;-0.1217;NaN]","[-0.0932;-0.0254;-0.1136;-0.2730;NaN]"],["'BRW'","2025","20","'daily'","'BsG0_S2S20'","'neph'","'month'","'MK'","13×1 double","13×1 double","13×1 double","13×1 double"],["'BRW'","2025","30","'daily'","'BsG0_S2S20'","'neph'","'y'","'MK'","95","-0.0326","-0.0206","-0.0446"],["'BRW'","2025","30","'daily'","'BsG0_S2S20'","'neph'","'MetSea'","'MK'","[95;-1;0;95;95]","[-0.0408;0.0038;0.0187;-0.1261;NaN]","[-0.0164;0.0144;0.0532;-0.0876;NaN]","[-0.0651;-0.0067;-0.0150;-0.1645;NaN]"],["'BRW'","2025","30","'daily'","'BsG0_S2S20'","'neph'","'month'","'MK'","13×1 double","13×1 double","13×1 double","13×1 double"],["'BRW'","2025","40","'daily'","'BsG0_S2S20'","'neph'","'y'","'MK'","95","-0.0333","-0.0262","-0.0404"],["'BRW'","2025","40","'daily'","'BsG0_S2S20'","'neph'","'MetSea'","'MK'","[95;-1;0;95;95]","[-0.0836;0.0027;0.0240;-0.0903;NaN]","[-0.0652;0.0104;0.0431;-0.0652;NaN]","[-0.1022;-0.0049;0.0050;-0.1158;NaN]"],["'BRW'","2025","40","'daily'","'BsG0_S2S20'","'neph'","'month'","'MK'","13×1 double","13×1 double","13×1 double","13×1 double"],["'BRW'","2024","10","'daily'","'BsG0_S2S20'","'neph'","'y'","'MK'","0","-0.0273","0.0255","-0.0803"],["'BRW'","2024","10","'daily'","'BsG0_S2S20'","'neph'","'MetSea'","'MK'","[-2;0;0;95;0]","[0.0798;-0.0169;-0.0898;-0.2017;NaN]","[0.1851;0.0387;0.1031;-0.0336;NaN]","[-0.0230;-0.0741;-0.2816;-0.3691;NaN]"]]}}
+%[output:870df706]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
 %---
-%[output:4901e2f8]
-%   data: {"dataType":"tabular","outputData":{"columnNames":["station","end_time","length_period","granularity","parameter","instrument","MK_seasonality","method","significance","ss","slope","UCL","LCL","slopeP","UCLP","LCLP","slopeR","UCLR","LCLR"],"columns":19,"dataTypes":["cellstr","double","double","cellstr","cellstr","cellstr","cellstr","cellstr","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell"],"header":"23×19 table","name":"BRW_result_LMSlog","rows":23,"type":"table","value":[["'BRW'","2025","10","'month'","'BsG0_S2S20'","'neph'","'log'","'LMS'","0.3227","0","0.0050","0.0360","-0.0260","0.2938","2.1148","-1.5272","0.0513","0.0522","0.0504"],["'BRW'","2025","20","'month'","'BsG0_S2S20'","'neph'","'log'","'LMS'","0.8371","0","-0.0067","0.0094","-0.0228","-0.3724","0.5173","-1.2620","-0.1260","-0.1253","-0.1268"],["'BRW'","2025","30","'month'","'BsG0_S2S20'","'neph'","'log'","'LMS'","1.0222","0","-0.0042","0.0040","-0.0124","-0.2286","0.2186","-0.6757","-0.1187","-0.1181","-0.1193"],["'BRW'","2025","40","'month'","'BsG0_S2S20'","'neph'","'log'","'LMS'","2.2116","95","-0.0059","-5.6283e-04","-0.0112","-0.3200","-0.0306","-0.6095","-0.2097","-0.2092","-0.2101"],["'BRW'","2025","10","'month'","'BbsG0_S11'","'neph'","'log'","'LMS'","0.1625","0","0.0020","0.0272","-0.0231","0.4992","6.6443","-5.6459","0.0207","0.0214","0.0200"],["'BRW'","2025","20","'month'","'BbsG0_S11'","'neph'","'log'","'LMS'","0.4264","0","-0.0026","0.0094","-0.0146","-0.7171","2.6465","-4.0808","-0.0499","-0.0492","-0.0505"],["'BRW'","2025","10","'month'","'BaG0_homo1'","'abs'","'log'","'LMS'","0.6000","0","-0.0143","0.0333","-0.0619","-0.6335","1.4780","-2.7450","-0.1331","-0.1319","-0.1342"],["'BRW'","2025","20","'month'","'BaG0_homo1'","'abs'","'log'","'LMS'","3.2100","95","-0.0289","-0.0109","-0.0469","-1.4419","-0.5435","-2.3403","-0.4387","-0.4381","-0.4392"],["'BRW'","2025","30","'month'","'BaG0_homo1'","'abs'","'log'","'LMS'","2.6550","95","-0.0136","-0.0034","-0.0239","-0.7066","-0.1743","-1.2390","-0.3359","-0.3354","-0.3365"],["'BRW'","2025","10","'month'","'Bacx3_A81'","'abs'","'log'","'LMS'","1.5044","0","-0.0315","0.0104","-0.0734","-2.0191","0.6652","-4.7034","-0.2703","-0.2695","-0.2711"],["'BRW'","2025","10","'month'","'expS_bg0'","'neph'","'log'","'LMS'","3.5852","95","0.0766","0.1193","0.0338","38.9603","60.6946","17.2261","1.1501","1.1526","1.1476"],["'BRW'","2025","20","'month'","'expS_bg0'","'neph'","'log'","'LMS'","0.9290","0","0.0066","0.0209","-0.0077","3.9262","12.3786","-4.5263","0.1420","0.1429","0.1412"],["'BRW'","2025","30","'month'","'expS_bg0'","'neph'","'log'","'LMS'","2.2481","95","-0.0085","-9.3623e-04","-0.0160","-7.8118","-0.8620","-14.7615","-0.2247","-0.2242","-0.2252"],["'BRW'","2025","40","'month'","'expS_bg0'","'neph'","'log'","'LMS'","2.1700","95","-0.0054","-4.2629e-04","-0.0105","-5.5398","-0.4339","-10.6457","-0.1956","-0.1952","-0.1961"]]}}
+%[output:2e0c0dd5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:99d4fe90]
-%   data: {"dataType":"tabular","outputData":{"columnNames":["station","end_time","length_period","granularity","parameter","instrument","MK_seasonality","method","significance","ss","slope","UCL","LCL","slopeP","UCLP","LCLP","slopeR","UCLR","LCLR"],"columns":19,"dataTypes":["cellstr","double","double","cellstr","cellstr","cellstr","cellstr","cellstr","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell"],"header":"23×19 table","name":"BRW_resultLMSlin","rows":23,"type":"table","value":[["'BRW'","2025","10","'month'","'BsG0_S2S20'","'neph'","'lin'","'LMS'","0.3199","0","-0.0300","0.1578","-0.2179","-0.5467","2.8716","-3.9650","-1.3004","-1.2953","-1.3056"],["'BRW'","2025","20","'month'","'BsG0_S2S20'","'neph'","'lin'","'LMS'","2.6771","95","-0.1338","-0.0338","-0.2337","-2.1912","-0.5542","-3.8283","-3.6755","-3.6700","-3.6810"],["'BRW'","2025","30","'month'","'BsG0_S2S20'","'neph'","'lin'","'LMS'","2.6046","95","-0.0653","-0.0151","-0.1154","-1.0342","-0.2401","-1.8283","-2.9577","-2.9536","-2.9618"],["'BRW'","2025","40","'month'","'BsG0_S2S20'","'neph'","'lin'","'LMS'","3.8894","95","-0.0706","-0.0343","-0.1069","-1.1228","-0.5454","-1.7002","-3.8228","-3.8188","-3.8268"],["'BRW'","2025","10","'month'","'BbsG0_S11'","'neph'","'lin'","'LMS'","0.4768","0","-0.0042","0.0134","-0.0218","-0.6316","2.0177","-3.2809","-1.0419","-1.0414","-1.0424"],["'BRW'","2025","20","'month'","'BbsG0_S11'","'neph'","'lin'","'LMS'","1.9336","90","-0.0088","3.0256e-04","-0.0179","-1.2592","0.0432","-2.5615","-1.1763","-1.1758","-1.1768"],["'BRW'","2025","10","'month'","'BaG0_homo1'","'abs'","'lin'","'LMS'","0.7423","0","-0.0044","0.0075","-0.0163","-4.1933","7.1049","-15.4915","-1.0440","-1.0437","-1.0444"],["'BRW'","2025","20","'month'","'BaG0_homo1'","'abs'","'lin'","'LMS'","3.3363","95","-0.0068","-0.0027","-0.0108","-5.1184","-2.0501","-8.1866","-1.1356","-1.1354","-1.1359"],["'BRW'","2025","30","'month'","'BaG0_homo1'","'abs'","'lin'","'LMS'","3.5566","95","-0.0045","-0.0019","-0.0070","-3.1234","-1.3670","-4.8798","-1.1335","-1.1333","-1.1337"],["'BRW'","2025","10","'month'","'Bacx3_A81'","'abs'","'lin'","'LMS'","1.0020","0","-0.0104","0.0103","-0.0310","-4.9325","4.9124","-14.7774","-1.1036","-1.1030","-1.1041"],["'BRW'","2025","10","'month'","'expS_bg0'","'neph'","'lin'","'LMS'","3.4999","95","0.0371","0.0584","0.0159","4.5212","7.1047","1.9376","-0.6285","-0.6280","-0.6291"],["'BRW'","2025","20","'month'","'expS_bg0'","'neph'","'lin'","'LMS'","0.3027","0","-0.0016","0.0089","-0.0120","-0.1875","1.0515","-1.4265","-1.0317","-1.0311","-1.0322"],["'BRW'","2025","30","'month'","'expS_bg0'","'neph'","'lin'","'LMS'","1.8405","90","-0.0047","4.1101e-04","-0.0099","-0.5286","0.0458","-1.1030","-1.1423","-1.1418","-1.1427"],["'BRW'","2025","40","'month'","'expS_bg0'","'neph'","'lin'","'LMS'","1.4507","0","-0.0023","8.8559e-04","-0.0056","-0.2580","0.0977","-0.6137","-1.0935","-1.0932","-1.0939"]]}}
+%[output:7cd00b02]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:2b5e2d53]
-%   data: {"dataType":"image","outputData":{"dataUri":"data:image\/png;base64,iVBORw0KGgoAAAANSUhEUgAAAdQAAAEaCAYAAACoxaaoAAAAAXNSR0IArs4c6QAAIABJREFUeF7tfQuwF8WV\/tElCgoqsDfyUi4qlGZ1iTEKQQyYglC6Bf8I7AISeSxGY3QXH6C89IIiKIQssFqKL0DLIFbQ2iXRWJgAFqLXxwbXbHSRFVQEDLK6ohH1Kn+\/hv7Rd27PdM9Mz6Pv73QVlfi7PT2nvz7TX5\/Tp08ftn\/\/\/v3EhRFgBBgBRoARYARSIXAYE2oq\/PhhRoARYAQYAUZAIMCEyorACDACjAAjwAg4QIAJ1QGI3AQjwAgwAowAI8CEyjrACDACjAAjwAg4QIAJ1QGI3AQjwAgwAowAI8CEyjrACDACjAAjwAg4QIAJ1QGI3AQjYELg9ttvpyVLloRWa9OmDX3729+mSy+9lM4991w6\/PDDK3XfeOMNGj9+PO3YsSP0+W7dulH\/\/v1p7NixdOKJJ4p6DzzwAM2ePVv8\/zlz5tDIkSMrz+O03Pz58+nuu+8Wv7Vv356WLl1Kp59+eqXO7t27hTyvvvoqnXHGGXTfffdRTU2Nqav8d0agahFgQq3aoeeO54mAiVBVWf7pn\/6J8K9FixbiZxtClc+DWO+66y7q0aMHvfjiizR69GhqaGigf\/iHf6Cbb76ZjjjiCFH1o48+oquuuoo2bNhQefXcuXNpxIgRlf\/+4x\/\/KIh8z549TZ7PEzt+FyPgCwJMqL6MFMvpNQJxCBXW6oMPPkg9e\/aMTah4YPjw4XTLLbfQ\/\/7v\/9KECRPo9ddfp7POOovuueceatu2rWhTJUsJ7CWXXEI33nhjhch\/85vfCGJHmTFjBv3jP\/6j12PAwjMCWSPAhJo1wtw+I0BEKqH+8pe\/pN69ezfCZdeuXXTrrbcSSAxFtRZVC3Xw4MF02223UatWrSrPwwJ9+eWXadq0abR161Y66aSThPv2r\/\/6r2nKlCm0evVq6tixo\/gNlivKypUraerUqYI8\/+qv\/oo+++wz4XIG6eI51SWMOg8\/\/DCdffbZPJaMACMQgQATKqsHI5ADAiZCVUkO\/3\/BggV00UUXNbFQdYSKSp9++mmFPDt16iTIs3v37nTHHXfQL37xC9EO9kB\/8IMfCBcwLNiHHnqITj31VDrnnHOERXz00UeL\/z3zzDPp448\/pmuvvZaefvppUef+++8XpMyFEWAEwhFgQmXtYARyQCCKUGENIuAIlicsVJUQIZrJQv3888\/pmWeeoenTpxMCiVRLE3ukY8aMET288sor6brrrqP333+fLrvsMtq0aZPYGx06dKhwDX\/yyScVy\/idd94R+6dvvvkmhZF4DrDxKxgBrxBgQvVquFhYXxGw3UP9xje+IUgN1ulhhx3WxEK16f\/kyZPppz\/9qXheJca\/+7u\/E6S9efNmQbKSQGG1ymheGbz0yiuvVAKaYKkigIkLI8AIRCPAhMoawgjkgIAtoQ4YMEDshdbW1lakso3yxV4nAouuueYaat26tXhe57p98sknxXEaeVQG+6o33XQTPfrooxX3rqyDNuAG7tu3bw4o8SsYAb8RYEL1e\/xYek8QsCVUdAdRvnfeeWeFxGwIFRYnrMzOnTtXLFu0pQYXYY8UZ2ERkIRAJZAk9liPOeaYSpAS6mC\/9LHHHhMEKwOcTjjhBE+QZjEZgeIQYEItDnt+cxUhYApKgiWJ\/VMkYNi7dy\/98Ic\/pJ\/\/\/OfC0tTtocI1jH1TWJbYf8V\/4\/\/jHKk8vyrhVY+\/gHR\/\/\/vfi71RuIXhHoZrWD1Gc\/nll9NLL70kIodhMSOoSVq8VTRk3FVGIDYCTKixIeMHGIH4CJgIFS1iTxPHXECAOIMKS7Fdu3aRQUkIOkKwEUgYRIo9UgQZqQV7pggw2rlzZ6PfZdQvflQTPRx55JH05Zdfimhg3j+NP9b8RPUiwIRavWPPPc8RAROhIlJ3zZo1Yv8U5GhLqHDpIn0g0giiIFMSzpKefPLJld7psiIFXbnBVITyYZV0c4SLX8UIeIkAE6qXw8ZC+4ZAnD1U9A3HWG644QZhdZqOzYCAcRwGZ0ZRRo0aJdy\/sDRR1HOnEjcZ8Ys9U1ngCoZLWBbsmy5btkyQNBdGgBEwI8CEasaIazACqRGIQ6hIrLB48WIRYIRiIlTUwR4oSBjnUEHCCxcupAsvvLAi9+OPPy5IVxadK1c9YoN6vH+aeti5gSpDgAm1ygacu1sMAjaEioxEIEEEFqm3utgQKly2ON4ya9Ys0cHTTjtNuH4lKatBRyBc1A2mP1SP2KANNWipGNT4rYyAXwgwofo1XiwtI8AIMAKMQEkRYEIt6cCwWIwAI8AIMAJ+IcCE6td4sbSMACPACDACJUWgWRKqvHkD0Y7BfaKSjgOLxQgwAowAI+A5As2OUOWlykjurbt30vPxYvEZAUaAEWAESopAsyJUWKY4bjB8+HCaNGmSOMfHFmpJNY\/FYgQYAUagmSHQrAhVjo20UnWEun37dsI\/Wbp06UL4x4URYAQYAUaAEUiDQFURKogUycDr6+srmE2cOJHwjwsjwAgwAowAI5AGgaoi1Oeff54uvvhikfdUHnhnCzWN+vCzjAAjwAgwAhKBqiRUDlbiD4ARYAQYAUbANQJMqK4R5fYYAUaAEWAEqhKBZkmoYSMpXb5soValrnOnGQFGgBHIFAEm1Ezh5cYZAUaAEWAEqgUBJtRqGWnuJyPACDACjECmCDChZgovN84IMAKMACNQLQgwoVbLSHM\/GQFGgBFgBDJFgAk1U3i5cUaAEWAEGIFqQYAJtVpGmvvJCDACjAAjkCkCTKiZwsuNMwKMACPACFQLAkyo1TLS3E9GgBFgBBiBTBHwilDVu04HDx5Mt912G7Vq1aoRQLfffjstWbJE\/NapUydaunQpde\/eXfw3J3bIVJe4cUaAEWAEqhoBrwgVZFlbW0tDhgyhKVOm0KhRoxrdd4r7UHW\/yxFmQq1qXefOMwKMACOQKQLeEGrwjtOVK1fStm3bxCXisqDOddddR9OmTatYpSp6TKiZ6hI3zggwAoxAVSPgFaGqZAlC3bhxYyO3ryRMOaKXX355I8KVf8f9p7169RLV+Pq2qtZ\/7jwjwAgwAs4QaFaEqqIi3b99+vShESNGiD8FCRe\/8QXjznSJG2IEGAFGoKoR8IpQJ0yYICzO3r17k87lGxxJ7LmiSLcwXzBe1brOnWcEGAFGIFMEvCFUoGAKSgJhrl+\/XhBocM9VtVD5+rZMdYobZwQYAUagKhHwilDVYzNyfxS\/zZo1i+rq6qhdu3aCdOWxmbA9VCbUqtR17jQjwAgwApki4BWhpkWCo3zTIsjPMwKMACPACIQhwITKusEIMAKMACPACDhAgAnVAYjcBCPACDACjAAjwITKOsAIMAKMACPACDhAgAnVAYjcBCPACDACjAAjwITKOsAIMAKMACPACDhAgAnVAYjcBCPACDACjAAjwITKOsAIMAKMACPACDhAgAnVAYjcBCPACDACjAAj0OwIVU2AP3fu3EpifAx12RI7bN++nVatWkXDhg0Tt96UoZRNJpYnWivKhg+kLZtMLI95ZmGMzBjZ1GhWhKreh4rOz5kzhxYsWCBSEpaRUMtG8IyR+ZMp25iVTR7WIf90iMfMPGa2NZoVoWJyQS7f+++\/n1q1akVTpkyhUaNGidtpWGnsVKJsEzTLEz1uZcOHvzPzd8Zj5idGZqmJmh2hrlixQlw6jgJC1d2Hql4wbgNSVnXeffddmjx5sriTVV54ntW7bNstm0wsT\/TIlQ0fSFs2mVge89dfVox8u8ikqggV+wQgsPr6erOGcQ1GgBFgBBiBwhCAkTF\/\/vzSxJfYANHsCDXK5QtAQKr4x4URYAQYAUagvAggULMswZq2KDUrQjUFJdmCwvUYAUaAEWAEGIG4CDQrQkXn1WMzvvnf4w4e12cEGAFGgBEoDwLNjlDLAy1LwggwAowAI1BNCDChVtNoc18ZAUaAEWAEMkOgqgg1KotSZggfbPjTTz8Vx3hWr15NPXv2FGdlZcKJ4Lshpzz+g\/O0WRQbeVS8OnXqREuXLqXu3btnIQ7ZyPPGG2\/Q+PHjaceOHUYMXQhpI5N8D\/bvJ0yYQDfccEPl3LMLGdQ2bORRMcKzl19+uZApi2IjD96LQMElS5YIEbLehjHJJMfplVdeqUCSpW6b5IEQqkxZyoJ32ciT93em000pp5pHIAsddt1m1RBq0QFLK1eupG3btonJDRNMbW1to7SIcmBRb+rUqTR48GBxnjYrQjXJo+IFEkX9Rx55JHIhkEY5TfIEPzBgiJIVWaBtk0xqfyVpZEkYNvLksRhTddWk06rMmKiXL19O06dPL0yvgzoK+VBGjBiRRn1Dn7UZM1WXUX\/jxo2ZffsmeeR3Js\/v56lPwcUpFj1Zfk9ZDHjVEKopi1IW4Mo2bZUUMr711lvisSw\/Klt5VEwwGQZTObrCLIk8UYsSF3LFkQnj9utf\/5r27t3bKDOXCzni6pA6Ybp8f7AtG3xQ59Zbb6WxY8dm5tlQ5bKRKS+dVq1BEzmpY5bl+NngE1xIZ\/ndh1mmixcvpuHDh9OkSZMy9fhk8X1UFaFGZVHKAtzgZCjdFyq569y+Wa9Sg9aeSZ6gteYaqzjySHdUTU1NZtayOhmaxgwT0KxZs+j666+nefPmZU6oUfKo7jz0IUv3oc2YSUKFLLA05P\/KVKBF6hHejUVZv379MnfRm3RIfl\/wTAUv9HCJke2YqRnmMDeA2LLc7tH1MY8tFJfYyraYUDNy9ehWzjYflvy48rBQbeXJ2u1j86EHld9mEZDmg7GVSU7K2BcP5o5O8\/4wi9B2zPB8lhjZ4CMnxZEjRwqXapbyxFkEoa5cCNXV1YXGMqQdPxuMglZjlotpG3nQZ3UPFVtPH330EU2bNi0XL4PEnAk1rfZl\/LwPLl8JQZYflTrxmFxRWVumQQveRh75DD56aRVmEShl6x5DIJIa4JKVFWYjT\/ATyhIjG3mCE3iW8sTVa8wH69evz3QP3gYjnYs1K722kUenQ1lt9URN+UyoGRNi2uZ9CUrKw0INEmXYfmTWARvqmNoES6j7cVkvOmwxCi4KsoxKLBtGJnmCGGZtocYZs6zdveriOCpwS0dyMn1q2CmANHOhacyKCP7T9YcJNc0o5\/RskVmU1P0tNYJXR1p5kIVJnu985zuVIypyeEzHfdIMo0keuAzzDue3kSlPQrWRR8Uoyz1U1SLEUbAwnVZlzlqeODLlFSxlM2ZFHZsJG7OgyzfL0wZhcwYTaprZlJ9lBBgBRoARYAQ8R6BqgpI8HycWnxFgBBgBRqDkCDChlnyAWDxGgBFgBBgBPxBgQvVjnFhKRoARYAQYgZIjwIRa8gFi8RgBRoARYAT8QIAJ1Y9xYikZAUaAEWAESo4AE2rJB4jFYwQYAUaAEfADASZUP8aJpWQEGAFGgBEoOQJMqCUfIBaPEfASgW3bDohdW+ul+Cw0I5AEASbUJKjxM4wAI6BHYN06olmziPC\/soBUly4l6t+fUWMEmjUCTKjNeni5c4xAjgiASGfODH8hSHXcuBwF4lcxAvki4BWhqjkv1TyUQciCCZ4jIWXXVL4ax2\/zG4Gw7wUW6fnnm\/u2du0hS5W\/PTNeXMMrBLwiVHkrypAhQ0LvnlRJF5cah15mzK4prxSVhS0YAdP3AjJV3bxh4sJCHTvW2i2Mm1pQankvtmAF4NfbIOANoQZvH1CvIZIdhWW6ePFiGj58uLhl\/oYbbtATakzXFH\/UNqrEdZotAqbvBW7eKFdvHGAOuoXXrVtHs2bNIvyvLCDVpUuXUn\/ei42DKNfNEQGvCPW6666r3BwfdcVZ2NU\/27dvp\/rbb6dhd9xhhLhhzRrCp4xrnoIf9b333kt9+\/Zt1AbaRunSpUtk2w0NDfTxxx9T69atqUWLFkY5ylLBV7mBn6+yl0HuFhs2UIuBA3NVw2XjxtH4ZctC34nv78c\/\/nGi78\/UkTJgbpIx7O++yh4mN+ZHn+ZIjEtVESruQ8U+T+99+4w6+3SXLjTwIEnqKs+fP5+GDRtGaHPRokVUX19fqQZSnTdvntY6\/uyzz2j37t1UU1NDRx55pFGOslTwVW7g56vsZZC746hR1FLR7Tz0EVQ63vAiuZ0T9\/szyV8GzE0yhv3dV9nD5D7uuOOobdu2SeEo5DmvCHXChAkVN67O5SsRDLVQN2ygLuedZw30YYaauPRaXhCuq3rXXXfRuEBUI9zS7733HnXo0IFatmxpLUvRFX2VG7j5Knvhcm\/bRi1PO60Q1TN9e6NHjxbeIMRVhBXd92fqTOGYmwSM+LuvsofJzRZqCmWwedQmKAntuCLUbkR08Hi6jXjaOmvXrm2057Nv3z7auXMndezY0StC9VVuDIqvshcuNwKCuuEryL+4+PYgtfr92cRCFI55Cqh9ld1XuXVD5Y2FqhLlK6+8QpdffrmwVkGeCF6oq6ujdu3aiT6GESrcQ72\/9z1rlTWtkm0agoWKQApZfFWeMsptM0EyodpoaUSdw2J8BdDz8SHOWkTpymMyFiLFeGtka\/j+xo4dax3gVEY9t4BLVPFVdl\/lLgWh7t+\/n3bs2EFbt24l+MhPPfXU3Dae4+yhIiDJ4lSdla6jz0yoVlBZVYobAerrB5u33NoFiu1xGETe4oxp2PGaujqi5cutjta4\/PZMCoXFrrotkzfmJvni\/N1X2X2VO3dChW\/8\/vvvF+Q5e\/ZsatWqFW3YsIGuvPJK2rt3r5DnoosuEqtHRL1mXUQAw9ChtGLnzshXwc2LdbaSPC2VaOi\/PEfnq\/K4lNvWstSBDl2ZGXFEIzhBoo0tW7YIN\/vZZ5\/NbnYNqJELFNQ3JWzQpBaEvux+8UWqUTG3SP7g+tuz+XBVt7BLPbd5t8s6vsruq9y5E+oTTzxBV199NZ177rkiEvbwww8X50Ofe+45mjhxonDN3nPPPTRjxgwaM2aMS93StgVCvfjii+mXgwZR77vv1r+vtpZElGEM95RJcLZQDyAUx7LUkS6eP980uSv7ZnHeZxrDIv6ex0LAaoGCzke5chF4BwtUKaGTJI7DRLS1rX9\/6hZxZAavwOJU6oeLcVG3ZXye3H2V3Ve5cyVUhEJPmzZNWAZ33nmnCH9+7bXXhHsFk+LNN99MIJobb7xRHGu47bbbhAWbtkjSRDtz584lROLKUiFUZFDC0RldEu+6OlpXW2s1cdvIikPoWAHL4qvypJXbauIeNy6SdIMH\/cPwh45h0o1rydqMZx518loIxFqgoOMh34suP2+kvkS5hb8eu2XLltH4ENLFuGJ8Ibt6PjztuMhFbx6LmLSyhj2f9hvNSi5Tu77KnSuhysAgpP5D8BDK448\/TkjOoBIdIndBdHANy6Ai0wCE\/R3vlMkfUGfOnDm0YMGCSruNCLV370PNwBoNpDYzfdQgStSJKrrMLr4qTxq5bSduTJQmTJPqhu65YAS2y7aTtmW78EjavvocFrY2pBQMrBPBRYZUgNb6EtJW2KICwYeSUG28FbY4Yatg+fLlXmdmssbcFhQH9Wy2d8ood9KuZxblGyRUZMO45ZZb6LHHHqMHH3yQzjzzTCGzS0IFYaI9kDOs3SlTptCoUaMqCRZCCTUEPdNHbSJdfPiYANTiq\/Kkkdt24k6qxEmfa0IUSRty9JztwiPJQiA4seG\/u8U4EqNuW9h0N42+BNuHrLpcvqbvz5VbWLcvb4NB3nVcYp5W9jheFp+9AkGcMiPUTz75RBAaiA1E+sEHH4ijLkcffXTFBYzfEKCEM5mwJtNmDgJhrlixQriPUfD+Pn36VNy++DsS6yNTERdGgBFgBBiB8iLgy0JGRTAzQsVLYIkiunfo0KH00Ucf0W9\/+1u65pprBLG+8MILIiAJJLdw4UK68MILU48sE2pqCLkBRoARYARKgQByNl966aWlkMVWiEwJFUngsYeJvQmUAQMGiGTzRx11lLAen3rqKfrZz35GV1xxRWrrFO3buHxB7oMGDbLFx0k9074g3Fllv0Hjiy++EAfH27RpE4mJ7opLU\/+dgHywkbgRoMHUkC5liWpL54K12c+UbYb1E3ok\/xanvShZk+inrb7kgbcr\/StKV2wxSos59EXnJpc6BTlcYWnTJ7ZQNShh7wVnTr\/88ks69thjxdEZ7Kc+++yzdMopp1CnTp3osDjZWCJGInFQks3oJqyT5b5YQpESPWban4m6LnPWLLvgl0SCKQ\/FjQANRmCb3u\/iPuyovSVXQTa6ABtT38L+nvTKNJO+JJUnyXNhmIMgoyLBg+9Sz5MnkSPrZ9JgbhMMB11wpaM2WJQtxsFG5kwtVBsBXNdRj80ELxiPG5TkQjbbgJyyK0\/Ux2q6LnPcuHW0bJmbvFMgQQR66e7KjBMBGocoTHdrB\/UkjHhNk5YLfXPZhlygBAPrbN6RZnK3aT9pnWCAU5zFfNzArKQyJn3OBnOdbtou+uN6f5L2Q32u7JgH+5groUprFRYqbhKA+zCOQqcdoLwJNetIyrR4yOdtLK8tWxoOZhuqaZRtyCL5jXjNuHHLaNkyfZ5X6VI0uZN0JJg0AlQXga3D07RYOHgftng0iniRdyvP1X0c3Qg7MiIXKHHaknVtJvck7bp+xnbBG9eb4VpOm\/bCvlGTbublQbLpQ7BO2b0CmRPqV199RUheL1265513nojsRWQtVujIniQLzqhOnTqVzjjjjCRYx36m7IQaR3lsSNAEkI3lZapjm+oVyXTGjl0XaVmajkHYkqDst+nYk4qPfuVuzrqHNpC3Y\/16+tp9GI54be2sr49vRlQ4+GjRVkDYAsWkS8G\/+0KoNtZZHG9GXJxs6pu+ddM3aloUHki0Gn2m3kbOLOpUtYWKICRE9T766KMVbM855xxxjOWOO+4QZ1Dbt28v7jHcvn077dmzR5yFQ7TvySefnMV4NGozb0LFy+NY4DbKY\/p4bEE0fWSwvN56K5okQCBRJBKURbkjQAQ\/6M4WxiFB275icn\/xxRe1uXyj936tcrmLHAd2mSrh9jZniMY5U51LO+6enw0+WVlevhAqMHK9kLPB3aaOzbdu+o6xkDXknzkoip1u2sjtqk5WuulKPl07Tl2+q1evFjl6kYQcHz8+qsWLF4sgpA8\/\/FD8dtVVV4mIXqQbxB4nzqhee+214ndTkckiYAEPHjw4NF0hkvIHkzqg7SIINYlLKXwPLprAVPdjFJa2blrTeMT9+9atxgQ7jZrM2loyTUZx+2euL7JEG6tJT4VuIRBngWZ6UZaWl0+ECpyyWMiZ8I\/6u0k38a1jIWeR2tpSDDvdtGksysuSZnvH5t1F13FGqDJ376ZNm0SmIml9vPzyy4JITzjhBPE7kjjI8v7779Nll11GnTt3FuQI13BUsblgXCXdMgQlxXEpEfXXpkuV16nafDxwP+ImLVl05GzrpnWtnKqF6rrtqPZ0k3tRiwoi802f0lOhkzvOAg33gJpy4iYJOLIZO98IVfYpypth028XdWx1094zYitVtG7abEfIRRreGBU4WFavgC1SYfWcEaokMrhzVXLE3ikO5wLoYAJ8aUm+\/fbbxly+wUvDV65cKdyGMk8wOoj2YBEPHz5c3GqDv2GfVpYiLFS820Z5iOoMe3B2bkW4eEDAUfnHwy77SKtMUc\/L6zKzfEdY23pisnPnupe329chWrikTF9UN5d+IWAOblItz6IsL58JFRd6YOHfsmVL7SCZ9jTj6EyZFrxE4bopdQpzbtxFWp7bO3Gwz6Kuc0I98cQTGxGnJMLg75IA4Zq1JVSZ+L579+4EQt24caPW7Rsk3yChwi3dq1cv8XOHDh3Ev6wLJjaceauvr6+8CouP6dOn0ymnXEoDB7ZwJkLcvU1nLw5pqEuXBrr33oZGlnPW71Tbx+S+a9cuOv7440UqzO3bW1D37u7wjteXcCsA+oDsMDLJR1Bu+R4s0JAMRVfQxujRo7XnK1250G36Gya7zbNF1omSe8OGFnTrrS3EYlUWWInQ7b59G2KJHdYWUn8XseA9ILxeN4M6FTWXJUl+AcxfeuklOuussxrdOIaTIPjnU6lKQlUHCG6xPO5ile+Ea\/zVV18Vkc0yd\/GoUR2pvl6\/GvZBmebP302TJ9eETPANNGzYXpo48cPCugLM4SmpqakRmINQv\/\/9E5zIg8UCCto0lS5dttD27d1DiXDYsGEiBkHVFVVu9UF4W3DHcHCBhufRTtEliHnR8ti+P0zuRYuO+xrvtqHN4BsYNuxjq9eY2rJqxHGlXr320cSJj8fWKQSXgnDTlDDMjzvuOHHtp0+ltIQq3cEIdEI2JUweiCCWblydy1cCb7JQ58+fL\/ZtUfKyUKVs6Nd7770n3guXElw+p53mL5nClfvkk\/soasU9cuS+Qr+JIOYQplWr9JjDOoGL\/dxzG4weBmnJIMoX6TfVtIBwp2Evc+TIkY1w0smtA9LFpOZ6gGxld\/3etO3p5IZFesEFZn3Bd6DGL+hksW0rbT\/iPK+zsvPUqTBdYQt1wgTKyuULBbEJSkI9E6EGg5XiKF\/ausG9JRBqjFu00r7e+nmbgAfUwX5tcBKxuC7TWg4XFdPsoaJvcMOZ7tbG0YQwV50k3sBNfqFHh2Sffd2HhPy+yp5GV2T8ghy\/rPdHbb9R6HDY0Zkw3XTx3dm24auu6Prn3ELFkZa4pWfPnsagJJUo8Q7cWANrFeSJaDKs8OUF5T4RKvrlKJVxXNhD68uPrGvX+CThTAiHDSWN8tUtGKIWC1GBYJhs4xafJxpfZU+74EUkex4BgVI3oY82CznXuhlXl6Pq+6or3hNq2kEsKspXlTvNCjhqRSpJME6iBRyxMVleZf4QbfUh7INNYlXavtOFle7zROOr7GkJ1T6Rgq0mNa0XtCrjfqMudDO59E2f9FVXMiVUlwBn1VZZCdXm3JlckQKbKBK0PWMaPMZi+sgOnM\/bTWef3TiXb1Zj5bLdqA827mTkUi5TWz5PNL7KrpO7KA+SzYI3uFj38Rv1VVeYUJ9\/ni5ODW5aAAAgAElEQVS++GKRoUk9n2qa2Fz+3aW1pCPBOORsCqAwWdYuccmyLdsP1rSoyFJGXdu2cuctl837fJU9jQfJBhfbOnEXvGi3OWFui1PZ6jnbQ82jY6bUg2pkMOSR+6xStjJYqDgLiAvXcVwnmMvWlbWUhSszSu48xj7NO3yV3Ve5MVa+yq6T22aRmkY\/g8+GBfuZ3tGcMDf1tax\/94pQTVG+6lEaSb44ijBixAiBfxkI1VaGtNaSK3Iu02Ik6Udki3nS9rN6zle5y\/KtJRmXMMxNi9SoSNo4cqSJuvVVX3yVWzeu3hCqTerBYAclAftIqHE+QlPdtOTs8wTps+w+TzS+yh4lt2mRGmevNe7+qOkbZz23QSj7Ol4Rqm3qQcAGAlbrqwqnph7MHuLGb3j33Xdp8uTJIiOOTH+YtwxJ3uer3Oirr7L7Knc1YI6rDXGsTC2XXNKFtmwxZw065ZTt9NBD2yuP6tqqpm80TM+RgSltFqYkOKZ5plkSatj1bcj+ATJT07WlAY+fZQQYAUZAIrBvXy\/auXNFJCAtWmynmprJ1LLloZzejKAeARgdaipOH3AqLaEmTT2os0zVgQCp4h8XRoARYARcI\/C733WhGTP0VqrcHx006HnXr22W7bGFmvGwmoKSdFmTMhaJm2cEGAFGoBECpr1Whqv5IlBaC1UHuXpsRpd6EFdfLVmypNGjc+fOrUT5Nt9h5J4xAoxAGRFwERBYxn6xTHoEvCJUHkRGgBFgBBgBRqCsCDChlnVkWC5GgBFgBBgBrxBgQnU8XMF7WrHvK93Qqvs57Hd5Dg5i5e2uTiu72ifcYbt06VLq3l1\/obYL2CHv1KlTRVPqjUVhGMb93YWMYW24kr3smKP\/uqj7IvQ8LuZhspcZ86hscWXHPEr2vDFP+u0zoSZFTvOcHHS5vwsFxm\/3338\/tWrViqZMmUKjRo0ST+p+79GjR+XsLOrMmTOHFixYULmWzqGoTZpKKzsITfYvjzzJb7zxRiN8IP+OHTvo+uuvpxkzZtC0adNEHyWG+P\/yXLLN7\/IqwCwwdyW7qlNlxBwYqnEPMoe2Gomfl57HxTxM9rAjeVnoCdqMK\/eaNWtE2kd5teWECRPExfUDBw7MfW5xJfuQIUNynVvSjCUTahr0lGex+u3atSutX79e\/AqF1ll8Mn+vVHpJrvgdz+uINuvJ0oXs6gebpVUaNlxYvKxYsYKGDh1KCxcutF7EhC1ussZc7UdS2dUFWBkxxyJr8eLFNHz4cJo0aZL4JoBr2EKzTJiHyW46ludoOgltxqQrQQzlyYii5pY4eh4me9FzS5wxZUKNg5ZFXSiwJFTdxAFXaL9+\/ZoQp\/wdpHDbbbeJNmDx9enTJ7co5bSy4yYfWYIXE1hAl6qKOnHoMMSEEud3ma4ylVCWD6eRvcyYSwyDaUMlKRSl58FFbNQ3p5PdB8zRR5X89+zZo9X\/Mum5KktQ9iIxt\/yMRTUm1DhoWdRVSUl+uNhDBWH279+f2rRpI1bq0sWq\/g6iLQuhxpUdfZJFusXyWgyonoCwybqshJpGdnUCKiPmZSVUG8zDZFengDJjHnRNF72IiYN5lFs9b8wtpvxGVZhQ4yJmqB8kVLV6MFm\/\/FtZ3DJpZA+udKPacgm57gKEOPvWcuEQ3OfOw\/2YVnadi0x6R1xiHGzLVm4pn87KK2JrQ7VM1QszomQJyq7DomyYh+Ux9wFzG5d6XnNLkm+ICTUJahHPBN2m0uJEukMEzMybN49U94v6e\/v27XMPHAgSvpwc1BWtjezoE\/aP1WAIuWfmGOJKc8AaVr1KLGEBL3ioLEFJcmJPK\/vmzZtLjbkM7AqSUhFBSXExD5Md30XZ9XzWrFlUV1fXKJjRB8wxRjrZi8A86ZzFhJoUuZDnwly+qC6jHOXHLY\/TqL+roe3q747F1DaXVnY1tD3rPVQVJ9mZwYMHi\/3nV155heSeiw22eWPuUvayY46x0Vl5PmAeJnuZMVdlk9+FPH5XdsyjZM8T8zRzLRNqGvQCz3711Vf09NNPixXsBRdcQOeeey4dFueSRIeycFOMACPACDAC+SLAhOoQ7zfffJM2bdpEP\/rRj+juu+8mWEwnnHCCwzdwU4wAI8AIMAJlRYAJNWJk1H1EHKJHUbOt6FyyDQ0N9PLLL9MLL7xA48ePp9atW5d17FkuRoARYAQYAYcIMKGGgCmJU+7LgVDVzB8ICEHA0c0330z4\/5999hmdeuqpIhAAATp4Hm7fk08+2eFwcVOMACPACDACZUWgaglVjXrDRbZqEgVYpm+99ZYYs40bN4pAFxAqSFL+N85DIWoUz33zm9+k\/fv30+7du+mLL76g008\/nTZs2EB\/+ctf6Ic\/\/GFZx57lYgQYAUaAEXCIQNUSKjCExQm3LHLA6ty3KoFKQg3myVSPhnz88cdi77Rt27aCkK+++upc8vA61AduihFgBBgBRiAhAlVNqMBMJlWXVqiKY1xClc9+\/vnndMQRRyQcEn6MEWAEGAFGwEcEqppQQZiPPPII\/eQnP6FXX31VJCUwEWrQ5YtbTYpITO6jsrHMjEDZEYAHCkVeYlF2eVm+ciFQtYSKPdTVq1fT2LFjxYiAXFHUFHpBC1UXlKSzbMs1xCwNI+AOAVvCsa3nTrJ0La1bt05k6cH\/ygJSxZ2+yMHNhRGwQaBqCdUGnCChSuLFpdZ5XKBtIyPXYQTyQMCWcGzruZY5DYGDSGfOnBkqEkh13LhxrkXm9pohAkyozXBQuUuMgEsEbAnHtp5L2eIQuI508fz5559vFGnt2rVsqRpR4gpMqKwDjAAjEIqALeHAwouy8uQL4hJTlOVpS+BRpBt084YBAQsVlioXRiAKgWZLqGoyZXbP8kfACCRDANabuq+YrJVDT9kSk8nytCV6vG\/ZsmVpxRbP46w5F0aglIQK5cT5z61bt9Jxxx0nsgy1aNHCyWiFXVCLa8hWrVpFw4YNIyRzKKIgNeHevXvFReOu+ptHP3yVG9j4KnvRcsM67Natm3P1MhGTjeW5fPlyp0Rv00nMVWWO\/i1aX2ww1NXxVW5dX3KxUEFwuMAZCjl79myRdQiZhK688kpBLigXXXSRiLJzkfs27JJaeX3RxIkTqVevXuK9HTp0EP\/yKvv27aNdu3bR8ccfL3DwpfgqN\/D1Vfai5cYCNIsjYa+99looMWFeGDhwYCk\/C8xjZS5F60tSbMLkhsHhk9GB\/udCqE888YTIGoTrzBYtWkSHH344TZo0iZ577jkCuYEA77nnHpoxYwaNGTMm6bhUngveNynv5tTdQ4ljMy7eaSs0cv4iRWFNTQ0deeSRto8VXs9XuQGcr7KXQe6TTjrJue7hViYUEDaK6i0aNWoU1dfXO39n2gaxAEfu7jKXMuhLEnzC5IbnElnnfCqZEyrAQvKDnTt30p133ikAwgoVexvYn0FyebiAbrzxRjHxuT7XKd2\/ffr0oa5du4qLp+fPn0+dO3cuxEKFPO+9956wilu2bOmNrvgqNwD2VfYyyI0LHlzuoeJMJxKoIIBJJU6Q6vTp0+mKK64o3TcBN++9995Lffv2LZ1sqkBl0JckAIXJzRaqBk1YnxMmTKDevXtXMhE9\/vjjIrG8vEkejyGICBYkXMO4scVlQdso\/fr1E4Sqy9vr8n1RbcG9gcVFx44dvSJUX+XGWPgqexnktgn+AeFggWyK8kU9\/HNJ0Fl\/t7JvdXV1Wb8qdftl0JcknfBVbl1fM7dQg4SKDehbbrmFHnvsMXrwwQfpzDPPFHK5JFQQ8\/r16wWBy\/fLtIJMqElU3l9SYkJNNt7qU4iSxSUSuqISjqleWckUVjMIU5cpCb\/7ktTBV2LyVe5CCPWTTz4RV5whAAdE+sEHHxD2NI8++uiKCxi\/IUAJVtucOXOc7C2qx2aCe6hsocafZH1Wel9lL5PcYcdYgoQTVc9lZC5IEPEPUUSPOqYjM8H0gsD8xRdfpLPPPtsrDxIvHOPPaVk8kbmFCqFhiSK6d+jQofTRRx\/Rb3\/7W7rmmmsEsb7wwgsiIAlW5cKFC+nCCy\/Mop+iTRmUxIQaH+IyTe5xpfdV9rzltk3fh3qm4yNBYnJ5BEclQRPRm6xmWJ+qOzdvzOPqMm8nuUTMfVu5ECruCV2wYAFhhYoyYMAAuvXWW+moo44S1utTTz1FP\/vZz0RAQpaRr0yoyRWIJ5rk2CV9Mi\/MTUkUksgflN0VoUbtaYYRvYl01f7lhXkSTE3P+Cq7r3IX4vKVL0UkL86cfvnll3TssceKozPYT3322WfplFNOEcnmDzvsMJPOWP9dPSIjg5+YUK3ha1LRZ6X3VfY85LZJopBkD1Ene5zvGykKs9jTNFnXeWCe\/CuMftJX2X2Vu1BCzUqJdO2qiR3wd+zLwkLevHkzR\/kmHAifld5X2bOW2yaCF+oSN\/8untHJbpvGEHufeKcsJhJMqNLax7LG3KWswbZ8ld1XuQsn1M8\/\/1xc5I2EDl988YXIinTOOefQ3\/zN3zjNiAFLFEFJOIKDYCi4lXFgHAVRvoMGDapkSspSwXVtwyr\/8MMPRd99Oofqq9wYA19lz1pu2yAhGQAU51vRyY7Ie1OQEN4BixhH3IooWWOeZZ98lT1M7h\/\/+MdOeSFL7GXbueyhwt37zDPPiHNqb731VpN+weWLZAs9e\/Z00mcQKrKaIEkECghVJnYYMmSIyFTEhRFgBBgBRqC8CCCZxqWXXlpeATWS5UKof\/jDH8Sq84gjjhCh7uedd57YM0XqMeyhYqV8zDHH0F133UU9evRIDSATamoIuQFGgBFgBApFwMeL3TMnVLh5b7rpJnG2K4ww\/\/SnP9Fll11GSHOGBAxpEyKbXL5Id1jUbTPYL8C5W+TyTdvPPLXdV7mBka+yu5AbblZdBiPb+0uljql7mjZ650J2m\/e4ruOr3M1Rz7HV4FvJnFBlpiIclJ46dao2kldmTwKx4kxq2oTIHJTkXg19DhzwVfa0cpsieG21JBgkZPNcWtlt3pFFHV\/lloTKaU2z0Ar7NjMnVFhjsD6\/+93vVnL56sRzmXoQ7avHZmQiBz42Y68YwZo80STHLumTaTC3jeA1yRbMJGSqL\/+eRnbbd2RRz0Zu2wQYWcgX1aaN7HnLZPO+LVu2iPzmPmanCvYvc0KF9Qmy\/K\/\/+q9KqsGgEDifimT5uA3Ghcs3bBCZUG3UW1\/H14+1WlfutkdUQJiSIIIjnyYxvK\/6EiV3Fgkwkn+RTZ\/0DfOy45lkbDInVAj15z\/\/Wdx\/ioQOuKJJvdAbEbdIOfg\/\/\/M\/tHjxYvrmN7+ZpB9WzzChWsGkreTbx6p2wlfZk8odNytRFkkUksqeXEPdPBkmt8l9XoYAGp8w9wHPJBrlnFDlnukrr7wSKk\/79u1FUBCifPfs2SPqdevWjb71rW+J+1HT7qGiPTU5PiKKofB4F982k0RN+LaZZKileyrpBBmXULdu3VrJzesqiUJS2dMhlv5pndy27vMkCTDSS3yohTJirnOP+4JnkrFxTqjYM0VUL8gybgHJuiBUeak4kjngHlZZ2EKNOyLl\/lhte1PGicZG9jRyx0nzh3Pirksa2V3LEqc9ndy27nMcDcTCvahSJsyj3LnBlJJheBWNZ5JxdE6oSYRw\/Ywa5du9e3cmVAcAl+ljjdsdX2VPI7ctCSSJ4LXBP43sNu1nVScod1xrP4vFiW0QVFkwN7lz44xdFnjGeX\/cus2SUNUIXwASvA914sSJldSD2M9V93TjAhi3PpR+165ddPzxx4u0iL4UX+UGvr7KnkZuWAg41x1V4BFCNposzvulkb3IbyIoNzxt6qLcJNtrr71mvNrO1Ib8+4YNG8StXBhLWRAohjHr27dvk2bKgDlkHjhwoG0XjfXU7Qhj5RJUKIRQ5c0ziABGcoM2bdo4vWlGxVW6f2XqQeyhqgWZm8aMGZPbUHz22Wci9SESO2R5VZ3rDvkqN3DwVfa0cq9atYomT56sVQWQ6bBhwwiLyyxKWtmzkMmmTZ3cJ510ks2jos6bb75pXTeq4qJFiwj\/wgpStWL81OIK8+3bW4hmu3RpiOyLrh622err651ggEbYQj0I5VdffUUITJLXsyHd4NFHHy3IBC6BJ554ogI69jmR9OGMM85INBBvvPEGjR8\/nnbs2EGDBw8WOXxV6w8BSihIuA1ChTJ27txZ\/Ja3hQqCf++998R7fUqO76vcGGNfZXchd5iVg0u1R44cmeh7s3nIhew273FdRyc3LH3VSgx7Jyz9J598MrVINt4FvATvUr0LaTGHITxzJlF9fctKH0Cq997bQGrSorB606dvoSuuOC11\/2UDWW1HOBNQ01AmFiouFJ89ezY9+uijlVfiVhkQ3R133EGPPfYYBSN9EeWLLEknn3xy6v7C5YuUazjTKqOO8f9ROMo3Gbxl2Z9JIr2vsruW21UEr80YuJbd5p0u6iSN8k2aAGPbtgNS19Yekt52\/zsYtJMG81mzDpBpWEGs1bhxRKZ6ROO\/7s2y1EORFM\/UL07ZQCaEunr1auFKQuYLDDoGGmdM5TU9+O2qq64SLk+4KZDJ6JZbbqFrr71W\/O6iqMdmgnuoMnOSi\/fEbSON0sd9l8v6vsoNDHyV3Ve5myPmuHYOXjBdSZIAA1YeyEnZHhWkWle3jcaP72b96aou0aT6AhnOP9\/8ShBuFOkqSwIiOrTva265cY0keMZ9R1b1nRMqCHLatGm0adMmcR8pwEF5+eWXBbmecMIJ4veOHTtW+vT++++L9IRww8KKhWs4i8LHZpKjmvRjTf5Gd0\/6KruvcjdHQkWfwo6CwH2Ouc22uLTy1KCdLVsaDqbwq4m1nQQyVYndth\/h9WCh6hcf8hm4c4Fb8AgN+CIununlddeCc0KVLlYEPajkiL1T3G0HwIJ7nDJw6O233xZk265dO3c9VFpiQk0OK0\/uybFL+iRjnhS55M\/ZYm7jPte5c22tQSKYjGYrDxZqmLULN23wwpagTPjvbvYGcQxgDwutG3TnAnPcRsa5fDWQSUI98cQTGxFn2O9oggk1hp4WVNV2oilIvMjX+iq7r3I3VwvVVrejCC7o5k1r5fXvv9Zq7zPcxUwU4sm27W5IPbD0wQ1ipYbOneuzngc7n5mFmjehrly5UiT5lsFH6lnUuXPn0ogRIyo30PAeavxvxWel91V2X+WuZkI1u3PjfHvRVt64cUtp5kzznaHwRi9LHycUR3Bau3adtTvXZz1vloQqA5Bk8FGZ70MF6S9fvpxw\/lXuL8fS1IIq+yo34PJVdl\/lrlbM7d25th9xtJW3bl2d471PW7mi68HNvHbtoTom97jPet7sCBWWKa59wzEZFFiosE5BstiPxXnUKVOmEA4co+DYTJGZkl566SWRSOKBBx5olGfYjSpn14qvcgMRX2X3Ve5qxfyCC1o6Jbgnn\/zt1+7cmY0SJSA2BTd2DRhwKXXvfiABQx4F51FHj8ZVnIfOqOreqzu3apIvTM+R9Af\/fCqZuXyjbpsJA6hnz56Jg5Jk8gZJqCtWrBB7uCgg1LBMSYMGDSL8y6sg7eC8efMEqX7729\/O67Wp3+Or3Oi4r7L7Knc1Yt7Q0Jn+\/u\/PTv2dyQZqa7fRv\/zLpkp7SIEIMpXF9fuiBG\/RYjv17buFJk78kH71q9b08MMDtNXVenGACNPzU089lfDPp1JVhHruueeKVGwuU2P5NNgsKyPACGSDQENDF3rnnWecNA5iqqmZTC1bRqfw27rVTZpDKTTeuXfvMNq379ANXZClbdtF1Lr1qkrf9u3rRR98MNFYLy0Y8CRmlRozrWxhzzsn1KwERbtRKQaDFqrO5YsUh1jpJblaLst+cduMACPgPwLf+94hIkraGxzbRxDRoEHPG5uYOrW3Uxfzc88deicWCCBTU7GtZ2pH93dY5KpVnqSNvJ\/xilCjwFEJNSwoKavzrXkPGr+PEWAEyoeAbYIEBO3U1YVlSjpAqDbFZRBUMJDI5v1cpykCzZJQ0U312EyRx2RY6RgBRqA6ELAhOFigwYQLSK6g5vKNgxaOw4SdI0WbIErTkRmdTHFk4LqHEGg2hMqDyggwAoxA0QiYCA7WJ6xTlyUqaYM8gxpFulnI5LJ\/PrXFhOrTaLGsjAAjUHoETASXZQfCrN0iZcqyv2VrmwnV8YgEMzapt97IjE14ZdjvugxPjkUMbS6t7GqfOnXqREuXLqXu3btnJj7kxT26KOqRqzAM4\/6emeBE5Er2smMODGVqUZwFR2AgShF6HhfzMNnjYJ7GnSv1L47cEmvc+IUik92omCOQaP78K0X2uKyLK9njYJ51n6LaZ0J1iH4wY1NUggldFHKPHj3ouuuuE7f1oMyZM4cWLFiQ2WUBatfTyg5Ckwk05KTpENomTSHiW8UH8uOC+euvv55mzJjRBEM0oMM27PcsA9hcya4mLSkj5sBQ5vDGuXQZy1BE0GBczMNk1y0OyqTna9asqaRgldjjIvmBAwfmPrfExTxM9iFDhuQ6t6QZTybUNOgpz+oyNuksPpluUM07DDLA78j4FHbcx5GY2mZcyK5+sFlapWE4YPGCZB5Dhw6lhQsXarNkhWXPKgJztR9JZVcXYGXEHIss3IM8fPhwmjRpkshiBuIPW2jmsSiQuJswD5NdXQyUEfMghkXPLXH0PEz2oueWOHMvE2octCzqms7DwhXar1+\/JsQpf9dleMrDNYOupZUdaR1lUV1NFrClrqJOHGFZsuL8nhfmEne5oIojIxZgZcZcYigtJZVQi9RzG8yjZPcBc\/RRJf89e\/aIBWcwe1yZ9FyVJSh7kZjHmZyYUOOgZVFXJSX54S5ZsoRAmLhUt02bNmKlLl2s6u8g2iKVPo3s8pYf9Fm6xZDuMY8PVvUESMtDl3YyDlnlITewSiO7KmMZMS8rodpgHia7OgWUGfOgazrsuyiTnktZotzqeWNuMeU3qsKEGhcxQ\/0gKanVpRUVVOKyuGXSyK7rE\/quEq1jqEVzQUzj7lvLNoIXKeThfkwru85FVibMpXw6C7UoN7st5mGyB3U46ptxqe9x5Na5pYt0s6eVvSjMk4wfE2oS1CKeCbpNpVWEdIcImEFifNX9ov7evn373AMHgoQvJ2R1RWsjO\/qEG39AoMEJ1DHEleaANax6lVjCAl7wUFmCkiSJp5V98+bNpcZcBnYF9aGIoKS4mIfJju+i7Ho+a9YsqquraxTM6APmGCOd7EVgnnTOYkJNilzIc2FuU1RXMzapYeDq70VmeEoru9qnrPdQVZzkUAwePFjsESGiVO652GCbN+YuZS875hgb3QLLB8zDZC8z5qps8ruQx\/XKjnmU7HlinoYSmFDToMfPMgKMACPACDACBxFgQmVVYAQYAUaAEWAEHCDAhOoARG6CEWAEGAFGgBFgQmUdYAQYAUaAEWAEHCDAhOoARG6CEWAEGAFGgBFgQmUdYAQYAUaAEWAEHCDAhOoARG6CEWAEGAFGgBFgQmUdYAQYAUaAEWAEHCDAhOoARG6CEWAEMkIAF4qi1NZm9AJulhFwhwATqjssuSVGgBFwhcC6dchDR4T\/lQWkunQpUf\/+rt7C7TACThFgQnUKJzfGCDACqREAkc6cGd4MSHXcuNSv4QYYAdcIMKG6RpTbYwQYATsEdO5cWKTnn29+fu1atlTNKHGNnBFgQs0ZcH4dI1D1CES5c4Nu3jCwYKHCUuXCCJQIgVISqrydAreGyBtEWrVq1Qi2qDpRF9SWCHsWhRGoPgRM7tw4iOzfH6c212UEMkeglIQqL6QdMmQITZkyhUaNGtXozkugElZHJVr16i48g3s9V61aRcOGDaMuXbpkDq7uBQ0NDbR3715q06YNtWjRohAZkrzUV7nRV19l91XuUMxt3bm2Crp1q\/Po32aHuS2WBdbzGfMgbKUj1ODdiStXrqRt27aJi6tlCavzz\/\/8z7R48WIaPnw4TZo0STyjXj4t7wOcOHEi9erVSzTXoUMH8S+vsm\/fPtq1axcdf\/zxFLS685IhyXt8lRt99VV2X+UOw7zlBRc0jtpNoojKM\/s+\/TRlC00fb26YOwcogwbDMIfB4ZPRAWhKSajXXXcdTZs2jbp3704g1I0bN4qLoyUBqbfP6+roLjRGZ3UXO48dO5bGjBmTgZrom\/zss89o9+7dVFNTQ0ceeWRu7037Il\/lRr99ld1XuXWYt9i+nU74\/vfTqmHl+X29etHOFSsq\/432URpSep6aE+bOwM64oTDMjzvuOGrbtm3Gb3fbfFUS6vz586lz586FWKjY333vvfeEVdyyZUu3o5lha77KDUh8ld1XubWYb9tGLU87zY2G1tZSw733UkPfvgcs3pkzqWV9faVtkCr+nuS8arPC3A3ambcShjlbqA6gT+PylW5hk4Ua3Ft1ILZ1E3Bv7Ny5kzp27OgVofoqNwbGV9l9lTsU88MOs\/5OQisiuQMifOvqDiR+cHxetdlhnh7xzFvwGfMgOKWzUCFgmqAkPM+E6v4b8FnpfZXdV7lDCRXnS9XMR2FqikxIkjCDmZLwOwg1JMBpe4sWhH+VsmwZUdeu1h8EAmTef\/99grvRJw+ScHd7IDuCQYMBoT7reWaE+vnnn9Nrr70mIlh1BVbZq6++Stdcc43RL65G6l5++eWVgCQQbb9+\/USgUVgdJlTruSNWRZ+V3lfZfZU7lFBtonx16QWRACKYy1dDziDSyTU1VO\/RVkqsj7AZVEYwKLbcVFL1Wc8zIdStW7fStddeSzg3GlV69uxJ999\/P7Vr164Q1ZBBSezyjQ+\/z0rvq+y+yh3pZofFOH68XgFVd26UioJgu3VrUuP5li3p4o4dxYQtYyTiazo\/kRUC9fX1tGjRIgrOvz7ruXNC3b9\/v1Dg++67j3Bu9Ac\/+AHde++9YgVy0UUX0YYNG8TZz4EDB1JdXZ04f1lUYUJNjrzPSu+r7KWU2\/L2l0jZwzIlSXeuScN3EGAAABPcSURBVE0NhFrkgtkkejX\/PWz+LaWeJxyo1HuoH3\/8sbBODz\/8cPr5z39ORx99NM2dO1ecHf3FL35BrVu3FqSKBA3\/+q\/\/SmeeeWZCUdM\/xoSaHEOfld5X2Usld8zbX6xl17lzbdRUE+AkLdQsCBXz2fLly8W8VltbSzhuh\/\/Norzxxhs0fvx42rFjR6V5mz7hiOHUqVMrz2AeHjFihPhvbJctWbKEOnXqREuXLhVHEvMo6Atwmz59uvBgXnzxxWyhRgEv9zKxrymjbDGwABHuXUSz4pzRjTfeKM6R4n+LOqzLhJr8E7KeIJO\/IrMnfZW9NHIniKbNXHbNHmoWhCqJdKYmmhi\/wevmuoCEnnrqKbrqqqtE0yophSWDCSbAUdOvoo3169eL+dmmLVf9kfOtTB\/LhGqBrI5QASSSM2Al1KNHj8oK6aWXXqJ77rnHGJRk8dpEVZhQE8EmHsp8gkwumvFJX2XPW26QB0ojy8smkAgPBW5\/yVx2jVxZEOqsrxcTOjKVSjdu3Dgxz7ksOkLFbxdeeKEgRNV6heWKORZygtx18Skg265du4pgThAtssn95Cc\/aVJXTXyjkuCvf\/1rWncw2hpeSFi7IEdpNeueO6ASa4UlzBZqDO2A9YmsRp988olw+cLFu3nzZjHot9xyi9hTlS4HAM9BSXwONYZ6Oama+eTuRMqmjeQlNyZLTMhy0pSkCqLon\/D2l1xkDwQ4uSZULDC6aYKfgiMF4ujv8NJznctXnnYAkYFAYaliPoXlOXTo0App4XfV9Qu3L4pKqLfeequIb\/m\/\/\/u\/yvysyz4nn1uxYoXIVId3g0wxh2OOx7tBzMHMdnhOuprZ5Ztgcli9erUAFUnsL7vsMjriiCMICgBlxIeKgbv66quFZSr3VRO8JvUjbKEmhzCXCTK5eJFP+ip7HnKbLDDYXtZXeSu3v+Qhuxh0ZW9XR6ggRWl5x1UvWFbLQNqGAisVe6pJCrwBwb3YoIUKqxIkiHcg2BPxKJhzUTDPgtR0Firmu7feeqsJocJCxQUhv\/\/970UaVBxl+c53viOCSZEPXSVrHFNEGyBISeDSdQy3NPZEdc\/J7T8bQt2yZYtIdnP22Wd7d\/Y3OOapg5LQIAKTZs+eTY8++ij17dtXhEb\/+7\/\/uxhktcB1knXeXNX9oG7KQw4m1CSf\/IFncpsgk4sY+qSvsruUW+fOhUV6vsVl3mu\/5q3+NuOi3P7iUnabV4vve+VKunjq1EZBL6YFg23bWdXT7cPqCFW6aeFmHTRokHClqgSnu0REJsiBdRrcQ73iiivo6aefptGjR1fmbbiM1Rzq6DOeNRFqUgs10jPi0OLPaux07TohVDT81Vdf0YsvvihWgz\/60Y\/Ef2N1d\/fdd4v3\/vSnPyWs5LK8YUV1W+Cdc+bMoQULFlT2CphQk6tWERNkcmkbP1lG2bX7lYEOu5A7atIKunnD8IaFarVLWISFqgit+759tVDDonxVdy72ORG1K63KOFG+7du3p02bNgmXLyxxtAU3LixOFHUPNYpQETil20OV83yYhQrrNmpvGtsN4AvfijNCLUPHMbDSx48BDd6lir9jvwFHe4q6DxU4wYXzjW98o7Bo56Rj5avcZcQ8uF8ZdgQjLebqe5KOO56zslADVkVa2ePKi1SB\/\/3f\/93kWEbcdmR9awve8R5qUnnjPAfjI0ioWSfckcSLW7Zef\/11o7iu96aNL3RQodkRqtxABzYg1D59+lQ2yDGgSD6BfQMujAAj0LwQAKHimJ7NmU3bnsMlHrUoySLK11Y23+pJQsV+KbwvpuIjtqkIFW5dBBzB4kMgEgp+e\/bZZ+mBBx6gDz\/8UCSZhp\/+vPPOy\/z+TwwYE6pJTfnvjEDzRCALQgVSYfuwWZ1DbZ6jcyiGxZZQgQMy8flUEhEqOvnMM88IHzj863BfXn\/99XTJJZfQv\/3bv4msGLj5QC0I04Zi4lhNVsXG5avL1JGVPLp2XeyL5SmvfJcLuW2S7djUkTJZZsHLJaDKlPugtnYWbds20zh06qrcBnMdBrbHPYzCHKyAIyFrTbe\/BBqzkd32\/bb1soyRCGZKQvSry6Mytn30ud4hC\/WXtG9f76+XKubr\/JAnPquMVFlgmYhQ\/\/CHP4gNY+yRnHzyyYSbZt555x3x2+9+9zs65phjxDGab33rW\/SnP\/1JpBxEwBKif7HZnVXhoKSskE0f5WsiHJyNR4S\/zfWWcUgXiGQ9udvmPiA6H+c8jIMkV+VRckdhUFtrd37SKMjBJA\/iPKq6P2qRLjBrzHWyZ0moNlhxnWgEmhLqgUQi+oK\/nd\/8LVRYngj8eeSRR0TGDXxomADgakVawZqaGnHw9\/TTT6\/gJA8q40jNzTffXHEPZ6GAasRZcC+lDB9cERONC5zTyG1POGZJEfgXdTQQxBwMDkwju1kiIttrPolwpjHkphXlRXJVvmVLw8HzeTWNzufZLE7Gjzev\/k19g2WARXKS9HpZY86Eahq98v29KaFGybiN+vcfL7It+VRiW6gfffRRJcfkHXfcIaxRFFioCPU+6aSTmiRvQBYlBAjt2rWLUw\/uq75MSfaE4+bTCWTBozBicvG2kItPIpo2E93atfspmKBIXhOKhi2OjorVvY01jAUxCFOXKQm\/Jz260NwIFeO8fDl97bY\/cDUr8jhklBu\/SXpBjLmrQKtgFiWZ0SiosGq2JvVOatRLmg84DqEe0Pd13rnVYxOqzN174okninRU8rxR2O8YAJmo+e233+bUg1VGqPEJJz3NwUKFpRrXNWx6s36\/Uns1Z0RTuMczytWFAyrhq3JMNFKOKHlra9fRtm0g1fACCzTozpW3qZiwMP29uRCqJFLdVgR+yyA3viCsuMnxTeOBv2OOllmNMCeH5f9VMzMhgQQ8ktgzRi7gYML7OHkFDh2b+SW9\/jr2UKN0kwh5QnwrTKg5j1gRE42LLiaVuwhCRX8x2dnsx9pgYyJmzU1iCS1UXAeGFApWpz6Noi9dukx4jXQljTvX+OIc9q11MmSxpWNyr8vFmw0mtnXiJscH0QUtT2Q4kicetm\/f3iTJDcg1KqE+vI8yI5P8\/zi7H0x4n5RQEZQUtTDEwpEJdcIEClquUCK2UA99SkmJyfZjzKpeGrnjEU5WPWjabtA1rHuzaUKFJQxX4MHLOAyrbuSVhYXatIDgtm1DZhh314FhQtq2TZ\/4Po0712aE0uiLTft5EKrtYtBGj+L0KUlyfJkVDu+RRInMR7jhC+2pN9FI8lVTs\/7mN78RyRYmTpwoEs7IORs5g4Pu5rQu3yOPPBDly4R60G0wQUOc7PK1+2SKmGjsJIuulUbuvPdQbftrsi5sg6lM1jDkObQHqie4cePqaOZMt6nWgkf4XLlzbfBNoy827dsSKiZtGxe5rj0slCxy44sguIS58YVeBPdi4ybHR\/Y31UWs9kV11wb7KK9169mzJz322GMiWBT5AvC\/an5emRNYd4MMW6iNUU3s8kWg0YABA8QZVGmF4gzqscce2+h3\/O2LL74QiZiRAIKvb6u+oCQbYrLdG0w62YY9F3Vu3HYhgAm1Xz+iEO+qmDBRJ7jfphKcrTVk23+ccikyQLIshGryMNjimVU93T5s3OT46vVtkFPeTPMf\/\/Ef9Je\/\/IX+\/Oc\/ixtp9uzZ0+iaN0m2mLORbAFZphBc+t3vfreROxjEi8KEataCxISKu\/HiFqyEmFCrj1ChJ4GrKxupjiScrl2jSQkkYWMxxNFLeUFKMOAoLsGBmMP2WkGkNnm+XbnGpTVc5IUdZSFUXy3UuMnxcbvX1KlTherLO1A3btwoAkfVPdQ1a9ZU6iF6Fwl5HnroIXHc8aijjqL\/\/M\/\/FPvuf\/zjH5skytclvE9qoXbocMjlK5MAwdWslqrYQ8WF4gAd\/xu3ICny3\/7t3xpTEEr3MUhb3noQHLioOtL\/j\/tZsWEvSxZBC3ExKGKiiSujrr4LuW0Ix1THhpijgpGCfYMVpzuiAhIMszh1+Cg3l4k\/W+Q+aNKMrUUcZc2HWcMudCBOGy70Jc77UNf1923jWcF7Xe+hxu13mvoffPCBuFsVGeRAaNhL7dChA5111llpmtU+q0b5vvbaoXm5CF1x3rmDDca2ULMSRG1X+uyRyD54Y4ysF1ZHJVpO7OButFwrvQ3hhNUxka4tMblDBzlH07dmM4Gr51HDFgI21nB6aaNbcK0vNvK6JlS806RLpn14G7mrpQ4TagEjLQkRN77LcHDsNckb4CFSWB3cC4jsTcOHD6dJkyaJZ3QWKiLZcEs9ClZj+JdXgfvl4YcfFvsRPuWoLKvcOtIFMV1wQcu8hpT69m2gNWsa565O+nJY4FdcoZe9S5cGGj26oclxIJvFSVJ5kj5XhL4gonXMmDHOkiDIvoftw2Z1DjUp5mV\/ThIqLk5R5+UwXYHFHHQDl72PpbNQ1Xy8OFSMDXG5F6AmkQjeEq\/WCRKuHAQ1LaH8bezYseIjzKvAjX3ttdeKbFLYU\/al+Cb3qlWtafLkGi28IKbt2xvv1yQdB7Q1b95u6t3bfB2V7Tuef77l13mv21J9\/SFixXsmTvyAhg372LaZQusVoS\/yna6yCqkABjMlIQityD3qQgc34cvl\/Buc+8J0BTeVtW3bNuHbinmsKgl12LBhlQvGYZ0ef\/zxuaGP1dhNN91EV155ZSb7FFl1xEe5n322Bc2e3eLgzRYHkGnRYrsIELrvvi6poUJbAwZspxtucEemqlDAfNq0e2jixP\/nla6gD0Xoi3xnFoSaWlm4gcoed3DuC9MVePB88uJhiAsnVPUAcadOncSNNLNnz664a2Gh2rp8pVs4zELFwE2ePJnq6+tZvasMgYaGLoJMUfD\/33nnGWsEamom0969w5oQc9u2i6h161XW7XDFfBBQt3TyeSO\/xQaBd999V8y\/tgXjiH8+lcIJVQdWmqAktBdGqHLlDGLlUt0IfO970blEVXSee+75yn+qxFzdCJav95iwf\/WrX\/GCuXxDU5EIsSu2JIlUh\/jnUykloaqRuupNB2rWj7A6JkL1aXBY1uwQMEVvyjcXnSAhOwSaZ8tYLFfTghlHu0wp\/DDSpjpIoZlH8ZEk4+BSSkKN0wGuywgkQSDOERUOPkmCMD+TBwLdupnJ0iYLmY9JFPLAN+47mFDjIsb1mw0CNkkisrieq9kAyB0pHAF4Wky5ipks8xsmJtT8sOY3lRABU5KIEorMIjECjEBJEWBCdTwwwahk7PsuWbJEvEW9Linsd\/WsrFrfsZja5tLKrvYJEdu4vBpnibMq6h2Qap7oMAxNvyPgaP78KytJwLOSG+26kr3smKOvulSgReh5XMzDZC8z5uqpCcivxqCUHfMo2fPGPOm3z4SaFDnNc3LQpRJDgfEbLgRAUgqZRhGP6n7v0aNH5dok1JF3HLZr186hlPqm0soOQgtLE5mF8LiRQ8UH8u\/YsUMk+54xYwZNmzZNvFa9J1ImA7H5PUvMXcmu6pSaeSYLvNFmXLmBoS4VqJq8JS89dyV7WJ7wsmCO5PfymKHEfuTIkTRw4MDc55a4mIfJHpWCNivck7bLhJoUucBz8m7B9evXi7\/gTKzO4pMHldWztfKYUNeuXbVEm\/Vk6UJ29YPN0ioNGy4sXlasWEG4ymrhwoXWi5iwxU3WmKv9SCq7ugArI+ZYZOlSgYYtNMuEeZjswUxujqYP62ZMuhLEsOi5JY6eh8le9NxiPThlSOwQR1gf6kKBJaHqJg64Qvv169eEOOXvIAVcuYQCi69Pnz65uCAlsaSRHTdWyKK6mvIYN3Xi0GGIxUqc3+Xdj2WXvcyYSwyD58IlKRSl51LXsbgN04so2X3AHH1UyR93oRY5t8TBXCd7kZjHmQPYQo2DlkVdlVClEmEPFYTZv39\/atOmjbBepYtV\/R1EW6TSp5FdvbxAusXyWgyonoCwybqshJpGdpX0y4h5WQnVBvMw2dUpoMyYB13TRS9i4mAe5VbPG3OLKb9RFSbUuIgZ6gdJSa0uraig9VMWt0wa2XV9ktauY4gbNRfENO6+tVz0BPe583A\/ppVd5yIrE+ZSPp2FqoshKBPmYbIHdTnqm3Gp97a6Arl1buki3expZS8K8yTjx4SaBLWIZ4IuX2lxInsLAmbmzZtHqvtF\/b19+\/a5Bw4ECV91+caRHX3C\/jEs1ajUjy7hVjNnyXbDAl7w97IEJUkSh0dCJZG4sm\/evLnUmMvArqA+FBGUFBfzMNlBTGXX81mzZlFdXR2pgXU+YI4x0sleBOZJ5ykm1KTIhTwX5jZFdfUWDDUMXP1dDW3P+9aMtLKrfcp6D1V3Fd\/gwYPF\/jOug5J7LjbY5o25S9nLjjn0XrfA8gHzMNnLjLkqm5yi5PG7smMeJXuemKehBCbUNOjxs4wAI8AIMAKMwEEEmFBZFRgBRoARYAQYAQcIMKE6AJGbYAQYAUaAEWAEmFBZBxgBRoARYAQYAQcIMKE6AJGbYAQYAUaAEWAEmFBZBxgBRoARYAQYAQcIMKE6AJGbYAQYAUaAEWAEmFBZBxgBRoARYAQYAQcIMKE6AJGbYAQYAUaAEWAEmFBZBxgBRoARYAQYAQcIMKE6AJGbYAQYAUaAEWAEmFBZBxgBRoARYAQYAQcIMKE6AJGbYAQYAUaAEWAEmFBZBxgBRoARYAQYAQcIMKE6AJGbYAQYAUaAEWAEmFBZBxgBRoARYAQYAQcIMKE6AJGbYAQYAUaAEWAEmFBZBxgBRoARYAQYAQcIMKE6AJGbYAQYAUaAEWAEmFBZBxgBRoARYAQYAQcI\/H+pigpFM\/0\/OAAAAABJRU5ErkJggg==","height":282,"width":468}}
+%[output:41a19d04]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
 %---
-%[output:8dcac29b]
-%   data: {"dataType":"image","outputData":{"dataUri":"data:image\/png;base64,iVBORw0KGgoAAAANSUhEUgAAAdQAAAEaCAYAAACoxaaoAAAAAXNSR0IArs4c6QAAIABJREFUeF7tnQe4FsX1\/0cliiV2bGDBhkRJNIoYVMSKLUYFFWPFEsWG\/WcHC8ZILIgtggI2bKjRWFEpwQrGWLEQgYAV\/SfWEMX49zMwr3OX3Xdn67tz75nnuQ967+zume\/M7nfOmVMW+v77779XDWj\/+te\/1O9+9zu1ySabqDPPPFMttNBCC0iBaL\/\/\/e\/VSy+9pG644Qa13HLLNUBSeaQgIAgIAoKAIBCPwEKNItT\/9\/\/+nzr88MPVFltsof7v\/\/4vUtI\/\/OEP6rnnnlM33nijWn755eNHJD0EAUFAEBAEBIEGINAwQv3Pf\/6jzjjjDMW\/l112mfrpT3+6wPC\/\/PJLdeqpp6qf\/OQn6pJLLlFLLrlkAyCSRwoCgoAgIAgIAvEINIxQEe3mm29WF110kTrppJPUoYceqhZffPGaxBDtiBEj1BVXXKHOOeccdfDBB8ePRnoIAoKAICAICAINQqChhIoG2r9\/f3XfffdpDXWttdZSCy+8sPrf\/\/6npk+frr744gu11157qfPPP18ttdRSDYJIHisICAKCgCAgCMQj0FBCRbyvvvpK3XHHHeqmm25SH3zwQU3iVVddVR122GGqd+\/eYuqNn0fpIQgIAoKAINBgBBpOqPb40Vi\/+eYbteiii4pG2uCFIY8XBAQBQUAQSIZApQg1mejSWxDwBwG81f\/0pz9FCsyRx8Ybb6yOOOIIteWWW+qjD9Peeecd1adPH\/X+++9HXt++fXvVvXt3dcghh6g11lhD98Pqg48C7eKLL9bWHtMISRs0aJC6\/vrr9a9WWGEFNXz4cLXRRhvV+syePVvL8+qrr6pOnTqpYcOGqTZt2vgDukgqCJSMQMMJFY10ypQp+rw0rGEG5oXGcUniUEteHfK43BCII1T7Qccff7zip1WrVvrXLoRqrodYr7vuOrX++uurSZMmqQMOOEDNnTtX7bvvvuqCCy7Q1h\/a559\/ro477jg1ceLE2qOJ+d5vv\/1q\/\/\/aa69pIv\/0008XuD43YORGgkAzQqChhDpt2jR18sknq5dffrkupL\/4xS8kDrUZLbqWOJQkhIq2igc86z4podK\/V69e6sILL1Qm1vvNN99Um266aZPkKDZZmvk46KCD1Lnnnlsj8oceekgTOw1Pe3wapAkCgkA0Ag0jVGNywoy0xx57qO22204NHTpUtWvXTnv2snMePXq02nHHHbUncFicqkysIOALAjah3n777Tqhid0+\/PBDNXDgQAWJ0Wxt0dZQf\/3rX+uYbDvEDA30xRdfVGeddZZik7r22mtr8+2KK66oY70ffPBBhZMfv0Nzpd155506Qxla8CKLLKL++9\/\/apMzGcm4zjYJ0+e2225TnTt39gVukVMQaAgCDSNUHJDQTjkr+uMf\/6g9efmIEC5z+eWXa6ckSJUPwpAhQ3SKQmmCgK8IxBGqTXL8N8lO2FgGNdQwQqWPSZQCea622mqaPNdbbz119dVX6\/eJxuaVjSsEjAZ7yy23qA022EBtvvnmWiPmHeRf3jXzfj7xxBO6D5nKIGVpgoAgUEENNSz1ILvmkSNH1l5eds2YoNiN26YomVBBwDcE6hEq2iAOR2ieaKg2IboQKn4IEyZMUGeffbbCkcjWNNmUmqQoxx57rDrllFPUJ598ovNo\/\/3vf9dno3vvvbdOA0oIm9GMZ86cqc9P3333XRVF4r7NgcgrCBSNQMM01DBCJWcvL7xtmuJDNHnyZEmOX\/RKkPsXioDrGSppNiE1tFNTMCKJUxKDOO2009TRRx+tr7eJcbfddtOk\/fbbb2uSNQSK1mq8eY3zEn4NxqEJSxIOTNIEAUGgPgINI1S0T858eKkx+WLi5UVnV4w5ipecJsnxZQk3BwRcCXWHHXbQ7wVZw0xzJVTOOnEswiPeZBYLM90+8sgjOpzGhMpwrnreeeepu+66q2beNX2QATPwVltt1RymQcYgCBSKQMMIlVFx3oNGuv\/++2sTFC79Rx11lML1n3SDn332mTrxxBN1uIw5Vy0UjYw3J2UiZ07jx49Xu+yyi44nDCtLl\/ExcrmHCLgSKkPDAe+aa66pkZgLoaJxomW2bdu2yZqznYs4IyUWlqMV3j1IkjPWpZdeuuakRB\/OS++9915NsMbBafXVV\/cQdRFZECgXgYYSKrtndsq8uLzcgwcPVg888IAmU7sNGDDAi+T4nDdxLrXnnnvqgHnOnuRDVO6CrurT4pySeBc4PyUBAzHZO+20U81yE+bli2mYc1M0S85f+X\/+mzhSE79qsLDDXyDdp556Sp+NYhbGPMymzw6jYVPLMQuew2jMPmxmqzrvIlfLQqChhArUaHUEoOPdCxHx\/1SZMRlceOmDlWjKmiLOdEeNGtUkTMGEGyBDWPiDCWF44YUXtPlakvqXNVvVfk4coSI9xx94tUOAdux1vbAZnI5wNoKEIVLOSHEysps5SrFzZfN34\/XLf9uJHhZbbDH13XffaW9gOT+t9roS6aqFQEMJ9b333lPLLrtsJZPfG+K0PRz5sKFBENLARwqyJfsM\/82ZMOEFFEEnswzXY\/ZdZ511qjXjIk1DEIgjVDx1x4wZo89PIUdXQsWky+aTNII0jkuIJbXXXVhWpKApN5iK0IBkk25DgJOHCgIeIdAwQjXFwzmzgaTYFZfZ8DLm\/JYPGMkk0Ay6du2qTWZopjNmzNDiPPPMMzUNFZI0\/0\/cH9dz3UorraQD4QlZ+Pbbb3U+VDSHr7\/+WpvupAkCSc5QQYswlv\/7v\/\/TWmdcYgcImLXI+T0NnwTMv+adsuNOzUwYj1\/eP9MwBWMSNo3jCqxFkLQ0QUAQiEegYYQaFjYTL26+PewPVZj51iZQYmH5f0zTfOiM\/Py3yXrDJgFtAScqCBmHKjRWaYJAEkIlscJVV12lHYxocYRKH85AIWE2dZDwlVdeqXbdddca8NQchnRNCzPl2iE29JPzU1m3gkAyBBpGqOya+chAPJirlllmmWSS59QbGUxQvZ3OjdsnJVQjkilBl5OIcptmgIALoXJkAAliJbGrurgQKhYSwluMQ1\/Hjh216deQsu10BOHSN5j+0A6xAXLbaakZTIEMQRAoHIGGESrORxAZH5qpU6eqHj16qJ\/\/\/Oe1ahj2yDFd8be8zcIQJsXNjzzySF3RBm3TbmGEGjT5YjImxZs0QUAQEAQEgZaNQMMI1ZhM4yrNMD1FVJvh+cTiUT\/SaKP8a5evChJqmFNSMFF5y15OMnpBwHMEpk+fNwArscYCI3Lp4zkMIn46BBpGqHjFvvLKK9o7Nq4VpaHGPTdIqIZ4qdIRzLcady\/5uyAgCFQYgXHjlCL+nX9Ng1SHD1eqe\/d5v3HpU+EhimjFI1AaoeIVe+utt+pEBzvvvHPxI5MnCAKCgCDgggBEOmBAdE9IFa\/\/uD6HHtr0HqLJuqDfrPqURqhBr94qePk2q5mUwQgCgkByBNA6t902+XVhV4wdO0+bFU02Hzw9vEvphNqpUycdI0ewOW7+eBoGnYE8xFFEFgQEAR8RgExtM2+WMaChYiZOqslmeaZcWykESiNUQknI24vZF1d+EnLj3cu\/JFao1\/g7GYmI73RpdrFl+pObVEjbBTnpIwi0IAQwyTYiaYXRZFsQ1C1lqKURKoB++OGHauDAgeqxxx7TeUJdW1Iv37AEDL1799bVX0aPHq169uwZS+KusiXtx7jJbENFkWAS86T3KrO\/r3KDka+y+yq3N5g3ilDRZDmXpeV4zurrevFV7rDvb6mEagtQ5hkqsa7Ul1xzzTXVb3\/7W9WvXz\/VpUsXLc4qq6yif8pqc+bM0RuLlVdeWQUTSZQlQ5rn+Co3Y\/VVdl\/l9gnz1osvnuZ1yHzN3DFjVKuBAxfwKp47dKiam7L2rK\/rJUpuFA6flA4WRcMIlawslG0j\/KRIr187Zy9J6yFUuxGHSi3JshphQqSHIxNO3okqihyDr3KDia+y+yq3T5ivuv\/+qvXzzxf56iS+9+xBg9SXPXsmvs7X9RIlN4VTXI\/5EoNV0AUNI9SCxtPktuYslWThOD+R9B5CJdWhSclWtoaKTB999JHWilu3bl0GDLk8w1e5Gbyvsvsqt0+Yt5o4UbXaccf67wiORsY0G9XTpU+CN3HOI4\/8GP\/qeJ2v6yVKbtFQHSe+jG62ZmpSAxpCDUuEX4ZMxhRGXcpVV13VK0LFLOOj3IJ5WSu76XO8Wi8jRijVp084UBAlZ55rrhnfB2\/hPD2GzTmr4xR6hbk1Jl\/lDpuWZqmhQqYkCe\/fv3+Tai9CqI5vZkg3nxe9r7L7KreXm5io2NH+\/ecRKi2uT54xrTzv++8TvbC+rhdf5W4xhBpW2eP3v\/99zSlJNNRE76nu7POi91V2X+X2eb2A+exJk1Sbzp3rW5AwAYfl+62n7SZ97aZNm\/cMR09gX9eLr3K3GEKNWreioSZ9o3\/s7\/Oi91V2J7kdP7bpZz7dlU6yp7t1oVflInc9TTbKtBw2KuJV4\/ILNwPTaS6YF7oq3G\/eLE2+ZvhRTkmiobovENPT50Xvq+x15a54ertKYu6w+chd7qAmm1dmJs5XA7mDc5c9+Wci1RW+yt2iNFS7PJwhUNFQU613Mfmmhy3TlZEfGpdk7sFE7ZkkSX5xpT6SCTYfhcud5zlrIONS4bInXwZOV\/gqt3eEShHyzz77TMu9zDLLqIUXXthpgtBMr7rqKtWrVy916qmn6rSDdtiMJHZwgrFJJxa9jwkpGISvsofJ7RTmQXaoMWNSJwhIvjoWvKIqmLf+wx\/q5tbViRQOPLA2gFLkHjFCte7bNxTmue3aqVazZjlNwdwDDlBzhw0rV3YnyZJ1isK8RYbNuCZouO+++9S4H3ZnAwYMcA7WNVom03PjjTc28dh1mTJzfZBQ7WslsYMLkv4mR2B0zSng3TURAYkBSBBgmvlI88Euo1UB89bPPadWDSRyCRv7B7ffruZssYX+U1lyI9tygwc3SSrB3HzRs6f+vWub9u67ta4LzZihk8b8tFOnZpE0pkUmdnBJIfj9998rvGwnTZqUiBj\/9a9\/6co0tCTJ8c0KiyJUSezg+rr+2M\/XoHFG4KvsC8g9fbpq3bGj8+TN+c9\/5oV6DBiwwIcbzaxWONv5ju4dq4A5CRvQ6OOarek1Qm42O7WNTtI5njJlnhdwA+Y4DlfXv1MkBevXZptt1sSzukVoqOzgBg8erJ599lmNF1Vk4qrGmD7bbLONuvzyy9VSSy3linWmflGEKk5JyWH1+ZzDV9kXkDtpMnfOUQnjiGohji3JV0b4FQ3HPClW82M+Gy43cC60kPs0UCrO03JxWCzJF8C\/ppFzffjw4ao7dWU9bKm8fN966y1dy\/T99993HjKZgdAMu3bt6nxN1o5CqFkR\/PH6SnxoUg7HV9lD5U7ysXXBq6BSYmVjPn2+By8fZN2SEur8mM+y5Q6dorw8gc3NC5pjl+UV1Qci5fgveq83XB3aYMe6NONLRaj2g1xMvmGCGXPuhhtuqI4++uhI2YcMGaLGjh2rhg0bltsZqmioyZdKJT40ycXWV\/gqe6jceX9s7VJiKfENu6wszOtqOWDl2qqkobp4AifJHWzN8QIbD1d8cuzHnG3rMDd8933TVDMTKibgV155RRcK79ChgzPsLkRMnTzOTl999dVEZ69RQkjYjPP0LNCxrA9kegmjr\/RV9lC5XT62SUFMmOLO5fZlYB6r5fygqM5PGlhfZMyLaHFV2nzF5RdG5nrm\/MCIx40dWxnzKmRqm3mjJgcNFfOvTy0zoboOFnLk\/PT66693vaTW79e\/\/rW65JJLEtUPNeTJTXCI2m+\/\/WrVZkRDTTwF3mp5lfpIJoQ9kpRy\/tgqk+IuoXz1uhdNqM5azg8peOuexqHp8dGef2ZXtNyJIK6XcQl527d3vh09f3BdCm2QVlnmVTTk9gnkxqHVp5YboaJxsshnzJgROf6FFlpIa7OYe12cmbhRu3bt1Mknn5xoEuxKM9zj4osvVpdddpl6++23dfk2IdTkS7RSH5qE4vsqe1254xK1Jzlrnf\/Rckgk5Ix80Zg7azk4uUSVXjOVZEiAP78VLbczgMGOYbmDE8xxnJuTbV51XQeu\/eyhJCXUadOmqdq5eGrwyrswF0KFqPr27asYfL32i1\/8oma6dTH5poUB7ZQE+cSuLr744uqMM85Q1ESlQahHHXWU6tKlS9rbZ7oOTZ1YMQrn+lQP1Ve5mSxfZXeWO+xjS87YuBqegLPWWmp6\/+Fq5MimlcfgGngmLP+7ywvgLLvLzUL6uJzBmcvGRnnCcrZ4yCFN7l603CmHG36Z4xyjmUYUp6vdl7PKQw7p77QOWFZZ1kuSuWtxGioLEPIaOXKk+t3vfqezE3GeGtbQUE3GI5MF6Sc\/+UnuYTQQ6qhRo7SZmAah4l285pprqj322EMTmjRBQBAQBASB6iIAyaM5+9Qya6iYbyFS7OIXXnhhIRk6IF\/ImB+XJoTqgpL0EQQEAUGguggMHTpUHXHEEdUVMESyzISa1XT73nvvqSeffFJ9+umnocDNmjVLffTRRzo37\/LLL+8EbpzJlxjatm3bOt0r706c0ZCukbRaZALxpfkqN\/j6KnsucuPTwHmrFTyv7bj9++vKYC5WYfxfApbR2GWbi+w\/mCqNS8aaazZ9JBYxF0\/ReabMpmbdesLnJXcsQHl2qDPHfZKUi1PledR27z7jhyUZHofKmSlOUmeffbZX30imNDOh4lxEekC0yKQa6ksvvaS12ygyNWtuq6220tmZOHd0aeKU5IJSsj6VddZwGIavsucut3XWmjTvQVJny6yyxxWIcfHyTZN1J6vcDsuxsC7IHiyO7uq8Nc8Xujzz6rzj6\/BMSf379y\/N6zjvychMqAiERkhVl4EDB6pu3bo5mWY5e4WA77\/\/fnXaaaepLbfcUl100UXaqxcHpxdffFFdc801ar311kscMmNkwgGJJuXbsi8b3z80H3zwgSJbl0+OYEVinpRQTWSNq2dnFtldq9ONGDFCRWlgRsvh45ykZZE7yXOK6Bsmu8vGQymyS6Gdlpvuz2zSkJs87507d\/bq\/Qybw8yESmKHv\/\/979r8glftRhttpD1oF1100QWeh0PSvvvuq52QPv\/8c3XcccepVVZZpabZEtry8ssvq6uvvlo7NpHiEA2Wl2K77bbLvAYlsUN6CJvbhyY9EuVdWTTmji4JesD4hkB0QcuxFcLZBJi0srvmrTDZ9KIyJaXVctLKXd6qiH5SlOxxG4\/p00l\/kWzjkcd4zSbNZ8yDOGQmVLuQdxzIcWEzlHhDKyXQePXVV9fhDmixkDYZk8JIut4zqRxhQmbseqgShxo3Uwv+3edF76vsRcudVxbDsBz7aWV3lSksYyIxjlljFtPKnfyNyv+KerLX23iMHHlok41S\/pKF39HWUH20IBWioZrwF5d4ITtsxngHU7KHeqXGTHv88cdrQkXTpRGSg2aZtB6qTfRi8s3+ijTXD012ZIq7Q9GYu2qDLiMM5l93kT1oPk5qhk56rusyDhe5Xe7TiD6usgc3Hi7rwOTAqFfYJsmYrWyPXmdhy11DTQKi3dc4M\/3zn\/\/UWikOR++8844+EznzzDPVbrvtptLWUUUzxSuYmFjOdoMFxkVDTT5rri9r8jsXf4Wvspchd1wWQxcvYGYwqDFOnTpXoXV07txmgXOxekmekjilFpAx0euPe5b1ErcOmF+Oo+P6uaQYDmR79BrzwgkVEvziiy\/Ud999p89B0WBJ3hDWxo8fr4488ki1ySab6PPUjh076jSDkC35d0nAALmirSbN5cvzosq39evXr5YpiTNcfspqLHqK6a688sqJchOXJV\/Uc3yVm\/H4KntZcs+vQa6ef751bfrbtZurQ2UGDnQP7frPf+aoiRNb6WuCZ61Dh85VW21FEpjWdct3JlnnPC\/vVhbmecudxzqPWgdnnz1Xb5hMi+sH6fbt++NassfKujrggLlN1kAU5i2iwHjUQkArJDsRpll2ppyX4lxEQnyckTDlBsNeOCMlnuzSSy9Vpvj4hAkT1IknnqjPT2mAeuWVV6pdd9018RqMIlT7RsSoHXzwwYnvnfYC4m7vvfdetffeezcsFjaN7L7KzVh9lb0Rcs+a1Urx0aPx3926re68XHr2\/FKNHr1UZP+4vzs\/SCnVpcscNWrUB0kucerbCMydBHPolKfs9jqo9+iofs891\/qHUMflFtik9ev3L8U6sFuU3MTqu4ZKOsBTSpfMTklISaICvOpwKiJhAjsOwl8g03PPPVc988wzavPNN9dm2JVWWmmBgaGJksCB2qgQ6NNPP61uuukm3e+www7TITULL7xwJCDGVEzBc7syTRShUujcJHYoW0PlPJgx3XzzzYrzY1+ar3KDr6+yV0HuxRcP1zQauW4xGRqNN285qoB52jFVVfY4co6Su8VqqJADMaR45O6zzz4KwjKOREsuuaS688479d85zyQMJq6hnWI2Nnl\/4\/pH\/T2KUBt5hlqF0J00ePoqtyHURlcZ8hVzV6\/bNONLc01IgZg0t4m8RtZ5rnA63cxnzIMDzKyhfvXVVzo0haouJlNS0DOXsBc01X\/\/+99aayUO1TSckjgfXWyxxXSZNe5j7jl16lQdLkPAb5rmcoaa5r5ZrsG8QSIL+xw3y\/3KutZXucHHV9mrIPf48RSX2KKsZVZ7ztFHP6cdYObM+fHZrVrN+iG366zEaRCTCF8FzJPIa\/f1VfYoubFy8uNTy0yoYbl8w0Jdwn5nyr7NnDlTe\/Wef\/752pEJEzKFyG+55Ra14oorquuuu06tv\/76mXHFrAyZPf\/885nvJTcQBFoKAl9+2VPNnj0odLiQXOvWzyv65Nnat1+7dru5c9spniOtZSGA0sGPTy0zoZp4Ujx18cgl1jRInib8hdy9N9xwgz5oNmXfHnjgAZ2nl+xKwWoyhnDJkkToSx7J5CFVfqQJAoKAOwJTp7ZTN97YLizHvtpgg+fUr36VnxZL6MXvf\/+cu3DSs1ki0CI1VJPN6Nlnn9VkSaaSIKEaYiTJPaZfiDGMiIOrIoyIm+XKkUEJAh4hEFbPPK+z1mCMokewiKiCQPZqM2CI5km5nbXXXludcsopuhwb+X05LyUfLwSLaZickmiyNNeyb2kzJcncCgKCQHkIuGbbqRf4X7TDUXloyJNaKgKZTb4Ahyb5l7\/8RZ1zzjnaOzfYSOxAooa99tqrZtY1eXb5l6T4P\/3pTxe4jrNUPIO5HsclPIalCQKCQDURiMuiY7Lt1MuUZCcQqOYoRSpBIBqBXAjV3J54Uoj18ccf17GolMraeuut1R577BHqrWXCbU466SSt4eLhaxpEi0Z7xRVXaKIuM\/mCLBhBQBBIh0BSsgwzH6d7slwlCDQegVwJNelw7IQQaKicv5LAgXSFJHBG20WrxfvXDrVJ+pwy+xNzi+wm4T8m6z\/96U9aBLT0\/fbbT\/931O9NTFawfxljyCq7PabVVltNFzmgnm1RDXlxhKPZlYyiMEz6+6Lk5r55yV5lzA1ZBqs+Mf5GrPOkmCNnmOxVxtzI++CDD+rle9RRRzUpPmJqRNvfoqqs83qyl415WkwaSqgITczpHXfcoTMjkbLQNIpBk1God+\/e3ph6zaSbRcxHg9+RjhHt25SSM4Qa\/D2hQZxBn3XWWRoG4nIxhy+\/\/PJp59f5uqyyQ2h2qTznB6fsSHYsGx\/kJ1PW6aefri0aQQx5TBi2Ub8vEvO8ZLfXFOUJi25J5QbDsKpP\/K7sdZ6X7GEEWyTuSeUeM2ZMbUNvsOcbuuOOO1Ye8yjZsXCW+W3JMp+5ECqevoS\/UDVmGiUgIpqtRYR1QWMlMT51T33RSM042P2uueaaioT\/NDTUMI3P1GsMarH8nuvDCLjoj2UestsvbJFaadTaYvNCLmlyJJP72XUTE7W5KRpzexxpZbc3YFXEnPc9qupTI9Z5EsyjZLc3A1XEPLhuwbmR35YkmEfJ3uhvSxKCzYVQH3744VpC+\/bt2+vkDGGNuCIyH\/mW8DgJoCxgQ6hhGiqmUAoBBD8o5veQAg5YNHZlXbt2rZmJk8iRpm9W2Y05iWfbpqY0siS9xv5whGHIZiXJ741pPqkcafpnkb3KmBsMwzKWNXKdm02UIZp6ssQV2KjaOrfXrU3+n376aej6r9I6ryd7I9d5knc6M6EaE8hrr72mq8tQgi1Jw+RL+kF2e8SnoqVy9vbUU09pR6a+ffuqn\/3sZ0lu2dC+NimZF5czVAize\/fu2psZ7dWYWO3fQ7SN\/NBkkd2cGTNmsybK2gzYlgCj7QU3JVUl1Cyy2x+gKmJeVUJ1wTxKdvvjUmXMg6bpqPeiLEJNgnk9s3rZmCclk8yEanZw5Ns1mZJchSDlIDu8ddZZR2tlSyyxhE45SHJ909B480o96CpXln5BUrLvZTSR4CKuilkmi+xhYzKaehY8464NYpr03NpseoIm4jJMvlllDzORVQlzI1+Yltcok68r5lGyB9djvXcmbu0m+XsSucPM0lHvRZXWObK4mNTLwjzJ\/Ji+mQn1888\/18XBKb1maylxwhC7ikY7bNgw7UjSq1cv7dVLNZpFFllEn4OZe\/fo0UPn4A2mJox7RiP+HjSbGo2TdIeMk9qvtvnF\/v0KK6xQuuNAkPDNB9ne0brIzpg4P2YNBD+gRc0DWKPV2x+FKIcXZKiKU5Ih8ayyk4Gsypgbx67gemiEU1JSzKNk572oMuaMk6gIymnajnU+YB4leyMwT\/vNykyohhhJPYhTkuv5KKbdk08+WVFE1lSpATjiTY844ghNoDTcu998801NvlFns2kHX8R1UWZTnmWXjbPdwO3f2+EEZZeZyyq7Paaiz5ZsnMw8mlq4L7\/8sjJnLi7Ylo15nrJXHXPmJmyD5QPmUbJXGXNbNvNemBCZqmNeT\/YyMc\/CC5kJlYd\/\/PHHOqPR6quvro455hhFyEu9guCPjgtvAAAgAElEQVT2QkW7MJotoTPUTUVrJSG+2VWa2qpFhjJkAVGuFQQEAUFAEBAEMhMqSe7PO+889cYbb9QNmQFqO2zGJMffbLPNNKGaw+YXX3yxlhDAJN4nFMcXDVWWlCAgCAgCgkDLRCA3QnUpiWaHzRBvChH\/4x\/\/UEOGDFGffPKJOvzww\/V5GA5KBK2TdP\/4449Xu+yyS27l21rmNMuoBQFBQBAQBIpGIDOhZhEQUy5nbSahPmEzOCNR5o1D9YceekittNJK2vN3o402yvIouVYQEAQEAUFAECgUgYYSKg5NkydPVtdee61Opo9DEh69\/\/3vf3VSA5LtE4rTqVOnQkGQmwsCgoAgIAgIAlkRyJVQ0TSffvpphZcleVXJREKihy233DK0PFs94U0KwqwDlOsFAUFAEBAEBIEyEMiNUCdOnKgow0Y8YrARX4nr9vbbb1+LJcXh6Ntvv21Ssi1swGirkDSJI8JqppYBkjxDEBAEBAFBQBCIQyAXQiXAnBSBJGLgX0JeiBnl\/6mPOnLkSLXYYovphOUdOnTQMhGbRnjM0UcfHRlfSkpCwmgw\/XKthM3ETaf8XRAQBAQBQaBRCGQmVDRNgm4feeSRJoRpD+itt97SHry2t64J9l577bUXqHeKVkr1GpNV6De\/+Y1O\/uBbBZpGTao8VxAQBAQBbxGgkC5trbW8G0JmQjXpAcm5e+655+oE98EWFk+KQ9J9992nnY523333GqkarfSJJ57Q5cwIrSFFW1yiCO+QF4EFAUFAEBAEfkRg3DjyJirFv6ZBqsOHK9W9uxdIZSZUo2naGY\/CRo4WG8x4ZJPqTjvtpEjyQAKHzz77TO2\/\/\/46R3CbNm28AFKEFAQEAUFAEEiJAEQ6YED0xZDqoYemvHl5l2Um1LCcvEHxMeGivf773\/9Wl19+eRPTLaTKOes555yj41HXXXddbULeeOONvUiGX95UyZMEAUFAEGiGCKCRbrtt\/MDGjq28ppqZUO2qMVdddZXq1q1bEyLk7xMmTFAnnHCCTnqP1hmsGkOfMWPG6IT4O+ywwwJnqvFISw9BQBAQBAQBLxGATG0zb9Qg0FDRVCvcMhMqY3vvvfd02bV33nlHJ2bAfEvVGfL1Pv744+qxxx5Ta6yxhv5b2Bkr9\/jf\/\/6nCL0hhnXnnXfWBcdNW2aZZdS+++4rTkkVXkgimiAgCAgCiRHAAal9e\/fLvv\/evW8DeuZCqMj97rvvagejSZMmLTAMYkjJfHTBBRdowkza7KT6Sa+1+5NvePTo0apnz56KvMJFNBywMF0TMxu1eSjiuWXdU8ZXFtLFPUfmsDhsy7izl\/MX5bmblFCnTau0929uhGq0TLTVGTNm1NYVnrpt27bV\/4+zEebduIZme+KJJ6rXX39da7V4+q688spNPH2NMxQEbepgcl+I+8EHH9SPCNbkNPUAi6wzSgrFDz74QJewa926ddxQvfu7jM+7KVtAYJlDv+fQq\/lz8dxdaCH3CXHgD\/eb5d8zV0LNSzyyKq2yyirazHvWWWdpj1+8iO2G4xKpDffYYw9NovSByKdPn64r0xjC7d27t9pvv\/30pUKo2WfIq5c5xXCb+\/iApLmPUcaXYuEXcYmr567rGSqhMzgmVbjlRqhonjNnztQeu3\/961\/1S4uGxnkqcaZR4S\/EnVKujUxKF198sa6L2qdPH7XEEktor2BiUHFiMkXIwdKQJb+DaO+8884akYaRbpBQ+\/Xrp7p06aK7Qtz85NUY94cffqg1akrQNbcm4\/N\/RmUO\/Z5DH+av1cSJqtWOO8YCPXfMGIUJu\/Uuu9Tv60k8ai6ECiDDhw9XgwYN0uAEG+eJpBCEWG0PX5OyECLebbfdtHcv12Pu5YyT8m2LLrqorjZzzTXX1AgKQj3llFO09orzEoT6zDPP1OqoGtK1+9gaqi3fIYccoqvc5NUIESJVIhsINgnNrcn4\/J\/R5j6HC82Yod\/Bn3bqFPsOtpo1S0\/o3IJ8KopYLT7M36r7769aP\/987PC\/7NlTzR40SC01erRqc9pp4f0hUzx8+\/ePvV+jO+RCqA8\/\/LAmwU022UQXBN900001+RGj+ve\/\/11ddtll2mnpT3\/6U810a1IWkmJw8ODBWmOEbG2yROs94IADFF6+ZFUyyfHjCBUt15iBbVOxMflC\/OZcN28NlWd\/9NFHWuttjmeoMr5Gv7LZn99s55DzugEDmnzIIcq5Q4cuGL+YpG92yHO9Q+Xnb\/p01bpjR+cxz\/nPf3RfrdUOHLhgpiSI1IOkDowhM6Ea8qJc25AhQ0LNpyasBk0TT1+0ThyPCLWBhPEONpqrbc6FZNEgCceBtAnFMdonuYHDTL5BsrVnVc5Qndd4ZEc5n8qOYaPv0Czn0PW8DvCT9G30ZIU8v\/Lzl9Fzl\/HNnjRJtenc2TulJDOhpk09WO862+EIpyM01bvuuqtJtZkwp6T1119fm4379+8fWplGCDX716HyL3PGITb38QFPsxtjkkw7AOB5Vh4v5i+D564X44v4zmQmVJMcf4MNNmiiaQafBwFOnjxZ3XDDDVrTNJot\/2IStmud2iExePJuuOGG+nyUPL84KWHGtfuY8BiegVnZbngMi5dvRpaxLvd5sbug0NzH5y2h1qtA4uolitmQ+3ielceLNeo6JyGeu16MryhCRXu8\/vrr1T333KOuu+46hZYYbHi9crZKnVTqnxrz7s0336ydlShMfuihhzbxioVoR4wYoa644gqd5zcPxyHRUF0opX4fnxe7y+ib+\/i8I9S4OMak5kWXRWD6VDTm0Ys16mI1iPDc9WJ8RREq98X5COIbN26czsfL2eeyyy6rvvrqK+2UxNkqBccxxRIOY9rXX3+tk+Xff\/\/9WkNFG6VM2zfffKOooUo6QpyH7r333gXCbsISO5gwlTinJEnskOSr0rSvz4vdZdTNfXxeEarLWScaTpLUdS6LwPSpaFYeb9boiBFK9ekTjngdz11vxhcysswmX0JeSKqA41Ew6X3weSZLkulHSkHIlly\/N910k84wRKMfnr1os6+++qo66KCDnBI7BE3BQeIUDTXJ1yS8r8+L3WX0zX183hCqi4bDYAj0dzkTdZn8BT9Yaa4q\/Bqv1miUhaGO565X4wvMdm6ESpjIlltuGbqYIMinn35a4QlMmkCjSQaT3qPpEnKCCZgY06ikDVGJHahoQ8WbXr16qVNPPbXmBWyEEkLN\/q77vNhdRt\/cx+cNobqewSU5FzVFql3OUEPO9sjCRsOS1shWlTWaGA\/wc8CuKuNLM8eJCZWgYuJGn332Wf08zLNTp07VJt2ohPOmDw5FwXqoQaHjYkzpH9cnSLhBQpVMSWmWyrxrfMjSkn50zX98PswhyRZaWdWm4uZzziOPxGbaqcWjKuXedz4BUwVr4MCB+kjLNEh16NChaquttooTL\/e\/N\/odLBoPMz74ZKmllsodvyJvmJhQEYbzTeJA0ThdG8nicS7CMSmYQQjNFNKlEZ\/KWSuJItZee2116623qqeeekovXpO+MCuh2jJLpiTXGZzXz4csLclG1LR3cx+fD3MIoa7erZvzNM6cMEEnc4jKtAOZftGzp\/p3v376nvWy8gT7ojzwE9VIEkP1qjJbI9doGXiY8ZEFL8+0sGXMUSpCtQX7xz\/+ocNSyNlLLt6wRlYkMh1ROu3aa6+txYhCnnj58jfT7Go0nLXimERe3EceeaR2XVwu3zgNVTIlpV9alc\/Skn5o+srmPj5fxtg6QR5sl0w7c3r3brIy6mXlMX3RSHeJyzGrlP42dTfm5Izrz+XyRq3RsvAw42sxGqo96TgSEdLyySefaM2SRAx46ppGyAykSaajzTffXIfWmIxHxKQSX9qhQwf1q1\/9Shcjhzwh0Y8\/\/rhWBg1tlV2gfd+wxA4mzWAcoYqXr8trG97Hx\/ONJGc9Po4v6Wx6MUbXM9SIOMZEmXYizva23XbbJmbeKJwJ+SOXeVmtUfNXFh6NGl8e85dZQ0WjJDSGNIB8uA488EBtrsX2\/cQTT6izzz5b10HFE\/i4446rmW0JqSHf7qeffqoT3xM2c+GFF+oKM9zr2GOP1cXI+T0xrqj\/kGi9xA4GECHUPJaG\/4TKjprMWcGzLz5+URqFzy+z66x7MUYXL98C4xj5lrVPEI7jUufZdX7i+jVi\/srEoxHji8Pc9e+ZCdU8iOT3aKhUfVl++eV1HCq\/w1lp++231\/GktldvWOrBO+64Q40aNUoNGzZMEy9nq3jrcpZKfGtcWE7coMXLNw6h+L\/7stgh0gEDBkQOCFJFswg2HOywunT2MI9o\/OzN6+HLHKoGxjEmJZBp06aV5v3biPkrE49GjM\/13YnrlwuhmjJsLKp6jbjTG2+8URNuGKHiPYbWyscOjZSGVvr666\/rtIOQc1wzpEk\/O+0g\/y+EGode\/N99WOxopJin4trYsWNrmmoabZb7JzEnx8lT1t99mMMaFg2MY0yygW\/uGirzURYeXq3PwEubmVBNGbaRI0eqX\/7yl+rFF1\/UFQLw6qVKjKkms8466+gJQUvlLNSYfIlJxdSL5+9rr72mi4uTdcm4o0OoEKEh4nofHdv7l344SZEnGAIXQs3nc+3DYk961pNGm01LwPnMQra7+DCHoSMsOY7RdR1xfMDmLNiK2mw1av6y4uG6ahs1Plf56vXLTKiQGOemFPTFMQnHIwhyzTXX1CkFITUAIpcvoTYmqQNCkcsXwiOJw5577lnTWlmgJ598sva4pEg417toqBAvBAz58pxgTVSjofbo0UOnRyyiscHgHJgz5OZYD9WH8bEpc22YheuZhs196MOaps2YMaPuNXZfVznK7OfDHGbBI6\/xjR8\/XucTj2scHeDbYTcUjODZPf3MGoq7Z72\/5zW+pDJkwSPJs8z4NtpoI7XzzjsnubThfTMTKmEzePYSO4QzUpA0MQefe+65atKkSWqHHXZoUlkGT16yG73wwguaiCFNFiIVY9BoOUMlpSGZk3BoijM5QJicweI5TINQu3btukC1mTjTdMNnRQQQBAQBQaCFI\/DFF1+0jMQO9jwTFkNIC+Xb8NYN08rQNNEa2eFAlsYEy30w\/eKMRJIIHJAgUUxwhNnQdt11V+3sZJI61FtjLoS67777KvIPSxMEBAFBQBCoLgI4B7a4xA7EjJKGkFAX0nN169YtVJPk0J4zBQCyzb5h00lfdic0wmbiNFNzD1eTL1o0XsdFNMzTbArwcm7VqlURj2joPX0YX9DcFgUY6ePMOZcLqJjsXEyA5l5lxia6yG\/6NGIOyzIXMsZGjI\/nogi4rCeOtMjQlrblOb4y58V1vGZ8FEdpEakHbWAw9RKHynkBWih274033lj95Cc\/0Y5GkKNJyBBMhu8KsGs\/cUpyRSp9Px8cBly8fCFTCM\/FG9igxVFBktjEMkMpksxoI+bQ1aEljyQJjRhf0rCSLF7BScZXry47a6bMeXFdo0nG53rPsvplPkO165LGCW2HzYT1nTVrlk7jhYbHzgTnodVXX91ZQ+WedtiMlG+Lm5Hkf\/dlsaNJRjknQaZ8uDlKcP2gGE9OV2sJyGb5aCafGfcryp7DMsnGaKiYC4k0KMsxMOkYs2y2XOYvri47OCWVuaz17DI+99Vebs\/MhIrJl\/NPHIEeeughvYjRWldbbTXt7UssKE5HhNTQB80Vz17SDK6\/\/vr63BQzMeXdyI5kTL3AgMmU3\/GTh\/lU4lCzLy6fFntUaAtEapI6JNFmIdWkBGwjHqctZJ8dtzuUPYdJP9xZyKZRhMpzy9psxc2fS132eVXvkmWDyjovbqvTo8QjIQPKTKjck\/AX8vVCoPvss48i+byJHV1yySXVnXfeqf+OxkA6QtvLljNSwmbQJiFmzhbw8OVeODzRrr\/+ep183262ZkyNVcjanM3iBBUMmbG1V8nl67q0F+wX9zKnv3OxV\/LxiKpj6arNImFSAp53Dedr8\/41LSJrXrEgzL97I+awLLJpJKFm2Wwlmfh68+eSsZFnETZLGuQy58V1jI1Yn66yxfXLTKjBBA2LLrqoJkO0Us6ocM5BiyV05m9\/+5uO4eO\/qVBDvBHlgEg1CPESNkM8l0l8T8zWQQcdpEu+4UFsa6lRyfFtohWTb9z0J\/+7z4u93mhdtFlzfRICdtUWks9E+isaMYdlkU0jCTXNZivNLNabP9eaAmio5PMvc15cx9qI9ekqW1y\/zIRqCGzTTTfVZl4ckzi\/QFu866671E033aSzI2EGxiS8xhpr6N+tuOKKWjayKaG5kq8XQoVk8cLFaxgHJ8JcMANzrUk9GFW+jZjWq666SvXq1UubkrmHqUBTloaKJoSXKZp2lEYUNylV\/ntLGB\/e6hR1qDd\/LgScVFsoa94bMYdlkQ0YNmJ8aTZbaec7anwcKSTI56++\/z6dxSWt3K7XNXL+XGWM6peZUKlpethhh+l4UhKLE45CBRlMCbfddpv64x\/\/qBPmr7TSStrZiJSCpBY05llDjhAtZluTHQkzMPXwqFKDVguhQti0rAXG+\/XrV8uURBhPnrFOkydP1uXs2DTYZJ51oqpyvYxvwZmIMifvskvrJmbeqDk84IC5atiwuaVNcaPmEM2+b9++oePkXT\/ggAOcslbFAdWo8Rm52DyQLev555+vicr42KSFFWSIG0\/w71HjmzWrlVpvPfdQvSlT5iiOHsqaF9dxmvFxlGhS0Lpe2+h+mQkVjZIXgUxIpAnkhSHRAxmSHnjgAU2KQ4YM0YXFl1hiCW1iuPTSSxtKqDboaJIQYF6NknOkTbz88ssVXs3Nrcn43GaUj1u3bqu7dVZKvftu\/cISzjdy6NjIOcS3gmOeINmwyeW7kUdr5PiC8hO5wDcwz1ZvfGuv3d75UfaaK2NeXAUz40MpKbNwu6t89fplJlQ006OOOkqfmXbs2FGXWYMwSUmIhopjEZ6+OBwRl4pHL16+RkPl97vttpuumYqHMCZbHJgw10JIaKiYkAmnMRmWoky+XEOLq4fKi2sWOdopRc3zarxA5513nvZMxgze3JqMz21G585tp3bccV23zorzrHFaWyijVWUOiyAb8KvK+Iqay3rjO\/LIddXUqfEEvu66s9TQoVNDRSxqXlzxMOPDuTWvTZbrs7P2y0yohrw4E4VUOe+045Uw\/RIqQzJ6KtFsvfXWdU2+EK1xONpxxx11nmBiyTiPtVMWRjkl1SNUJgrCt3fHWQGU6wWBKASmTXvXGZz27dd27isdBYEoBObM6aI++GBUXYBatZql2rQ5TbVu\/aNJuoqIYrXgx6eWmVA5Q\/3d736ny7QdccQR+qwTr10qrqCx4qFLWMvQoUPVfffdpzp06KCOOeYYhTcwDQLmnJUz1iOPPFL\/nt+hxVKgHK2Vv+HsxD3wAuZs0vbmRUM22mk9QjW7V4hVmiBQNAJnnrmF0xkq4Qu\/\/\/1zRYsj928hCDz5ZDt1zjnhWipWEDx8e\/So\/nrDipi3ubzoJZCZUDlDJUyGfL433HCD9owM1jDlPBXSxSnJOCwlGVhchqUk95K+gkBZCLh4+TYyHrUsHOQ55SOQoi57+UI2wydmJlQweemll7T3GqEvOCY9+eSTOr8vjjlvvfWWJliIlKQPaZIdF50DuBnOqwypIghQTjOqPKvRFvr3r4iwIkazRMCxLnuzHHvZg8qFUDkz\/ctf\/qLOOeecJqkDzWA4Q8Uxaa+99kqUmaNsMOR5gkARCIi2UASqck9BoHoI5EKoZlizZ8\/WxEqeXrJd4EyEExKORb7Zwqs3VSJRc0BAtIXmMIsyBkEgHIFcCbUlgExeYgL5jRMU5myKptPQwkmpSHP5PYkqSM+43nrrVQI6xnbmmWdqWexza7uCjz3GpL9v9CDzGp89t1Waw6TjYz7C8l5Hzatv8xc1vqrOH\/ImmUMzdw8++KCeGts5sznMYb3xVXUOhVATfCXMJJqFG1XQ3BAqnsmEAZlE\/ZBUWNL+BCIU1pUUkBdffLH2riY8ibESI3z66adrUz6Zq2imD\/\/Nebnr7+2Qp8IGUefGeY3Pns8qZcJKOj7mIyzvdVxN4UbMHc\/Ma3xRhTMaNS77uUnHOGbMmNrm3sxl7969FeGGYe+mb+9g1PiweFb1O5oLoeLpS1YkEtjblWSCi9Rnb112jiTrp8I9DQ01TFs1+V+DWiy\/txd6VbTSqA8Jm4VRo0apvffeW1155ZU6bMkmk6hNQ9Tvq0Q+yJh2fJQcNB+rKs9h3Ph4F8PyXkdtEn2bv6jxBdOWVoFI076DwTmxi4rw38F31rc5jBpflb+jmQmVOFTiR\/HqpapM+\/bta0ns7YXy0Ucf6XPVe+65R3sD+9pYqIZQwz4+mABNxRx7QZvf\/\/a3v60NPRg\/WyVM7JcTYiXPMo2dYdeuXfXmIsnvjSm8KmPMMj4f5jBufGY+glnFDBEH59u3+as3Ph\/mz2xM2YhHvWv2nNgbBSIqwt5NX+cQLILjq+ocZiZUkzqQQVMujWQOwYYGe8EFF6hXX31V75oabXrI8lG3CdUses5QIUzyTlLfFe3VmIeDvzfPNqYnyKlqC93WvKM+sD4Tapbx2XNV1Tl0GZ\/PhJplfPa7X9X5Q8YkYwyasX3YFGUZX5XnMDGhQo7El1L0mxZMM1iPrIKFwLMQW6OuDRKqLYfRCoIEWe\/3Rttt1HiCzw3KmvSc2Gwyqmpuyjq+MDNUlebQdXxmHGEaapXNhVnHF7beqzR\/tmZqviP1zPBhJuyqm+2TzKGLib7eN7ns72piQkVAktX3799fESbD7ojDdBLfk1YwqhE2QxUWTMI+t6DJ15hWSGeIAw+FAWyTS\/D3nMGiwUYl8G8kNozNpHY0ckQ5qfB3n5ySzIcq6\/jI+lXVOUwyf1GFJqrqlJR0\/qLGB9lUdf6SjpH+559\/vv4W21a\/5jKHUeOr8hymIlT7ow95UC1mkUUW0TGoyy23XCM5ofBnR5l8eTAmb7Pzt926o35fpTNU283egGgsCpRTMmcW9ljsa1x+X\/jk1HlAnuOz57Yqc5hmfMAVtrGLmlff5i9qfFWcP2RNOof2OMzcmLC25jCH9cZX1TnMTKg4IlGqjYK6HKCT+J6E9gsvvHAj3z95tiAgCAgCgoAgUCoCmQkVL1\/qf77xxht1Q2YYFSEHFI3FUUeaICAICAKCgCDQnBDIhVAJ\/Mcs+PHHHyuclqIaSe5Hjx7tddhMc5p8GYsgIAgIAoJAfghkJlREMemySIJPjCl1TJdeemldx3Tq1Knq22+\/1fVSqUiz0047aQcmaYKAICAICAKCQHNCIDOh\/ve\/\/9Xp5958802d0xYSxQRMI\/b0u+++U9dee6166qmndL3Utm3bNif8ZCyCgCAgCAgCgoBGIDOhGi\/Bzp07q+OOO04988wz6pZbbtFnqtQ\/\/eUvf6k23HBDHSpC4gMKjUsTBAQBQUAQEASaGwK5ESqa5\/PPP69jMINthRVWUJtttpnWVkkKkabIeHMDXsYjCAgCgoAg0LwQyEyoX375pdY60Ug5Q+3bt69aZZVVtEY6cOBA9c9\/\/lONHDlSYRrGu5d4RZ9TDzav6ZfRCAKCgCAgCOSFQGZCxeFo\/\/3318nxCbalOgnZgfr06aN\/f9hhh6nXXntNUVYIRyWq0rRp0yYv+eU+goAgIAgIAoJAJRDITKiff\/65Ovzww9Vbb72l0xDuvPPO2imJkl9kTtpzzz3VJ598oh555BHtkPTnP\/9ZNNRKTL0IIQgIAt4jsO22Sk2fHj2MtdZSauxY74fpywAyE6pxSvrZz36mSPJASAxFqGfOnKmdlAiboS277LJq5ZVXVrfddpsQqi+rQ+QUBASBaiNAbvQ4QoVU4\/owyrg+QsyxayEzoXKGStJ7CPPCCy\/U56gLLbSQ\/kFjJZzmm2++UXfddZf64osvxCkpdkqkgyAgCLR4BFw1TxdCdSFLlz7TprX4aYkDIDOhUr7t6quvVsOGDVNXXXWV6tatmyZTGlmTMAm\/8sorql+\/fuqII47QWqv5e5xw8ndBQBAQBFokAi5ECcG59HMhS5c+PM+V6FvkpOUQhwpu7733ns6CRIYkEuOfdNJJ2rz74YcfqiuuuEKXe+P8lPhUEujHNWNGJp1hVA3VsD7c94wzzlAPPvigfkSwEgjOUqQ+7Nmzp6KcXCMamww0dQqRt2rVqhEipHqmr3KbjZ1gnmraU1\/k63qpjNwuRNkIQnWVK8HKqQzmCWSO6ppZQ+XG1IhE+4RY7YLj5qGUdoNo0WJJkB\/XTAHaPfbYQxMk3sJhhZ0hZ7vPjBkz1PTp05vUG8W72C7USxkyu9RYnCx5\/33OnDl6gwEerVu3zvv2hd3PV7kBxFfZfZVbMM\/hNXQlLpd+LtqnSx9XAk9oGvZ5nQdnOjOhsruAAAmHQRtF8yP21LQ111xTffXVV+rYY49V2223nSa7eppZsD4jeYINSZp7uvShb1hleAgV83OXLl307YiZ5aesxuJBc0eDX3zxxct6bObn+Cq3+bgL5pmXQKIb+LpeqiJ3644d6zoJzW3XTs195x3l0k9\/b+s4HHEvlz7Oz1t33djnzR0zpraeojBHJp+seAwoM6Hi2UtiB5Lfn3nmmaHno2itFL596aWXdD7fekXI7Wrz6623nk68TzrDSy65pEZAafow2LACvocccog6+OCDE30ssnQmwcXs2bN1LK5PRQJ8lZu58lV2X+UWzLN8IeZdu3q3bqrVrFmRN4IEZ06Y4NSPm8Tdy6VPns\/jXqZFrXMcXetxRXaU879DZkI12iIaH9ofsad\/\/etftZkNkybVZXbffXddBxVCu\/HGG+uGzaQhyyDp4l0cZio2hDpo0KBakv6yNVRk++ijj7RW7JPJ11e5eWV8ld1XuQXzeR9qLGs0F7+R4Kc9TvNUa62l5kyZolrvsktNGzSlM0O1uriQmHkCRzOMeV6M5oxc8wcfey\/TIWqdt0gNFTBOP\/10fX9oHEkAACAASURBVI46bdq00Hqo5O5t3769WmONNbSmueSSS0aC7WLOrdcnSMj2gwyhyhlq8p2Zz+ccvsruq9ysLl9lhwTJ+oZ2lHbDiy\/HiBEj1Lhx42ovGqQ6YMAAxRGYU+vTpz7BcZNAXCiEShKdBWR3uVdcrKp5XsZ7tZs7d55DqHXO6utaCZvHzBoqN+Vc9O6779ZA9e\/fX3Xt2lWbZ4lRJWE+mZNwWCIdIX+Pa2mdknB4Ov\/88\/UzwvIFC6HGIR\/9d58Xva+y+yq3r4RKFMBpp52mv1nSikGgy5w5atCSS84jVUsjZjPQRLP2NMNTZkJFQz311FNrlWbI18tubOGFF1b\/+9\/\/tNnjs88+07um7bffXp+lLrroonVnyw6JsUNfINptttlGe\/yG9eHv1GS1G88TL9\/sL4d83LNjmPQOgnlSxLL1DzsSynZHudpGgI3K4MGD1e2LLaa2mDMn1sRsa7G+IJmZUA2xbbrppjoUhLNSwkJM43ckyOd3L774YuwZapHAiYaaHl35uKfHLu2Vgnla5NJdV4XvQzrJ\/biqhq8QavSEkQmJ7EcbbLBBzcsXUy\/pBtFETe1TtMfJkyfHevlmXRq2J6+tnXLfKrwwvn4kfZXbV\/Ojz3L7KnuR3wesmyNHzlPKsGYecsi8f6vcwGPUqFFNIixc5Q37DguhOqBHSMz111+v7rnnHnXdddeFJm4gBvD444\/XcahHH310YakHbYckRCdJ\/2WXXVY7Ty3yhXGASnfxlZh8lVswd12Z+fbzbb3gP\/SHPzyn3nor38QvhkgHDFgQX37n4FKS78QkuBspZfl2E6URTKxT7zZ8h40vC7401MUmPPHTTz\/VkSBi8o1AjzPSr7\/+WmdHolwbXm0c6nfq1Em98MILatKkSeq7777Tpd2Iu8RZaIkllqjdjZy+yyyzjD5vzaNBmGjChOYwkcHQGf5OvdYNN9ywYakHGSdp8PAgpJCAT81XuQXzxqwyn9bLiBFKv5OrrvpYrpnUzj9f\/eDdG43\/oYcqNXx4vvNjwgZJwbraaqup4fMfYBQMnnbKKafooiYPP\/ywev\/993W61l\/84he1I7l33nlHPfbYY6pHjx76X6yQYc32ZYEsCQcMXkNYo\/Fupk+HDh3UKo8+GjvoQ8aOVd27d4\/tV6UOqc9QX331VXXRRRdpMiQTEkXEkzZ7ApNeG9bfNlHwdwgVj2PbKYlUhSRWkCYICAKCgI3APEJdNTdCRTslM2BcI\/olT96AwGh892xtEQ3x3nvv1Rt6NEY8bW2lw77OkCCaKZoqJEmiHQh42223rSXZsR1FTVY7lBabhM19IVUIFX8aLBhxbejQoTqlrU8tFaHiuUt2JP7dZZdd9PkpAKGx4smFZrrxxhvr7ElkUpowYYLOVvOb3\/xGrbjiijV80E733Xff2jlrVuCEULMiKNcLAi0XgTBChRTr5TuohxZnpmi+cQ0tlTPVNI1z2OBZbDDawWipJvOcIVs0WSqEHXnkkfpYzGilkN7hhx+uKE5imvFHgRxRSMhgxLcf0gteH6ehuhIqmjVFV3xqqQj15ptv1toptvFevXrVzkQBiolg58PZJRVVaBMnTlR9+\/bVJFxk+TYXk68kx0+3PH07E7NH6avsvsoN9j7IHtQgW7d+Tq26atMz1DiTbbq3Kb+rws5hbU3TfhLfx\/Hjx+vEOpBelIZqrjGWPVvLffTRRzWRUlkMBeqpp56qhTIaDRWCrXuGevvtaoszz4zP8JQwyX5+qKa\/U2JCRdM866yzdFYk8vKusMIK+gwV0y8TRl5czAiEyphmPIE5M7388sv1NUU0cUoqAtV59\/ThAxk1el9l91VuX9aLC6H6qKHaZ6jMBUdrKDQ4jeJfQgs7Q6VUJkl4KHKCSRiN1jRD0vjA4FxKoh4SYWCJNNqsOUNFaarr5QuhbrFF7d4+r\/PgNycxoZpDaJNGkMm79NJLde3Rhx56SCdWQIPF3GsaNnuIdurUqer+++9X66yzTmFffnsigykGxcs3Pew+L3pfZfdVbl8IFTkXWujHdyJMQ03\/xiiF5zD1uONa3meocc8zfw+afF2uI6IDh08Uqz333FM7PJlkO1Gasblv1PfX53VeCKGyQ5k5c6bO10sMKskdONyn4XaN+s8hNaaGP\/\/5z2rttdeuO3dFFRgXQnV5ZcL7+LzofZXdV7l9IlQIz6TczZtQwcG+f9ibVYSXr+tbnoZQg\/fm3JWUsngKxzmZCqGGzIwx33KAj\/kWkiSZNCYEnJQwE9x22236kPuJJ55QZ599di31YMeOHdU111wT64SUNpevFBh3fZWS95OPe3LMsl4hmGdFMP56W4ssglCRIOoctupxqPHoJeshhBqCF0mML7zwQsXhNBUVIEka5l4Kd9NIUk8+Xwi1bdu26sADD9RxqgcddJCOU+UsNaplrTZj3zeqwLhUm0n2IvikcYSNzFdi8lVu39YLnrgUUSmKUMEjmClpm23yDZVJ\/kaXf4UQagTmxmuXBA5UmoFk8folCX7Pnj21hy9thx12UCeeeKK64IIL1Ouvv64Pxbfaaqu6M5lHPVQeEFbGzUwoxE\/9VlrZ9VD5SGIGX3nllWuxXOUv7eRP9FVu83EXzJPPeZYrfFsvaKrHHz9ZfffdwbnFoWbBrzlea76\/HAkGnZLC3s8WUw8VAh0yZIj+MQ0vXwh07Nix8zOOrKprpC6yyCKacE844QSdfjC0+K21evIg1LgC4\/ZixZsNh6myWlR1+rKen\/Y5vsrNeH2V3Ve5fcWcuEuyBzXSgpX2\/fThOkOoHBVy3mpa1DqnQhnxrj61xF6+ZnDEIJHAgUQOH330kSJzEtmSOnfurE3ChMZg4p0yZYomVVyp8QTGQ8xuwTRZlPdB20XzZRdjYpv4f9OyFhgfNGiQNkU3QkONqk5f9UXjq9zg6qvsvsrtK+Z88An3E0Kd9zWqlxzfZFKCGFGidt1119hPmCFUokA222yzWv+odd5iNFQbOUNub7zxhtZA8fiFNIlNJVwG719MvpAvGqyd8CFqBtI6JUmB8dg1nbqDnOelhi71hYJ5auhSXVhIFAC25PHjo+Wp8GGqS3J8k10pKtevPXA5Q3VYlhDqmWeeqavIEOQb5nDEDoSAYrJ0EKeKB3C9JgXGHYAvuYt83EsGXJJplA54IYQal2qpAFffMpLjo6Hif0JuYBLrB0tlhk2eEKrDksb0y0\/c2SgaK2E1TELQ7OvwmFy6FPLCJJTMV2LyVW6mx1fZfZXbV8wL+T40gFCLTo7PuuSHfAIc7dWrRiMaakKCCHY3pl7Kti299NKabJOWKUub2MEmahbVM88806Q4biEvTEK8fP1I+iq3rx93n+X2VfbQ70OW3IMAEZchP0tmfO4fkh2\/qOT422+\/vU43u9FGG+kEPnkR6tSpc3UFms6d22iHVp9baqek4KAxM1DdHdMu4HBYjQ0ejy6qynC+6uqxlfYM1bhim+wdm266qRBqTqtTCDUnIBPcRjBPAFYOXUMJNU7DzOG5mW4RYjIuMjk+SXw42hszZoyucZpFQ+V4GXhNpiqzP6B8a57l7DLhm\/DiXAiV3QrFw++77z7tPcuHgEoGkOm5556rNcXNN99clwpaaaWV6oqYNbEDxE4VHPIFM\/mXXHJJzcQsGmrC1WF1l497euzSXimYp0Uu3XXNRUMtMjl+mzZtFiBUUg+SWN+OxAibARvfxx7bom7hdUjVs8ptesi5EKop50a4zD777KMISwE8tFVSE7JjIhTm1FNP1SXc6rWscagPPPCAvj27JzTmMEKVxA7JPzi+BerbI\/RVdl\/lNiZf35JpTJ48Wcek5xo2E6fhFuCU5Pp2p8nlS7k2NNQ4x9J6hNqhw+0\/ZNr7sdpMlLyNKhrgil9Yv8yE+tVXX+lybZxfQqiLLbaYwmRrCBXgCdxFU\/33v\/+ttdallloqUuYshEp1d8ib\/MEEaUcRqv1wSezgtnwkyYAbTnn2EszzRDP+XoUkdmhmhBqPYnQPo6F+8MHtas6ceEJtZOGAtOPMTKjGRMv5pVH5g4SKcGG\/4\/d5JnYgfzAhPHbDFEGyCJqZ0EYmdsDTeeTIkbreIPL60nyVG3x9ld1XuX3FvJDEDh7Hoeb9bUpKqDz\/++\/zlqLY+2Um1H\/961\/ajEv9U8iMONQgeeL5S5zSSy+9pL3E4pyTsjolGfKM0lBzNekknJ8qnOMmFLnJZqSR2KWR295I+Sa7r2vFV8x9xjvtu1HmdWkIddq0eY7MvrTMhGqqzzz77LOaLNG6goRKTl8qxpMYH9NvXMxq2sQONuhhabPCkuOXPVFUuqfijn2OW7YMaZ7nq9yM1VfZfZXbV8wN3r5tvNK8z424Jg2htjgNlYlB8zz00EN1XBJ1UZ988kntYct56VtvvaUJFpKk3BuabKParFmzNJmRf1iaICAICAJhCPi22fVlFs2GxfUMldAZHJN8apk1VAaLSfcvf\/mLOuecc3T+3mAjsQMm37322qtuLdQygINU+ZEmCAgCgoCNAB\/8e+65RzbcBS6LOXO6qNmzB6m5c9vVfQpmXh\/jUXMhVIPM7NmzNbE+\/vjjOhaVrBdbb7212mOPPXRcqjRBQBAQBKqMgGy4s83OjBn140chUrgA7ZPC7mENMsXDt3\/\/bLI04upcCbURA5BnCgKCgCAgCFQHAYiyT594sozKlASR+pjUgRELoVZnHYokgoAgIAg0CwSSkiUpk33y5o2aJCHUZrF8ZRCCgCAgCFQTgeZCli7oCqG6oJSgD5maCMi3k1xQA5Zm1wy0K0LYvzeu5cH+CURI3TWr7PaYVlttNTV8+HC13nrrpZYn7kLkNYk8KMZAqksyc0VhmPT3cc\/P8ve8ZK865mBkkrfsv\/\/+yhSwaMQ6T4p5lOxVxjyYx\/eoo46qfYuqjnk92cvGPO27LYSaFrmQ68ykm0XMAuZ3fOhJzUiKRj4qtLDfr7\/++jrs6KyzztJ9Lr74YnXZZZelypuZdFhZZYfQzPjMRzOpDEn6U1HIxgf533\/\/fXX66adrb\/Mghtw7DNuo36fJVeoqf16y22uqipiDoR1TbuI77fSiZa1z8gpTCJv3j9SnOE+SCnW33XbTnr1kVKPxe\/qQg5y0qsOGDVMzZ87UcfQU3Pjmm2\/U3XffrTcG\/H\/RDbltmR566CEt96677qpGjx6tdt999yZyv\/baa+qTTz7R4zLyIysl10h0E+zPOItqWWU\/6aSTFCXjcGot89uSBQ8h1CzoWdey+yUh\/\/jx4\/Vv0VDDND6TbjCoxfJ7rg8j2qI\/lnnIvuOOO9YIq0itNGq6TCKPvffeW1155ZXOm5iozU3RmNvjSCu7vQGrIuZssqgw1atXL10Yg3cCXKM2mmViTqgfNZsXXnhhXbN5kUUW0SF9\/Df\/mv\/m76Yfv6PZfXL6fDjfBrn5MfIhdz2ZjKymT1x\/Z0FSdEwqO5sHKpk1+tuSZKhCqEnQcugLIRpCDftwYArdZpttFiBO83uTLpF7sCvr2rWr2m+\/\/RyenL1LVtl\/+9vf1oSwTU3ZJYu\/g0lXaVcZsjFM+vuyMDeEbjZUYfNfT\/YqY24wDJZktLOYNWKd80xI0hAn\/22yt4WRpU2okAJ9TOMekG5ZzSZIZDHPjiL5pP2LHEdSWbAO8K389NNPVSPXeRJMhFCToOXQ1yYl87HkDBXC7N69u\/rpT3+qd+rGxGr\/nsVTFUJNKrtdC9GchZS1GbAtAVEf66oSahbZbdKvIuZVIVQ0HdaiySHOhx0yQlszmmoYoVJXmfe1Q4cOmriMhmo0RKNx8a7wd+5BmtV6JSqZJ+pDf\/7552rZZZdVU6dO1TH7mGd\/+ctfqkUXXVQtscQSavXVV1errrpqky+OeR7P4r+pjsPxASZgYv5XXnllRSrYjz\/+WH399ddqgw02UD\/72c\/UKqusovvHEfArr7yiM9txP2SgdvW3335bux\/36tixo35O0sazyZ6HzP\/4xz9U+\/btFXVUP\/jgA\/Xqq69qubfbbrta7WrmaNq0aQuY1cte50nHWQqhUoaKyaL9\/Oc\/1yXemmsLEqo9TqNFBbUfW7tqhMnXyJhF9rAxGU29yLkOYpr03NpsHILn3GWYH7PKHpSx3vzlOQeuchv5wjTUMtc51abatm2rTc9GMzWanSHUMJPvgAEDVJcuXdROO+3UhFBtLI22au43btw4vXGOapzzX3vttdqUCcFzJtujRw99TssPRAiZkfd8yy23rJF4UAPlOjbqFCdhs8CGcd1119X9\/\/a3v6k33nhDE9Lmm2+u5acZ07b5b6Oh8\/8Q59ChQ\/X5K\/eD8MwZMfd788031bvvvqs6d+6s72c2Fy7riudCmOR6h6z5\/kOMhlDvuusu\/ftLL71U+4vEmdTLWucuYwv2KYVQzQvFw40nZhphfbgmaDY1GicZWHCYYdFgwgj7\/QorrNAwpyRDLIYEbU3PRXbGxPkxmmrwA1rUvIE1Wr1NLFEOL8hQFackg3VW2dGGqoy5cewKroeynJJIg4r2d9NNN2mC4P8hBDb1ptmEyu9sLe78889Xm266qdpll11qhBrU9ILnq0888YTaYYcdIpf8Cy+8oChkTpHuMWPGaCK74IILtGaLsxNa6qRJk7TjFDKDIevEJj+0uokTJ2ripb\/RQP\/6179qrRZiheDJsU7ecgiS36HF2lq22QSY+\/FMcq1zv7AWvB\/Pj2uQI5opP2j7nKtD1DNmzNA+JmRNQvOFtHv27Km19qAJnW9R2es8blxRfy+FUNmNsQuh7bvvvnULjKcdSFWuizL5Ip9dxcJ2A7d\/b7u2l131Iqvs9piKPkO1cTJzj6fmJZdcos1K5szFBduyMc9T9qpjztyEbbDKwPyRRx7RWhXmVMywbGL5Fh199NFaSzJmWkgSYuP\/jaaK3GGEarQ7rqEFz1AhSZxoohrEgYmzW7du2ksXzey8887TplZIEq\/W+++\/X5tCyYEOCRmPdXNPTNj\/\/Oc\/tTcyBERDdvptttlmas8996w9fuzYseqjjz7SmiqkamvUhlzxIsZJkncmzrud+yEbG5M4RzgwwjqJZgruhx9+uGrTpo2Wlb\/dcccden74Pdo0xAqpm8bmnOdg\/SpznWfhklIINYuAcq0gIAgIAkkQePTRR7XJE40HjQ1ChygwO3J+Sc5xtE5DRlH37t+\/v9ZQCdtwbVEaqjl3xZJz3XXXaa0ToodIDjvsME2omFU7deqkiRayg5gZB5W87IazIv1QTiBd09B0ISDGZhpjx9MaLdWYfoNjibpf2Jhd7meuQ6NlA4G5Hc00eCZMP8h55MiR+m\/Ml02orphXqZ8Qao6zwe6PFwrzBIvaPgPJ8TFyK0FAEIhAAE2TsCkciTjLxOnHkCsaIASGSRanH5uMgreDfC+66CJNUMR0cubHT1iDLDF\/EhccpqGipXE2CUliIoZQKRrCEQ8kigYGoXK0wlkoplDMvXw\/IKTevXs3eSzl5bbddlutiWLS5twVjXvQoEFqww031OPjW8QmAtnYGHAWbGJQg2MIu1+wD\/dxvR\/XMg9oppjZjz32WK1pRzWsl2jIOCVhDjbOYz4u8twIlQlkYgkUZuGwILHpYzvHWwyCiTMn+AigLTPmC8bLQr\/++ut1sDgvrjRBQBAoHgE++pxFYl6EmG655RZFOBJepZgZMSliEl1xxRXrCoM5esqUKfq7hWbFOR+Ex73DnHEgD+4NiYdpqFdffbUm76WXXlp79+KZS6IFiBptGVPsZ599psmR7+djjz2mPXT5Gx67Bx54YBN5TzjhBLXzzjvr5A7IhGx4GD\/99NNaZupSIxN9IHlMymwMTPKK4ODD7hccZ5L7gR8bBbCH4DHzxjXGeuutt+qNCcdFvrZcCBUzAJPG+QNnWEzivffeq+MoIVYaNnxMD0y4L812zGFMNDt9WdgZJ+N98cUXFc4HeLH5bsLwZa5ETkGA80gcetDsJkyYoLVBzKbXXHON9qY9+eST62qlBsE\/\/vGPmvg4ayWsLUkL01BxRIRcMPMS7UAfSO+II46ohe7Yjjhoa5D+ww8\/rM3CfEfsxjhwxMNEahI18Pcwky\/X803+1a9+pQk4rEXdL6yvy\/047yT8B69qTLkmJKkejswP5ng2MmSl8rXlQqg333yzNo9gmsCTFW31uOOOUxTsJU8tuw8OzI888kj9ex+aIU7j6AKh2inj2Bni5GA89DDrsKtEC+echOvRystIT+YDniKjIFA0AphzMetiFcKL9JBDDtGPhASSpNgzGhabfzyCs2qoaJ8QPF62eNESWoOJlnAZiCeqQcSYhXHasRuaHGPCVGyfA5PXGsVlr732qnXHo\/j111\/XmjnaYliLul9YX5f7oSkTr8rGBM0YecwZcvCe5vf33Xef3vywQTDKS9HrpYj7ZyZUJhZNFJMAAKKRcRh98MEHK9LAnXvuuVruCy+8UB9AX3755ZXQ2mzXfV4YOysRLxQvJI1dk9G6IUnz\/5ynEIbBdbx4LAw2DuCAOYcXGxN4lCNAEZMp9xQEWiICOCGxoSUmE62UjzLvN6ZU\/h9zK\/8aD1dIjDjPZZZZJhIuvmF406JVct4JCeLhGpYVCVMt5MiZbZSXL57nDzzwgL4fWhv3QWu1NcygMHgZsyEPmnzxEsYKhsMUYzQExNkxzkp4CtPw7n3qqae0NsxmP2q8UfcLyuN6P3Od8ZI2Z7dsLJgH0+wQGTyNcZzy\/VgwM6Eal3hMECZbDu7QaKRDhgzR5wQ0zAAQVZXiUNE4MacQbB1mvrUJlEVrZ7UJCwXg7IazUw7VIeQTTzzR+wXSEj\/QMma\/EMA6dswxx+hQEs4wIVfMm2iDYQ3nHUJE8D41BBzWD2ceNLuos8ewa+rFoVJ9ie8GssZpYWwOUD6iTLUknscyiOaNExJEZM4qcW5CeaEYAKZrCJkz3npxo8H7oRmbs+Y09wObIKGiXCEvMbj4mhDKZAhUCHX+agoSKrZwzlOffPJJXb4LbQ3tDdMvuz48v6rkxWWqlBgt1H5JkhKquRYM6ply\/PpcibSCQLURgFA5j8RCBInw7kEyfLjjCJWNLw5MYQ1CIHFCEkKtF4eKloqFC20W7bReDmC0QTIXobXh\/RrWqJKDFzMewaQD5FuLVYyKM4wLxyK+RZxhYnrlp17L+35BQjWZpzgKI0YYz2Mh1MCMsBtEG8U9mlJjnB9i88dUYcy77HDw3MIcwZljVcgGwkSb5mwXs4edj5ZhhhFq0OTL2OMCnKv9ORLpBAG\/EUCTRDvju2JnArKT2JsR8ndS\/PGuQ1gQEOX+oggVs2pUuElSDZX+eL9yXgiZRBEl\/Uy6Pwgdc21U44gJokajxfRMw7TLMZS5Dl8PHJ3YZPC7eiEsed4vSKj2\/wc1UtFQrRnGGw3zJs4A7IhwRmI3ss8+++igXdzXMT0Qf8XZRRUamjW7WeO4AHnS7Jy0QUINc0oK02yrMD6RQRBoKQhgPsS7PoxAwzCAcNAAORPFUSi4kTbXBAnBBc+41IP4nOBsxLnmQQcdFKmloulyvoojUZpk9LasmMLx6UDZQeNlk5Clud4vjFCNxs+3Fy4w1kohVGtGWMwE52I+ZZeEbZxzAhpOO2h1mIHZ6SVJqpxl0vO4Nkio3NN4\/+JOj0lbtNM8kC7gHttuq9T06dE3XmuteX+L6zN2bAHCyS0biQB+HDTjEBTMRGRkM9VmOH+0m11thu+Z+X+XajPcB4cijr9wTuJMEa3Q3AczMNomZ6CkFoyLmXXFkW80Jl1CiwgHytpc7mfjBzY4j+G4RXws\/43yRWwujXAiznpbvFNSvYlhoeHwY8wxSScRT1qSQzz++OParOwKtinxwy6IVnRe2aTjkv4lINC+fTxZuhDqtGklCCuPqCICKAhoYy5xlMjP9w6PYo6+6jWcF9Fk8cClBZUM7kOCeqx+LgnoXbEjwQXhO8G4Vtfrg\/3i7mfjZzYdnEdjemb8eD2bhnMYZ+FV8q9Jg0tmL980D427BucCNEHOODibJVtJEu\/gMG9cYmTLLBodN0b5e8EICKEWDLDcvsUjML9AgFpooRYPhQEgV0Ll7BRVnt0Hpl\/ijMg5iVdXXPopTAgEDVNqiZgvk2EJzzSchjAVuO4Ug7Nr12\/EQYof09gJRpUrklXiLwKtO3asq6HObddu3nqqY\/Klz9x33vEXBJFcECgAgVYTJ6pWM2eikje5+9ytt1ZzA6lWW83\/1vIuJW28n2m\/+UmflVf\/XAgV8sP5iMN2zgOCDa8y1PmwM1S0UbzeuJ5zAxr9iRPjDAFHpyznrnYCB2K\/TjvtNF0j0DSckkhCUVYDK1NE2KfF4pvcq3frpszLHDa35gWP6zNzwoSylsYCz\/ENc3sAvsruq9xgn5fs9Uhw2cGD1XKDB0e+E7MHDVJf9uypWj\/3nO7X2vrW8s7NvvRSNWeLLZoSccQ3EYXMNxNwLoTKWQAH3QRSH3\/88Tr+i8N2zLUcNnOmQOJ4KsyTAAJvPBI6Y8bFjs5CgFy4HvduMixFed4l+bqZs1SImeeaGowEdhPUTStbQ0UmPAx5Lh6GvjTf5I7TUJWjU9KcKVMaNkW+YW4D5avsvsqtCXXqVEWChhU32yzdt2XcOPVDeMYCJDh36FClundXatw41doqDRf1YszZbz\/Ven7URFifOdddp5RVki4K8xapoRrSwvmIzEhh5lNMwXj+EgNF5hEyfECoNCo0oCWSLguvO2JY7axLab9mtmZqPHENoZZduNseA6ZwNHE8\/HwiVO\/kbgZnqN5hbi10X2X3Um6I8PzzNeHVGhvG4cPnEaFL4\/oBA6J7cq+RI5s+w+W+UX3wnp8vm5eYR4wrs4Yalnow+CxTk4\/CuRAwaa2IUeWHLCUmY4jLvVzmkPsQA0XAt+0ZLITqgl54n8osepdwGF5WIdT0k53DlZVZLwnH4p3cLkRoFyg3PgPGQgM+EDHvVZkNrqJT9gAAFXNJREFUmSDp+Zo1Skabzp29UjLC4MpMqCRsoIIM2ifVDqLOO0n0QBwUcVVUmsdZCc3RPkfMi1BxQsK8bDdSH0LenM2Khpr8zanMh8aFKAl1sYjXOLgtcGbNR6VeHCowNTBspjKYJ18u2ilRLDEpgEtyiSsRmljqKC02+PskMmTpi1xZNesszy\/g2syEivZJQngyXUBiVG4JNuz6kO4aa6yhsyhRs5CG2ZNg3j322EPXHSSgOS+TbxhWoqGmX0GV+UC6Eqo11Eyyu2rE6aGNvDKT3AXIk+SWyE7yAlKT+nS0webrk08+0REKlZfblQhdNo5JJjdD33Zz5yp+Yhvaq61Zx15QjQ6JCRWHIsrwQKSm4bWKow9B0JQ0wymJMm4EMHNWivcvCZzJmYmzErk0KUB+99131zx7SbFFhQi0WEqe5eGUFIRYCDX9oqvMx71sQk3xvPQoN72yMpinGBDOhXjUkxVImiBgEOgyZ44aNHu2G6la56y+IJiYUI1ZloTMSVswQUNU7ClFcskSQt7HPBPpC6EmnbEf+1fm456C4DLJnuJ56VFuPoQa5lGfFy5yHz8RIFxx8ODB6vYPPlBbzE\/kX3ck1jmrLyNOTKhoneTtRUtN2khKzfkp2muwEY9KyTfiUY0HsIlH5Rrbecn1uVFhM3KG6opgjoTqYjrlcXG5dfl7XJ\/AuacQavL5znpFFTavWccg1+eLQG1NuBIqjw8kj8hXovzvlphQ8xeh6R1NjCrESsIHEkUkTT3IHW1N2hBoFV7yTB\/3osGvc\/\/Mcrtoei6E6tJHCLWBK2Xeowt919hQEcLBv5wPHnLIvH8LaLaDo10QI5gvPPiNCgvbQ7zgdVH3rPfNo+oV+XgJVTQtzTeyALjq3jIVofIuFzS3RYy\/FELlvJVzU1IS7rXXXs7ZL7Ikx7\/qqqtUr1691KmnnqrPY+3EDv369dP1CGllJ3aAmHDSoiQTmZt8aVnljku04JoKME26wCyyu8hdVHrCLHI3el2RRpQMZLlagwyRhsVL8rv+\/XMdNgQwfvz4mj8HRMZG\/+yzz64ldjf5wYN9+X8cNfm+4JBpk6lJNMPv7JKQlGyjcc\/g\/eyBcc1jjz1Wu2+ugy7wZqkIVTTUH2eEM9Knn35aXXvttdqzt+xdlNFSg4Rqr5myUw\/i9Yh5m9zGiy22WIHLN99bZ5U7r1SAc9u2Va1+qLdbrwXTBWaR3UXuotITZpE739lPfjd8LE4++eR8CTUu5jLnMzebQIOb33qEhyLAhp4IhltvvVXnIicevt41IHz11VerHj166HBCvl0UBznhhBMW2Hj7Tqg3L7KI2mrq1PhFReIHz8onFqKhRuXnPeKIIxQ\/EC0J6oNxqHgJE4LD7paQGvpuueWWkUV442YkilAl9WAccgv+PWtKtjhNr8hUgFlkd5G7qPSEWeROPsP5XgF5HHbYYfkRKtopxwZxLWfPUNu8GqyBbDQuRLKVBZvw6DNjxgytdVIFy2igtunX3Bet0yZUk5yG2P6LL75Y49mxY0et1QZNvj6UqKxpqEcdpbY444z6M5k001Pcuijp77kRar1qMcSWbr311jquCzPIBRdcoNZaay11ww031My\/b7\/9turbt6+aFjj\/IjcwP2kSyUcRaq5mqIQTlfksMuHz8uqeWe68zlBTJFrIJHucMxUAp5DJZV4yye3ygAL7hJ6hxjmU1ZOHM9MRI+IlRkvlTDVN4yNe57wuKgMbj7K1WbRTO7EMNUAvueQShdZum5CNiEYzDRKq0VBfe+01fUxERrnddttNP8trk+\/tt6st3nxTqT59wmeJOWAeczbhp1kSSa\/JTKgkwCfBPWZdu1oMHwPMqXb2pClTpqhDDz1UJ8eHPA844ABt9sS0BckSl8q\/nH2SQJ4d2rPPPqtGjBihNt1006RjqzkmBU2+QqiJocye+cZXQk0OVW5XNDtCjTPZ5oZcyhsFzmFtjZI7GlMuJlzIbpttttG+GTRjoiWWnus4ZzVmYhyb6IsWe8YZZ+gqWvZ1xO6fddZZ6m9\/+1tNgzXmYf52xx136Bh9lBHImcQTXhNqhw5qi0cemZfyMCxTEkTqYVIHJi8VoYZ54lKpnsmGDNdZZx2dDD+Y5J6dGDs3\/mWBmYbDEiYM4k4vvPDC2tkiOzO0WzIpQYpJtVTRUFN+WEIuy\/xxF0JNPBmZMU\/8xPwuaC4aajCNqdmMR3nr2qRo0LS1V34HqT744IP6z3FevqR2hUhJloPpmPBBHBqDJt+gOTq\/mczvTrU1sdhiagurihPrfPakSS0zly\/pAfGSnThxokaaAuB483Xr1k3XMTW7tWAKwa+++kovJOJXIdSll166NlOUf+O8lHy7xmuOPxLzimMDgAevSTPNhbryOwrk60cys9wuplOXFGkpzKuZZXec27y7+So3OOT+riXJW+taYSXvCSvgfo8\/\/riuCc3ZKd\/eUaNGaSXDJ4dGA4tNqGeusoou1WmaKeFp\/p8jwbGeOSSl0lCN1oeZlmxGXbt2XSBRQ1iSe\/M78vlynmB7zVEvFbPG8OHD1UYbbVQD2ewCcVaidqpdOSbN2s39JU8hhK8fSV\/lZop8kp2iEVX70ARlCi77sI9fIe8amzK7RFlQkJy9fFO83nJJHQRsQt1\/zpwm6zxsTQX9aXwAN7HJF5IbNmyY\/uH8FDNs9+7dtQeaSRWYhFCN5krSfJyUqEZjWhZCtT3wjOZbyEuecJZ9+rjbQ\/NVbt8IlZzXNqFW4UOTRqbC3rWoc9gC4lATvtrSPQYBIdQ6AJmkC2iVJMBGZcfk27NnT12ajYT4W221VS0oOsp8a85PCY8599xzm5yT4uSEeYMzWbRaEuu7NDtLCf1xOUcLxpNYyre5ILhgHyHUdLglvSoNeSV9RtL+aWQqjFARPpgpCX+MZmTmTTo\/vvQXQnWcqbC4Uy79zW9+o73XSGJAtiTiP2+55ZYmXrscznMmO2TIEO0SbreHH35Ym5UJbjbZRlxEYuJwJsBMjGnZeNZxrRCqC4JCqOlQyn5VGvLK\/tT6d0gjU6GEWvSA5f6FICCEmhBWE4tKCTaIkjy8NByX0DRXWGEFdcwxxyg8go8++mj1zTffqOuuu057uuH9S5ouGuSLt9zpp5+uHZMgRvtsNU4sJo7De7RaGoTKWS8ecngMswGQJggIAsUhQMw5yVkaGaJW3OjkzmkQMISK5RGLV1zD+kmYpU8t8Rmq6+A4X3300UfVTTfdVKseQxzW3nvvrS666KIa2UKyV1xxhTYP02wvYs5nBw4cqENxyBbi2oRQXZGSfoJAMQg0F0KtYnL8sBmzfUbM34NRE1lmmthacgrQ7BAdfo+iYuJq6z0jKaES60v0h0+tMEI1IBCzSvwUJd9eeuklnQDiu+++09k+yPxBYXETbsM1xknp448\/1hmSOFtNQqbco57JF0Lv0KFDw+YILR7N3afE+IDlq9xlyT6unvepIgHPWvonrrncp57TEvc3z4oRSScFqlcJb9696DOurthhYyOzD5EAeWqoYEOmoahGbDsOknm1YO7dqiTHjyJUk+KQv9fL6pQUH0iTNUcuAFowoX9SQuX7i7JVr7Gm0FDznM+k407Tv3BCtYXiowyJ8lNkE6ek\/NEVp6T6mKY5Zwy7o8t9uM7FEzivXBpKJfc8LuIMlcxpA8IqzcwHkr\/1zzFdXVWT49vaoh3BEEWoaHomFaLJ+Wvfw+QhxmmTJBJsXCgNx705IiOVoknwH1yzRkNdf\/319bEe6RVpRi5DxnYqRjZZaLtmDcMLtGDinhYRNpP\/p7qYO9omEKmHmh1jIdRyCNWO+Yz60JRNqGut1TQ2NgyJ4MevORCq0cZMVqJGJce34++DJG\/SGiIrDpd247sH0QWr1hChAXlCpDT7Hsb3hD5sYLASjh49OrTqDdcaQsXxdLnlltO5AoKavNFuuc9pp52mnVJJBGSaz9+W4LtQqoZqHo4Z+Ouvv9ZhMLY5F3MvNQExDePQsPvuu6t27dplZ4P5dyjiJU8qnK+Lx1e5mZ8yZHfRLJPuuKPkdn1WXhpqiuRUoZmS+LDGmavrvU\/UIuVjHNVwYCF\/eNoWZ5ZvRHJ8NEO+iRAg2iJEFyROtEHMrraGamNga6NGQw1WrIF8afY9TIpYoi2CGiqaKGRNHndj8rXPm01BAPvvEyZM0E5GaKs77rijEGrahWpf9+qrr2qnJFJn2ekEOTMlPOaFF16odccbmMVCUfKk56hhsgqhpp\/BMkgpvXT1ryxDdleSSzLG5kaocSbbJNgU0TdoMq5CcnxyonMWjRLy\/PPP62gHU+Tc9sPg2xZFqAYryBgnT76nTzzxRE3rrKehYkKH0INnqERgkGuAaAxD5oZYRUMtYnWG3JNJYYHwL7stFvBSSy2lHV4GDx6srrnmGr2DwRb\/7rvv6kT55P5lV0ouy6xNCDU9gmWQUnrp\/CDUtdaaVtcJCAcgO31pcyNUHzXURifHJ4Mcuc67dOmiq3lBhrbGycoP0y7NG2Gy1pmzTTRUFBc7QT+\/QzuHEO0zVNuhLM7Ll+cZzRnnsLZt2+o87IaM0UqJ6Pj0008XcFTz+dsS\/PKUavK9+eabtXYaDIUxGZEw75LRyHj9koCfMm+QMIkdkmqpJnWhKZckhJqesnxe9GXIHpfvdh7y8YRqm1ebG6GmX33zrozTcPN2Ssoqbx7XY9GjhCWKB0cGp556amGJ8V203KRjssNqor6\/ZbyfSeVO2780QsVsQdYkFkUwZy9AU7GGXRM5gU2jdBFESkzb5ZdfvkAS\/nqDtndm4pSUdnn8eJ3Pi74qsrucaboQqgt58565FPhhhuuFzqA153WGmnUVtkRCzYpZkuuFUJOgFd63NEKtV23G1ElFg91kk01qkqZNjm8KAZMQgh1dlQqMY\/biDATnCZe4xOxTnM8dfJV7HmFUA\/OkhFqG3C6kWxVCLTsONZ83R+5iEIjSUMtY52XNQsMJ1WiuU6ZM0SkG8e41LS2hmuujCoyTO5gzCRrpDk3KwzJAnzx5stbGySDlkl2kDJlcnuGr3IytKrJ37Ni6rjbYrt1c9c4782LyqiS3y\/oI9jGY55nYIY0cck11EDCEGvz2Rb2fxKUGY1OrM5oGa6hR5ltzfvrzn\/9cXXDBBWrRRRetSfrJJ5\/o81NKuiU1+XKTKEK1oejRo4fip6xGBhm84yDVjTfeuKzHZn6Or3Iz8KrIfvzxu6tZs1pFzkWrVrPU3XdPrv29KnKnWTxGdiHUNOg1z2sMoQa\/fVHrfIMNNlD8+NRK01Dx5MVrl5RTttcuqcSIceJv++23XxPsjFPSQQcdpAOCo5yS7JgqE\/+ES3mQUGfNmqXvg\/u5NEGgbARmzpyg5s6NjquGUFdf\/ceA97LlK+J5tjWoiPvLPf1BAI9lvr+ujbXDj0+tNEIFFEOQnTp10ueakCxev2ivmHvtM0XAP+WUU9Trr7+uK9KY5PlJwA0SKtdCqvxIEwTKRmD\/\/beIdQAaNeq5ssUq5Hm8v1Sdks1rIfB6e1OO2lxJkqiPPBP7lAFaqYQKgVL3lB\/TghVlKNeGeZc0VVSsIfUVP2ls6WGEWgao8gxBIAyBohyAqop20ZvXPn3iPZSHD68qOi1TLh9JMslMlUqoCEbGj0mTJumMSJhwSUFFCitjzoVQCQhmZ0sA8oEHHlhY3FUSoKSvICAIVAuBpF7T1ZJepGmOCJROqHEgUlwczZTYU9tBKe46+bsgIAi0LARamsbfsmbXz9FWjlD9hFGkFgQEAUFAEGjpCAih5rwCgsV47VygpkYgj4z6vV12zu6fs5iht8squz2mYKmrIuQPq+lI+agoDJP+vgiZzT3zkr3qmDPeYApQfteIdZ4U8yjZq4y5wfrBBx\/US81Ul\/EB83qyl4152ndfCDUtciHXmUk3i5iPBr\/Dg5kwHlIrklfYEGrw95wl49lMikbaxRdfrHMb2\/UQcxS3ya2yyk5tRTO+MhJWECpl44P8FEWmCsY555yzAIYMNgzbqN8XiXlesttrqoqYg2FYClB+V\/Y6T4p5lOxhm4Oi3knum1RuuzKMwb53797aV6XqmEfJTiGVMr8tWeZTCDULeta1Jgk0cbU0woLCND4TGmSXQ4IMTLWHMAIu+mOZh+z2C7veeuvlhKr7bdi8UBx57733VldeeaXzJiZqc1M05vbI0spub8CqiDmbrKuuukqFpQBtxDpPgnmU7PZmoIqYB9dto78tSTCPkr3R3xb3r5BSQqhJ0HLoywI2hBqmoWIKpbxR8INifg8pXHLJJfoe7Mq6du26QMILBzFSdckqu1342DY1pRIm4UX2hyMMQ0pTJfl9MMlIQnESdc8ie5UxNxiGZSxr5Do3myizia0nS1y2taqtc3vd2uRP2TRfMGd+grI3cp0neZmFUJOg5dDXJiXz4lILEMLs3r27Lk2H9mpMrPbvIdpGLvossjMm04xZrKzNgG0JMNpecFNSVULNIrv98awi5lUlVBfMo2S3PwFVxjysdGUjvy1JMK9nVi8bc4dPfpMuQqhJEYvpHyQlu7vRRILaT1XMMllkDxuT0dRzhrjJ7YKYJj23Npue4Hl2GSbfrLKHmciqhLmRL0zLa5TJ1xXzKNmDa7neO5Pnuk8id5hZOuq9qNI6RxYXk3pZmKeZPyHUNKjVuSZoNjW7QrLG4DBDYnzb\/GL\/nor2ZTsOBAnffJBtTc9FdsbE+TGaalkZqsAard7+KEQ5vDCuqjglGRLPKvvbb79dacyNY1dwPTTCKSkp5lGy815UfZ1TN7Z\/\/\/5NnBl9wJw5CpO9EZinpQUh1LTIRVwXZTalu115w3YDt39vhxOUXakjq+z2mIo+W7JxMlNhCiO8\/PLLypy5uGBbNuZ5yl51zJmbsA2WD5hHyV5lzG3ZzHthwu+qjnk92cvEPAslCKFmQU+uFQQEAUFAEBAE5iMghCpLQRAQBAQBQUAQyAEBIdQcQJRbCAKCgCAgCAgCQqiyBgQBQUAQEAQEgRwQEELNAUS5hSAgCAgCgoAgIIQqa0AQEAQEAUFAEMgBASHUHECUWwgCgoAgIAgIAkKosgYEAUFAEBAEBIEcEBBCzQFEuYUgIAgIAoKAICCEKmtAEBAEBAFBQBDIAQEh1BxAlFsIAoKAICAICAJCqLIGBAFBQBAQBASBHBAQQs0BRLmFICAICAKCgCAghCprQBAQBAQBQUAQyAEBIdQcQJRbCAKCgCAgCAgCQqiyBgQBQUAQEAQEgRwQEELNAUS5hSAgCAgCgoAgIIQqa0AQEAQEAUFAEMgBASHUHECUWwgCgoAgIAgIAkKosgYEAUFAEBAEBIEcEPj\/IDtby0NK\/FwAAAAASUVORK5CYII=","height":282,"width":468}}
+%[output:476d05c5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:592bd887]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9b1c18e2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1f4720cd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:865ad4db]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4a29de84]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:3f59608f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:60fcd37e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:54c9233b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:402f46e8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2b3ed03c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:75952393]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:600d18ed]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:386244e9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:04f8b022]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:356d799b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7887a45b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2bce111a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3c76a8a0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7a1aa8d3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5554110c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:41a6ff2c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2167e7a6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:44b3ad23]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:08c52778]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1c076e3a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:80fa801e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3ece19b5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:72cd91b1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3dd42aa4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:48b75621]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5668f291]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:99da434b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:22dbe781]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4920a59e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0815c34a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4b4c0a1a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:93eaa66f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9a111cee]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:30277a71]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:715b88c7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:39cc4efc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5f6b0367]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7d8f13c9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2bc82a96]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:58a9f715]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:22145044]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:25ec02e3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5a6959d1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2c0f3800]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:39559fbc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:54d3baf9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8751b890]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:61c740af]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:53c0d092]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0ddec3ae]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:49a6e21c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4f3a1d87]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:43f9d36c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0421ff82]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6e1f1c09]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4d8efceb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5e00dcdb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3055157d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:00702609]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:24f86491]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7d793125]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4184e867]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:00f6d864]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2de978aa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3d11c38e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5a4228c4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4c98fc52]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:046d2c79]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:073913c5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:30b61fcc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2ee3a0e2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7c1a143c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5ae0f6ab]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:66bd86ee]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:79e2321c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:709570a1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0ace55ed]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:087ae413]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:424eb910]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:821a2de2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:75ac041a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:00c007be]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:590b7eb5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7a205f10]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3cad810f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:35368708]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:02a95d27]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8a5c3afa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5c54bba8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7e87085b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3c47212c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:658aaf53]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:57a3eb5d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:79d2af63]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:55efc2a8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5bd0bf4e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:213ad7c3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:02ff7c33]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:093a1bd3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1dffe339]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:24130a6a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9e2bebc2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:169cdf94]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:721fa7a9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:51b7d3d7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6aba5b27]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7938cb75]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2d52858a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5fcb7ac3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:024cb691]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:31200853]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0468cd59]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7e464482]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8832dcf1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0ad9b5a8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0df9c6a0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7bd85080]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:633bf38f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9b5a7284]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1b4831cc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:51f06e47]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:85d711a5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0ed7535c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:91c278ed]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:89361c39]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4008e51b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:57b2f2b9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6c05fecd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:62c107fd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:111cf61e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9ea26089]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1dee75a6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:26ec1fc9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1babf915]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:706ee142]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:61250b9f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:37a490b8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1afb9e40]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:28078cb0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:17f31a0a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6a9028d9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:68cd74c6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8b149626]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:893c0444]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1fbe7c79]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4d6ccfe5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:38f56e36]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:09f191d2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1db13420]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4ff1894c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9bf7b9d2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:31c9bc36]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4606d532]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:298dfcff]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8d6a919c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:535f6997]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:08ce0c22]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5703d082]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4b32fe83]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:66999e9a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:22dca6cb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:24fa7434]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2c4b0100]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4e2529f2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0588bc36]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:16b71ef6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:49897c8f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:47843b1e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4842cb19]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4158372b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3aa935a3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:23cd4afe]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2add4f6a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:865dac48]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:07096dca]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3e320d26]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:82571362]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1a94c68c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4ca6c68b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:28d29e9c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:37edbc0d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5381b18a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3b1e27a2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:734e04a4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5b2986ff]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:79cf1fa8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:093a6d00]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1c1c4cf9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:46057be4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6cdce246]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:63b387dd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1722da1e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:388f03a4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8bfce059]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:28fb07cb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:0b80b429]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:45487beb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3a16e380]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:38eaf689]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:33ea1b6c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:589f6e2b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:48c93fba]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:843fb569]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:65750b31]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:08ba0b54]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:909675fa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:722d7810]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:94c3ed31]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:64c9ddee]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:97462cef]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9398f049]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:7aea6f6f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:16dfb84a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2f0a648d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:0622d5c9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:78548862]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:8e912464]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:750ed7b5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:16bf5d11]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:90b5d124]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5d16e62d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:8f6d345a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:707e2dcb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:4192cb1b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:063abb5b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:91fdbe84]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1577f30a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:05fc40c4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:0df41ef1]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:06ffde5e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:86fed95a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:57344ad5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:689a5670]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:812f0c88]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:904bb949]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:51eb1117]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:646c7645]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:5ac928ac]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:13803640]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5ac8edae]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: no s.s. autocorrelation"}}
+%---
+%[output:1b6f8c64]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4d8f4e88]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:245c330f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:721ac259]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:13bd1f48]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5e00aa14]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5bc22594]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0f0b47c7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:484c5697]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:24ee5ada]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6cad27ea]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:22f346a8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:920c0952]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4652c92d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:453377dc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:86f6365b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:30da2edf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:558314cb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:57e02254]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:33302f5f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:461fa8ff]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:619d5838]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7e83ce73]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:690b0601]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1f5e6ae3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:375af545]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5acd97dc]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8f775984]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3f3fd046]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6ab4b36e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:620176b8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:9bf0bc5e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6e2e667f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:69e8bca5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:64699c2f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8e185787]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5efca3c3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3e09cbcd]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6efe8e03]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:55e4428f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:14ea59e2]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4721f82f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:14c3e4a5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7eba562a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8c52dd73]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8f4d9b5d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:85aed559]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8c247199]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3d096e62]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3783947b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:073e552b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1f368d7d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:84c20b0b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:90a67ff0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:70b921c8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:08a998df]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6aa2d867]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7f1cabb8]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:70a8dc83]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0be9e313]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6ce5d7b6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:09bc691c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8addb485]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:31c7c518]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:783f8641]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:4b0b5def]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1b5d39d0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1e576b5e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3d8f2e07]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7cbcd797]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7589a3fa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:33763879]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:46289344]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:95ff2c8f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4402cfcf]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1ed32b5c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:33feed3c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8388b5ec]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:08f0e7f3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:57d5ec0f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7fc8e9ac]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:6269ef0c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:97e4734f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2786407f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:40006de6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:8c98918c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5dd675f5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:00d7c778]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:74ef0e45]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:49759a53]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:250dadcb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:455d35ea]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:42055a3e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:5068a527]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:349c7b4b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2815bbe9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:070a9fde]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2b2cd0e6]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:75939c1f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:023f4171]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5b81c394]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7a080eec]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:22a89b3a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1114074f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:7a2805fe]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:34df9843]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7ed08f86]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:18f1bef0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3ce26393]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6703a486]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:62a987c5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:87e70052]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9dab620e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:726fccaa]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:78eb80fe]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:83bc0459]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5b385a18]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0ee466de]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3175a2c9]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:2b495cd3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:77305892]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:3ad1cd0d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:23b2d10e]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:030445d4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:3337ae6c]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:020b80f4]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:51f83c4f]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:39ad28ad]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:11e3dcdb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6f952a58]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7c47ac64]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:85c1e2eb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:2d052ed3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:0760d073]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:7a788e0d]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:65b706d0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:66cabff3]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8352370b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:1f4ceda0]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:107a2530]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:682a480b]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:05956480]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4d7dc8d5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:6224b1c7]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:5016fdfb]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:99dce67a]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8a0bbe20]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:8129ec73]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:1afad042]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:583d47d5]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:368c5043]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:49407185]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:9d6b6953]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:4c507994]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:24e9d3ee]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: more than a third of data is NaN! autocorrelation is not reliable"}}
+%---
+%[output:55f08081]
+%   data: {"dataType":"warning","outputData":{"text":"Warning: the trends for the temporal aggregation are not homogeneous"}}
+%---
+%[output:048ef0cf]
+%   data: {"dataType":"tabular","outputData":{"columnNames":["station","end_time","length_period","granularity","parameter","instrument","MK_seasonality","method","ss","slope","UCL","LCL"],"columns":12,"dataTypes":["cellstr","double","double","cellstr","cellstr","cellstr","cellstr","cellstr","cell","cell","cell","cell"],"header":"8493×12 table","name":"BRW_result_MK","rows":8493,"type":"table","value":[["'BRW'","2025","10","'daily'","'BaG1_A11'","'abs'","'y'","'MK'","0","-4.9905e-04","5.6204e-04","-0.0017"],["'BRW'","2025","10","'daily'","'BaG1_A11'","'abs'","'MetSea'","'MK'","[-1;-1;-1;0;-1]","[-0.0029;0.0005;0.0010;-0.0004;NaN]","[0.0014;0.0022;0.0029;0.0047;NaN]","[-0.0073;-0.0008;-0.0008;-0.0054;NaN]"],["'BRW'","2025","10","'daily'","'BaG1_A11'","'abs'","'month'","'MK'","13×1 double","13×1 double","13×1 double","13×1 double"],["'BRW'","2025","20","'daily'","'BaG1_A11'","'abs'","'y'","'MK'","95","-0.0020","-0.0016","-0.0024"],["'BRW'","2025","20","'daily'","'BaG1_A11'","'abs'","'MetSea'","'MK'","[95;95;-1;95;95]","[-0.0034;-0.0009;0.0004;-0.0077;NaN]","[-0.0010;-0.0001;0.0011;-0.0045;NaN]","[-0.0059;-0.0018;-0.0003;-0.0110;NaN]"],["'BRW'","2025","20","'daily'","'BaG1_A11'","'abs'","'month'","'MK'","13×1 double","13×1 double","13×1 double","13×1 double"],["'BRW'","2024","10","'daily'","'BaG1_A11'","'abs'","'y'","'MK'","95","-0.0015","-2.5079e-04","-0.0027"],["'BRW'","2024","10","'daily'","'BaG1_A11'","'abs'","'MetSea'","'MK'","[-1;-1;-1;95;95]","[-0.0066;0.0006;0.0007;-0.0057;NaN]","[-0.0015;0.0021;0.0029;-0.0005;NaN]","[-0.0116;-0.0009;-0.0008;-0.0112;NaN]"],["'BRW'","2024","10","'daily'","'BaG1_A11'","'abs'","'month'","'MK'","13×1 double","13×1 double","13×1 double","13×1 double"],["'BRW'","2023","10","'daily'","'BaG1_A11'","'abs'","'y'","'MK'","95","-0.0025","-0.0014","-0.0037"],["'BRW'","2023","10","'daily'","'BaG1_A11'","'abs'","'MetSea'","'MK'","[-1;-1;-1;95;95]","[-0.0027;0.0004;0.0004;-0.0071;NaN]","[0.0032;0.0017;0.0021;-0.0015;NaN]","[-0.0089;-0.0014;-0.0016;-0.0131;NaN]"],["'BRW'","2023","10","'daily'","'BaG1_A11'","'abs'","'month'","'MK'","13×1 double","13×1 double","13×1 double","13×1 double"],["'BRW'","2022","10","'daily'","'BaG1_A11'","'abs'","'y'","'MK'","95","-0.0031","-0.0021","-0.0041"],["'BRW'","2022","10","'daily'","'BaG1_A11'","'abs'","'MetSea'","'MK'","[-1;-1;-1;95;95]","[-0.0001;0.0004;-0.0001;-0.0173;NaN]","[0.0067;0.0024;0.0019;-0.0077;NaN]","[-0.0072;-0.0019;-0.0022;-0.0263;NaN]"]]}}
+%---
+%[output:395feee0]
+%   data: {"dataType":"tabular","outputData":{"columnNames":["station","end_time","length_period","granularity","parameter","instrument","MK_seasonality","method","significance","ss","slope","UCL","LCL","slopeP","UCLP","LCLP","slopeR","UCLR","LCLR"],"columns":19,"dataTypes":["cellstr","double","double","cellstr","cellstr","cellstr","cellstr","cellstr","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell"],"header":"36×19 table","name":"BRW_result_LMSlog","rows":36,"type":"table","value":[["'BRW'","2025","10","'month'","'BaG1_A11'","'abs'","'log'","'LMS'","0.8948","0","-0.0199","0.0246","-0.0645","-0.7898","0.9754","-2.5549","-0.1808","-0.1798","-0.1818"],["'BRW'","2025","20","'month'","'BaG1_A11'","'abs'","'log'","'LMS'","5.0875","95","-0.0429","-0.0261","-0.0598","-1.8548","-1.1256","-2.5839","-0.5764","-0.5760","-0.5767"],["'BRW'","2025","10","'month'","'BsG0_S2S20'","'neph'","'log'","'LMS'","0.3227","0","0.0050","0.0360","-0.0260","0.2938","2.1148","-1.5272","0.0513","0.0522","0.0504"],["'BRW'","2025","20","'month'","'BsG0_S2S20'","'neph'","'log'","'LMS'","0.8371","0","-0.0067","0.0094","-0.0228","-0.3724","0.5173","-1.2620","-0.1260","-0.1253","-0.1268"],["'BRW'","2025","30","'month'","'BsG0_S2S20'","'neph'","'log'","'LMS'","1.0222","0","-0.0042","0.0040","-0.0124","-0.2286","0.2186","-0.6757","-0.1187","-0.1181","-0.1193"],["'BRW'","2025","40","'month'","'BsG0_S2S20'","'neph'","'log'","'LMS'","2.2116","95","-0.0059","-5.6283e-04","-0.0112","-0.3200","-0.0306","-0.6095","-0.2097","-0.2092","-0.2101"],["'BRW'","2025","10","'month'","'BsR0_S3S30'","'neph'","'log'","'LMS'","0.5618","0","0.0082","0.0372","-0.0209","0.5592","2.5502","-1.4318","0.0850","0.0859","0.0842"],["'BRW'","2025","20","'month'","'BsR0_S3S30'","'neph'","'log'","'LMS'","0.9253","0","-0.0069","0.0080","-0.0219","-0.4352","0.5055","-1.3759","-0.1291","-0.1284","-0.1298"],["'BRW'","2025","30","'month'","'BsR0_S3S30'","'neph'","'log'","'LMS'","0.5633","0","-0.0022","0.0056","-0.0101","-0.1374","0.3505","-0.6254","-0.0642","-0.0636","-0.0648"],["'BRW'","2025","40","'month'","'BsR0_S3S30'","'neph'","'log'","'LMS'","0.7666","0","-0.0020","0.0032","-0.0071","-0.1228","0.1976","-0.4433","-0.0755","-0.0750","-0.0760"],["'BRW'","2025","10","'month'","'BsB1_S11'","'neph'","'log'","'LMS'","1.0863","0","0.0155","0.0440","-0.0130","1.1514","3.2711","-0.9683","0.1674","0.1683","0.1665"],["'BRW'","2025","20","'month'","'BsB1_S11'","'neph'","'log'","'LMS'","1.4642","0","-0.0109","0.0040","-0.0259","-0.7598","0.2781","-1.7977","-0.1967","-0.1960","-0.1973"],["'BRW'","2025","10","'month'","'BsG1_S11'","'neph'","'log'","'LMS'","0.8172","0","0.0116","0.0400","-0.0168","1.1056","3.8115","-1.6004","0.1230","0.1238","0.1221"],["'BRW'","2025","20","'month'","'BsG1_S11'","'neph'","'log'","'LMS'","1.6766","90","-0.0127","0.0025","-0.0279","-1.1274","0.2175","-2.4723","-0.2243","-0.2237","-0.2250"]]}}
+%---
+%[output:8b15310d]
+%   data: {"dataType":"tabular","outputData":{"columnNames":["station","end_time","length_period","granularity","parameter","instrument","MK_seasonality","method","significance","ss","slope","UCL","LCL","slopeP","UCLP","LCLP","slopeR","UCLR","LCLR"],"columns":19,"dataTypes":["cellstr","double","double","cellstr","cellstr","cellstr","cellstr","cellstr","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell"],"header":"36×19 table","name":"BRW_resultLMSlin","rows":36,"type":"table","value":[["'BRW'","2025","10","'month'","'BaG1_A11'","'abs'","'lin'","'LMS'","0.6296","0","-0.0033","0.0071","-0.0136","-4.0783","8.8766","-17.0331","-1.0326","-1.0323","-1.0329"],["'BRW'","2025","20","'month'","'BaG1_A11'","'abs'","'lin'","'LMS'","3.8136","95","-0.0069","-0.0033","-0.0105","-7.2761","-3.4602","-11.0920","-1.1382","-1.1380","-1.1384"],["'BRW'","2025","10","'month'","'BsG0_S2S20'","'neph'","'lin'","'LMS'","0.3199","0","-0.0300","0.1578","-0.2179","-0.5467","2.8716","-3.9650","-1.3004","-1.2953","-1.3056"],["'BRW'","2025","20","'month'","'BsG0_S2S20'","'neph'","'lin'","'LMS'","2.6771","95","-0.1338","-0.0338","-0.2337","-2.1912","-0.5542","-3.8283","-3.6755","-3.6700","-3.6810"],["'BRW'","2025","30","'month'","'BsG0_S2S20'","'neph'","'lin'","'LMS'","2.6046","95","-0.0653","-0.0151","-0.1154","-1.0342","-0.2401","-1.8283","-2.9577","-2.9536","-2.9618"],["'BRW'","2025","40","'month'","'BsG0_S2S20'","'neph'","'lin'","'LMS'","3.8894","95","-0.0706","-0.0343","-0.1069","-1.1228","-0.5454","-1.7002","-3.8228","-3.8188","-3.8268"],["'BRW'","2025","10","'month'","'BsR0_S3S30'","'neph'","'lin'","'LMS'","0.1089","0","0.0079","0.1532","-0.1374","0.1839","3.5613","-3.1936","-0.9209","-0.9169","-0.9249"],["'BRW'","2025","20","'month'","'BsR0_S3S30'","'neph'","'lin'","'LMS'","2.3821","95","-0.1047","-0.0168","-0.1927","-2.1398","-0.3432","-3.9363","-3.0948","-3.0900","-3.0997"],["'BRW'","2025","30","'month'","'BsR0_S3S30'","'neph'","'lin'","'LMS'","1.6636","0","-0.0370","0.0075","-0.0814","-0.7400","0.1497","-1.6297","-2.1095","-2.1058","-2.1131"],["'BRW'","2025","40","'month'","'BsR0_S3S30'","'neph'","'lin'","'LMS'","1.7158","90","-0.0257","0.0043","-0.0557","-0.5197","0.0861","-1.1255","-2.0280","-2.0247","-2.0313"],["'BRW'","2025","10","'month'","'BsB1_S11'","'neph'","'lin'","'LMS'","0.2615","0","0.0192","0.1658","-0.1275","0.4983","4.3095","-3.3129","-0.8083","-0.8043","-0.8123"],["'BRW'","2025","20","'month'","'BsB1_S11'","'neph'","'lin'","'LMS'","3.2046","95","-0.1023","-0.0384","-0.1661","-2.4208","-0.9100","-3.9316","-3.0456","-3.0421","-3.0491"],["'BRW'","2025","10","'month'","'BsG1_S11'","'neph'","'lin'","'LMS'","0.1021","0","0.0056","0.1147","-0.1035","0.1950","4.0170","-3.6269","-0.9443","-0.9413","-0.9473"],["'BRW'","2025","20","'month'","'BsG1_S11'","'neph'","'lin'","'LMS'","3.4309","95","-0.0857","-0.0357","-0.1357","-2.7778","-1.1585","-4.3971","-2.7139","-2.7112","-2.7167"]]}}
+%---
+%[output:6dac349e]
+%   data: {"dataType":"image","outputData":{"dataUri":"data:image\/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXUAAADhCAYAAAA3fSUpAAAAAXNSR0IArs4c6QAAIABJREFUeF7tfQuYFcWV\/9GgYAQFjRuRUQefkGgIMajxESCRGN1PEpANIKuA4Cu6iw9QEQwgLwXxE6KrCGRAoxi\/D91IEjUaeUSNRNngmo3544OJoKOLrg9wdzCj\/PnVcO7U7VvdXd1dfW\/3vae+b76Z6a6qPvWr6l+dPnXq1B47d+7cSZIEAUFAEBAEqgKBPYTUq6IfpRGCgCAgCCgEhNRlIAgCgoAgUEUICKlXUWdKUwQBQUAQEFKXMSAICAKCQBUhIKReRZ1Z7U255ZZbaOHChb7N7NSpE33961+nsWPH0qmnnkp77rlnIe+rr75Ko0ePprffftu3fPfu3alfv340cuRIOuyww1S+n\/3sZzRjxgz196xZs2jYsGGF8vAxmDt3Lt19993q2oEHHkgNDQ103HHHFfJs3bpVyfPyyy\/T8ccfT4sXL6aDDjqo2rtK2ldBBITUKwi+PDoaAmGkrtf2L\/\/yL4Sfdu3aqcs2pM7lQe533XUXHXPMMfTCCy\/QiBEjqKWlhX70ox\/RTTfdRHvvvbfK+vHHH9MVV1xBzzzzTOHRs2fPpqFDhxb+\/\/Of\/6wmk\/fff7+kfLTWS25BwA4BIXU7nCRXBhCIQurQ2u+9917q1atXZFJHgSFDhtD06dPpf\/7nf2jMmDH017\/+lU444QS65557qEuXLqpOnbAZnvPPP59uvPHGwmTy61\/\/Wk0uSJMnT6YLL7wwA0iKCNWMgJB6NfdulbVNJ\/UHHniATj755KIWvvPOOzRz5kwCkSLpWrOuqZ9zzjl088030z777FMoD018\/fr1dMMNN9CmTZvoiCOOUKaUL33pS3T99dfTypUrqWvXruoaNHikX\/ziFzRx4kRF4F\/4whdox44dyvwD4kc53TyDPPfffz\/16dOnynpFmpM1BITUs9YjIo8vAmGkrhMt\/p43bx4NGjSoRFM3kToy\/d\/\/\/V+BwA855BBF4EcffTTdcccddNttt6l6YBP\/zne+o8wx0OTvu+8+6tGjB5144onqy2DfffdVv3v37k3bt2+nq6++mp566imVZ8mSJWpikCQIpImAkHqa6ErdThEIInVoxVgEhQYOTV0nZQgRpql\/+umntHbtWpo0aRJhcVPXuGEzv+CCC1RbLr\/8crrmmmvovffeo4svvpg2bNigbOWDBw9WZppPPvmk8IWwefNmZU9\/4403yG8icQqQVCYIyOYjGQN5QsDWpr7XXnspYoWWvscee5Ro6jZtnjBhAl166aWqvE7O\/\/iP\/6gmjo0bNyqiZxKH9s5eLryg+tJLLxUWWaGxY1FVkiCQNgKiqaeNsNTvDAFbUj\/jjDOUbby+vr7wbFvvF9i+sdh51VVXUceOHVV5kxnlscceU66O7MYIO\/tPfvITeuihhwqmFs6DOmCSOe2005xhIRUJAn4ICKnL2MgNArakjgbB++XOO+8sEKkNqUPzhrbdrVu3goaPuvQFT9jM4SuPRVIsnoKoYXPfb7\/9CgunyAP7+cMPP6xInhddDz300NxgLYLmFwEh9fz2Xc1JHrZQCo0a9nRsEtq2bRt973vfo1tvvVVp3CabOsw0sKNDw4Y9Hv\/jb\/iZs387g6y7JoL4n376aWUrh4kGphqYaXQXx0suuYRefPFF5VGDLwcstLLmX3MdJw0uKwJC6mWFWx6WBIEwUkfdsHHDBREkDB91aMwHHHBA4EIpFkKxAIqJAGQOmzkWPvUEGzoWPZuamoquszcMLuqbkdq3b0+fffaZ8pIRe3qSXpeyUREQUo+KmOSvGAJhpA4PlieffFLZ00HQtqQO8wq2+mPLPxJ2lMLX\/Mgjjyy01bR71GtW8YYN4MI68VcMPHlwzSAgpF4zXZ3\/hkaxqaO1cDG87rrrlPYd5tKISQCuivApRxo+fLgyxUDjRtL90hlJ9oSBDZ0TzDIwz3CCHX3p0qVqopAkCJQDASH1cqAsz3CCQBRSx+afBQsWqEVPpDBSRx7YxDERwE8dE8Htt99OZ599dkH2Rx55RBE\/J5NZRXd\/RD6xpzvpeqkkAgJC6hHAkqyVRcCG1LFzE0SMxU49GqINqcN8AtfDadOmqYb27NlTmWF4YtAXQkH6yOsNVaC7P6IOfSG1sujJ02sFASH1WulpaacgIAjUBAJC6jXRzdJIQUAQqBUEhNRrpaelnYKAIFATCAip10Q3SyMFAUGgVhAQUq+VnpZ2CgKCQE0gkFtS59jX8Cf2eiDURM9JIwUBQUAQMCCQS1LnI8YQ2tR0Ao70tCAgCAgCtYpA7kgdGjo2leAMyfHjx6sdg6Kp1+rwlXYLAoKAF4HckTo3gLV1L6lv2bKF8FNXV6d+JAkCgoAgUEsIVBWpg8wRBnXdunU0btw49SNJEBAEBIFaQqCqSP3555+n8847T0XbO+mkk0RTr6WRLG0VBAQBhUBVkrosnsroFgQEgVpFQEi9Vnte2i0ICAJViUBuSd3UG2x+EU29KseqNEoQEAQsEMgcqes+6Oecc446WmyfffYpaooegvWQQw6hhoYGOvroo0lI3aLHJYsgIAhUNQKZI3UQdn19PQ0cOFCdNendMRq0k1RIvarHqjROEBAELBDIFKl7fc9\/8YtfUGNjo9pgxAl5cPoMzqGEdq4nIXWLHpcsgoAgUNUIZI7UdcIGqT\/33HNFJhgmbu6VSy65pED6fA\/+6eeee664NFb10JXGCQKCgAmB3JG63gg2xZxyyinq+DKd8GXzkQx4QUAQqEUEMkfqfAI84rmYzC\/eToINHgkmGtl8VItDWNosCAgCOgKZInUIFrZQCuJes2aNInGvDV5s6jK4BQFBoNYRyByp6y6NbC\/HNZzwPmXKFDrggAMU8S9cuFD1ncmmLn7qtT6spf2CQO0ikDlST9IVoqknQU\/KCgKCQDUgkEtS1xdEZ8+erRZJkYTUq2FIShsEAUEgCQK5I3XdTx0NnzVrFs2bN0+ZZWqB1BFeeMWKFVXtsiltTPJKZ6es9GNl+iJ3pA7ihk19yZIlKnyAvutU91NH6N1qTG+99ZaKGQ+XTWljfntY+jG\/fadLzv2YpXW8XJL68uXL1YYkJJA6+6nrh2RUx5CRVggCgkDWEYByhTMcsnLSWlWROjqfj7PL+kAQ+QQBQaA6EMja0Zm5JHU\/80t1DBFphSAgCAgC8RHIHakHLZTGh0FKCgKCgCBQHQjkjtQBu+7SmKUFiuoYEtIKQUAQyDMCuSR1E+B+vut57RwOVrZy5Urq1auX8vaB26ae9Dbrh4Xkpc02beS2eENC5KWNkNO2nfpO6bwpKzZt1HeL53G8+o25oDMeKjFOq4LUq9Ekowcz43g4vMkKA8UbVx75H3zwQSP5V2Jg2TwzrI16HUx4eSM7tMGmnXqeV199lZYtW0aTJk0qOfXLBtdK5LFpox58zxRWuxJyJ32mPlFlZWxWBakH+a4n7bRKlDeFFGY3Tu\/RfiwfiEDfiFUJuaM8M0ob0b+\/+tWvaNu2bSUnYUV5ZiXy2rQTeWbOnEkjR44sOfilEjJHfaZNG72Tm00E1qhylDs\/2r1gwQIaMmQIjR8\/XgUZRHTZSqeqIXU\/3\/VKAxzn+d7POX3S8ppguP68vSS2beRgbtdeey3NmTMnt6TOxzKa+pJJHX0JbY9\/Z4EgbMavbV8ysU+cOJH08B42z8hynqyZBoXUMzhaorwkEB9EEabJZ62Ztm3EJ3vfvn3VuoLpzNqstcsrj007mRSGDRtWOOyF3Xb9JvEstdumjV5tvlrML+gHIfUURmMtm1\/ypqFz99t8suv2Sn3YZMV2aTOUbdrpJUWY0vjLxHsOr80zy53Hpo3eNaC8tTEIUyH1FEZcLS6U8qcsfusLqCnAm1qVNotr3kmAzRipCZVCxTbt1PPYmNtSEDNRlWFtNBF\/nr5GhNQTDY94havNd113ETvnnHMKh2\/j5UH6xje+QaNHj6a33367AJif62M8RNMvFdZGfbLKmttYFHRs2qnnyaO7n00bq9WlUTT1KG+D5BUEBAFBQBCIhEBVLJRGarFkFgQEAUGgihEQUq\/izpWmCQKCQO0hIKRee30uLRYEBIEqRkBIvYo7V5omCAgCtYeAkHrt9bm0WBAQBKoYASH1Ku5caZogIAjUHgJC6rXX59JiQUAQqGIEhNSruHOlaYKAIFB7CAip116fS4sFAUGgihEQUq\/izpWmCQKCQO0hIKRee30uLRYEBIEqRkBIvYo7V5qWAwSmTSOaMiUHgoqIeUFASD0vPSVy5hcBP+LG9alTW3+E2PPbvxmTXEg9Yx1SdnFEU0wXcj\/ibmwk6t697dmrVhH161csS1DfSL+l2285rl1I3a\/zauGlsdAUp02bRlN8tMigezl+J9yJ7kfcuN6\/PxF+c6qvJ9q0qe3\/oL6x6Dd3jZCa8oaAU1LfuXOnOrRh06ZN1LlzZ+rRowe1a9eucpgEEHMgIeXwpYlMvhaaIuqcuss0gB8vsQfdq1yHV+bJRuz9iBvkvXq1WVDcw09Dg78Wb9FvqFwm3MqMhSw8NTap46STJUuWKAKfMWMG7bPPPvTMM8\/Q5ZdfTtu2bVNtGzRokBpcHTt2tG6rfjqKfuKPt4LQk3ACiDmQkCxfGusGOczo96JGJl8LTbGxsZG6a+aBVatWUb\/d5oGgew6bm4uqfLGHJu5H3mEtA7F7tXgQPa6Hafi7Cd1vMhbCDwM\/\/\/djk\/pvfvMbuvLKK+nUU0+l+fPn05577knjx4+nP\/zhDzRu3Dh1wvY999xDkydPpgsuuMAaKZxbWF9fTwMHDvQ9PV4n\/qJDiPUB730pIEF9PTU2NPiSlXqRLF8aP5OEdUMjZvQjj1jk60c4IO1Vqwh19u\/fX\/1usw7Uqwk86J63SdWuLfpin4TQI44LZG+sr6fR9fWEiTdswpUvrBgA56xILFLfsWMH3XDDDdTU1ER33nkndenShV555RUaNWqUIoObbrqJYIq58cYbCXlvvvlmpcmHJe9Zf\/phtlwWGvqCBQtoyJAhahK57rrr6OSTT269Dc1SJ3PPA0FR2tKUuosJhFNDYyN5lqrULf2lSfOl8CNBvxc1FvmOGtXqbeGXpk6l\/qtX02qDlsmaut89kAqnNHEKG0dp3Pf2jS\/2wEBfAE1DGEOdS4loTX09LfWMfx7f+N0QpNBodVbTZBzZLLkbhzAMwu6XqduNj4lF6ky+IFOQKtIjjzxC11xzDc2ePbtwuj20bhwIDTPNAQccENpO1Is6MGEcffTRBFJ\/7rnnjJOC8bDXEFLvT0Q+1kwCzQV5Cy+uq6N+q1YpuTg9+eSTdNppp5W065ZbOtB11zUb2wtMGDM9A67jk3nSpEnq64bTli1baMCAASVaMybRs846Kzr5ElEb9Zq7JAinoE5k2SGzDU6hA8JhhpaWFjWOrr\/++sjrPKa+8cXeAl+HzSqqavQuJQXkbpuY8Ovq6ghjGclvHNrW6Tof+m379u3KhOu3Phf1nQprZxgG3vuQq6Jrhx7QnZA6gJ8+fTo9\/PDDdO+991Lv3r0LAyRLpL7LK1iRtymFkTrK\/HNdHd2\/ZUuhOF6GtWvXFlU3f37nXeaoLrtMUB\/QuHEfeu7NV6YqmKfwoxP3t7\/97cL\/uklp+PDhtG7duhKR8WyQZ5wU1lbTF43tc+bOnavaqMtmwsm2Plf5IJMJe71+vq9fQzu8fYP+QF5Twpde2KTpqk3eeuJOxqgH\/YY0YcIE4zhMS2auF++N933BPXzpz5kzh6699lpq3759iRjz5\/9yd7\/+wPqdMvUpf+0H3QOXod\/19xFje9GiRfT9738\/bYis649F6p988onSeGBSAZl\/8MEHdMkll9C+++5bMMfgGhZNu3btSrNmzTJ2iFdKG\/MLygBckB3SRRddpDR7ZXax+OwNGvh4GU3mF5bTRHbQ1FnLgQg9e3YoNOuxx5oLrsf4XO\/Zs6d27zG18Ijr0MS9JPjqq68qzR1aQRoprK3Q+KD5uUoY\/NAMGSvec+Oqfq7HVK8f9vqzp05dqrCeNGlE4UuprW\/Yg6uRbCbThl0mu11GrrKnNPoMhMVmt7gNYouQZuksqgp9hq\/bSZNadmHf4rlX2i\/IAOsgyq1b1\/a+1dW10KJFKL9a8YL3nUJbmDOi3oPJMehdhGkL5ucspFikDsGhkcPrZfDgwfTxxx\/T448\/TldddZUi9z\/+8Y9qkRTke\/vtt9PZZ59t3dawhVI20WDCgM0es\/fSqVOp86BBgfb0IGLme7Cua57CRplNLw7Id+TIKb5rrEG2b6xB+NmoTdetgQzJGNRWTF6Y\/DQvaiePBaljsTXMYzTunhtvvbzYqy\/4oiG6nXnKlFVKHn0Jgb0KYTddvbqvZ6oHKpju\/Ax5rVCFTZpOADVUskcKFQOvVseAekXwJnI2ETcw9cMWa\/JB99EMv7Jr1gQvC7X2TxRDlBvQwAOHH354xck9NqnDzjVv3jxatmyZQuSMM86gmTNn0he\/+EWlxT\/xxBP04x\/\/mC677DIrLZ1h1T1bMEHA\/oxrvDCxceNGNWPeeuutdPXVVytb2+0ffUQH\/frX1j0TpNFgroWmZUpBZFdfD8+DUj2\/1QvQTNx4WbyEY90IBxlNbbWjrPgPb2hYRaNHt+Hk3UgZd8+NyRN19OjuIfiGGaKC2hlMHEHjKD564SXhCOB6Mm59ajFWPPH5kS\/G\/dIAXoVSG3Q\/vKVhOZIYo8Lq9r+PSU93GIhfU\/ySsUkdj4SHC3zSP\/vsM9p\/\/\/2VWyPs688++ywdddRRdMghh9Aee7jVHaD9L1++XC16IWECOeWUU2jo9dcrTd3r3eJHzn6QtfnClOYIflnil4zffclK+kmcDimwrMVP9Wp9Jk9ULml7D\/lbXb3DWhLUZzbYxh8RNrXHyRPW4jh1tpZJilX8J8crmR4SQfLo+zniyZ28VCJST\/746DX4kvqXv6x8zN1OIdHlkxKCgCBQuwjAvKi7SVcCCWekzlo7NHW493Tq1Mm5lg6AQOowv8BNEgu10NSxaKpWr6dNo\/4BPthBVlDVEY2NRn0Ec374vA9NJkybCbbDlm8A1FM\/T4vs2uhCQhucXDynoN8bes+lDP59GrTo7rKFqKs8\/VfOFrlAqPzvGxZLsWhayRSJ1D\/\/\/HN66aWXCuaV008\/XXm8bN26Vdm8scuUE0h24sSJdPzxx0dqX1iYAF4ohT39tttuow8\/\/LDgBw\/Ch7Z+crPBR7xfP7X4F7pxxuvrXl9P3RsbQ0gdJIGODBv0rv0T8FzTdMNymAY17jVQP+pecL1L247eNgBscYo0ZCwye+2rNkviFtWqLGYrdmzXRhibYTbyrtyGbBoLcte1bUl4vp3hWTKVo7zf7VAMYX7JjaaOhVF4uzz00EOFbjvxxBOVbfuOO+5QPuoHHnhgweXr\/fffV9vx4QVz5JFHWnd1mPcLKvrtb39Ll156qaoTG3UuvPBC9TdI\/bzzzqO1mzdTXYvmGgUtHCtyIOjuxYtnJR2BlwnbvJF2rwZ1Hz3awYJbHJ8S1vz9iBs+Fl5SQRlcx2+\/e61kxEtfUQiBByzbq\/UBHG7DTrIwaT2EDBlNzqiuCMpMHKOwg9MbvAv\/w4sEv02uHbjHbnG8Yoz\/WfPzcxeZMkX5eowe7dIJ1Qtj7GkqScclKAuFZvd7nKAW26K8Yzep+6ft84LyWWvqK1euVM79ffr0US47zc3Nars+zC3QlnHtiiuuUJ4u2DCADTTwYYdGjes2ycZPPShMAJP6uF69aNy\/\/7t6ZEtdHbXAP3V3MCpo6tgNiMQbB7wd0W7GDGo3cyY1Y7fs1KnKv9yfsGy0vri6MJNgEHHrg9erCZvvwZ+XAybAUQ2kzilsQxMwgw89Jnh4O8E7Ca5cSPC3R1A3c6o0KXi\/klw4HZqJQx9XwOn+mTPp1BEjaPHixUXQ8DhrGTGCWjz3kLHdgAHUsnunpxdT0z2MbfSFd3MMdvqCdHjcc12Qc8SIERZ7ISr1hWXDGqY8cd+3uM9rdZOFPT0LyYrUOdbLhg0blKmDtbP169crMj\/00EPVdWw04vTee+\/RxRdfTN26dVPaPMw0YSlpmAAmdTxndvv2NPSvf6UPxo2jD7Xdm7hns7uw8\/z5hXLYURhMdmEaaJAuHGRC4b2JQcSNFnH9JjlK74HU167dbOwOrE+89dZbgV3Fu2hNOzBRsBQv\/eshbBSkcd\/0leRikjH3q3fHMDCFx5Y34b3qOnw4NS1fHsntNwwhHt\/nnntuYacoyujvBwgdOzVhJvXbtdz2nLDxHSaR6\/voz6D1qyjfnm5kyx2pswaNgaATNGzpY8eOVSTvDdrFoXHffPPNssV+4UGLLc8nnHAC1S9b1qptG5JfvAhTXmg4rKmbzQ4oFTRL+\/nMMrEEaeIsURBxM7H7Ra9B2bZ7+Pp\/5RVzbBoXQxzaOrR2JIyNUaMaaOrUsPUGF0821eGntUEe\/MQ9H3Qp1ddjR3CbEy1v0hk2bJhVY\/COvPvuu3TwwQdThw5tOyOtCodkwph97LHHSnLxFxY0ej0Gkd5nbYVAnMAnGzslixuDMW3aGMbrSNFNUaZ9I9yn2I+Dd99vI5tigDxp6kzqhx12WBF5+11HA21InfPAtAOfdmgYGGy4\/sYbb9DXvvY1Ze7B5yMnLvPoo4+qS4i5DjOQrokUheN18YZodZiiD4bEEdtdOq4JRW9AMTkHNc1vSzaXSXv8eXGyw8hxZ6lJBWaXaSUB0bBZbPVqfvFBXPqkg4kAm+rw2+zJwJtvYNXDztU4G05gwkSkU3zhuib1ICT9IgzCfIO28GTc2Giz+O++z1prDCJtnmT4neKv3dYvwlZLgr52Vl+yC7aNnIvvwXNFxwD\/6+ZZL0be+2mhEaVeK\/NLWqRuEhQHaxxxxBGKyBFTHYugvBCK\/ByOF7EdRo4cqSYA\/D106NDC52WapI7BwFoQm6HsCCuJCSVKl7bm9Z6OFr2GZCW8ONlhFP2ZfFiQ6TyK3eHhlceT90UFifN6eNuCcjE5tH3ig2AwOYBMWjV7F2dFAyNogBjHlfaYYOT1yXj16imxz\/mI3pOmEv6k3bqvzPxO8djntowaNZUaGoq\/yGzumU78UtNNwIlgbtqdrJZMkTomDwxwaDCvv\/66ss1ikRKkzdoFh\/DliQb2fBzUoZM6bJonnXRSMmR8SsPejEh2+jOGDz85KIw7tWvXGk2xpWUJ6GDX\/2MVObS01HmeUqyJc7m4Dfn97+NFcYz7PL2cF6fzz69TGHnb3IaNF4vW2o46qrUNr71Weh\/37ruv9b63D1Dvz3++hQ4\/vLUerPlgoRLR9PiAE0S4uPtuxOI3k0OPHs8rmZubkae1b1Dv2LFbaOTI5CiZxlLyWpPVAJlgUgWhNTefRNdfv\/usgmTVlpQGjqXj35vN3C8oO2PGFjWxNjc\/od6p1vdqTEnfnH\/+ErrvvjFG6YPuBcVL1zECz8AsjZ+spMyRum08dQDoXVjFYiYI1xSqNk3Am5oeCB2ghx7aGloX0StxqAjS5s1rA8th8HK5NOUvZ90giqam1kVDtO+ggyZQhw6toYW9eOB+167nqXxB91A2qF5un449X0O5Dz4YV0IOXbrMp44dVxSgQR9DllpLYWM0Lh7c963Yt00cuA7s8dumX\/D8pqZjqWvX\/xdXlMTlvAvjiStMWEEkUsfGo6ipV69eqSyU+p1RCmIPc8uL2oa08k+cGKzh47nLlz+f1uMrVu+SJXW7tOY6pWmdeWZb+6CNQ6NHwif09OlbijR1v3vcEL96bRs6ceITNHv2mbbZayIfj1FvGB3vMaomMEx59LUefWzjObNnm8c6ggOeeWZ2+yXXmrprUjctlGJ1no+oMx1nh8Hj1dBr4u2qskb6hdeNG6WR4QkK21tlEJa1OYY9eYS9TkEx03gx2bOXr3DGQFkbUEMPs9LUy4lH2I5SPQyvzRF55ZRdnuUGgbjx1N08XWrxQ6A0Xn0rqZu0eK4DXlZh8fMFcbcIZI7Uw+Kp4\/SShQsXFqGgn4vqFh6pTRAQBHQETBOuSYvfvYG7UFS+oMo3jjJH6uVruv+TvGYffD3wROI9WNt0vWhnq3YQd9y2JZVHlx\/7AeBbqx8MHUUuyIJAbUj6eolfm6NejyIL53UlkyucosqDdpjWiFyOI1cy+WEURxuPIpNuqgVefIAO\/naFkyt5XI2jOO8Cygipe5DjDuFB4xfqF8VMIYCPOeYYYg8e5MH5rDghKq6pKKk8IN6i8MRxRwqRivmitweyvf322+pQYARWU2fFam3G3yYs\/K7HwciVTCVhnGPiFFUetFn\/OuU9Fvq6UdJx5EomP+cEhiqKNh5VJpxtC79+PgltzJgxhJ272Lns4n1zJQ\/21rh632IOQSF1HTjM1DhjcA0OQdylPWEAmbRkPVIhb7XmtQCU9433HrGXXMijD\/q42rmf2HxgCc6pxVm03hj3fhOf33U+0T0iTEXZ48qkT8YucQqTB5MudkQPGTKExo8fX3ASCDw3IAlAuzVbxKLx6zc\/mdJ0UAjDyTs20njfdFjjypPm+2bb7aKpG5DiU8NB2KaXCyaMvn37lpA3Xzcetzd0qG2flORLKg\/CEXPSP1tjC7S7oP5imdqMCS7KdWwgS5qSyJQGTmHycJu9EUp9T\/gqA0ZBMqWBEU\/yUJb8xow+NvTJBSG+Xb9vSeVJCyPbd0NIPYTUuYNhOwdpIw4ETnUC4bNpRL8Osnc9yHRSjyqPHrSJP5\/Vma4JyUH\/gvEjoHKTehKZdDxc4WQjT7lJPYlM+qviCiPUGUUmrwkojckviTxpYWRL6MgnpG5B6noW1ry8pJjm56CX1KPIY5IT5XWyjzJgdC2G64667pCG+cXbL1FlMn3eJ8HJVh5+rklTd2XG4\/5NKpN3nASNS9sxFUUmk\/nHtZkqqTxpYGSLJecTUg8hdV0TwE5VLAoiDrX+2adfx+lPLhZuvMTNBBNVHsiJNQJ9gYk3d0UdLEw5DS9RAAAgAElEQVTG+BrRSdBvUQ\/5014odSXTxo0bneEEYrDFyBvLiPvG5UJpVIz8ZMLYq+RY8sZ\/Qrtc4hSl3\/BskzyuMYrzjgqpW2jquouSHgHS77ruYuUiYqSf+QWi28ijy5nEpq63i2FD6GPE0sduY7Yl6jL5YeEKI5cyucApjjxMTvDo0CfcSmLkJ5MLjFB3VJz05\/LYY\/diFzi5lMcVRnEIHWWE1OMiJ+UEAUFAEMggAkLqGewUEUkQEAQEgbgICKnHRU7KCQKCgCCQQQSE1DPYKSKSICAICAJxERBSj4uclBMEBAFBIIMICKlnsFNEJEFAEBAE4iIgpG6J3Oeff05PPfWU8tPFwdM4F3WPPfawLC3ZBAFBQBAoDwJC6pY4v\/HGG7Rhwwb64Q9\/SHfffTfBPxuHXksSBAQBQSBLCNQsqes7MxF2FUmPp2zaNNTS0kLr16+nP\/7xjzR69Gjq2LFjlvpSZBEEBAFBoDY3HzF5825IkLoeTxlbxhGU66abbiL8vWPHDurRo4eKiY5t9ygPE8yRRx4pQ0gQEAQEgUwhUJWauh4PAid9I2g9RyaEhv63v\/1NdcJzzz2ntriD1EHU\/D8iwSFmCcr9wz\/8A+3cuZO2bt1Kf\/\/73+m4446jZ555hv73f\/+Xvve972WqM0UYQUAQEARSI3UQIU7F2bRpE3Xu3Flpuu3atSsb4tC8YSKBDCZTik7iTOrek1X0OBzbt29XtvQuXbqoSeHKK6+MfZpR2UCQBwkCgkDNIeCE1KHZ4tQbEPiMGTOU5gtt9vLLL6dt27YpUAcNGqSimpXTDs3HrbE2rvduVFLnsp9++intvffeNTdQpMGCgCCQDwSckPpvfvMbpbnCzW\/+\/Pm05557qqO5\/vCHP9C4ceNUeMx77rlHnWN5wQUXlAUZkPaDDz5IF110Eb388ssl8cNNpO41v+DMTZdHm5Wl4fIQQUAQqGkEEpM6FhFBfk1NTXTnnXcq88Qrr7xCo0aNov79+6vFRphibrzxRrXgaNKaXfcAJpGVK1fSyJEjVdUgcCT9wAgvqZsWSsshq+u2S33ZQgAmPSQ+11aXLuheklYkqTdJ2SQyS1l3CCQmdT6xBYcm8Gk6jzzyiFpo5HjHEBemECxSwkwT59R4d01urclL6nxt4sSJ6ti6hoYG0dJdg15D9a1evVqZG\/GbE4gd4wrJ7x6OSwxLfsQb9EyuN0nZMLnkfjYQcE7q8OWePn06Pfzww3TvvfdS7969VUuzRurZgF+kqEYEQNhTp06N1TSQPr5yTSmItLHTOeiZuIfypkmm37Rp1KhNPt5n12OiWbUqVnukUPkRSEzqn3zyiXL9w+IoyPyDDz4gnK6z7777FswxuIZF065du9KsWbOoffv2iVqqnywiWnUiKKWwYwRAmjA7JkmrVq1SB5zrKclEESbLJpiHAjLBgNRokCmsXrlfGQQSkzrEhkYOr5fBgwfTxx9\/TI8\/\/jhdddVVityx+xKLpDC93H777XT22Wcnaqn3NPFElUlhQcAxAiB0XRuOUz009SlTpqiiMNkknSigYweRdtA9yABSnzZqVMF0FKdNUqZ8CDghdfhwz5s3j5YtW6YkP+OMM2jmzJn0xS9+UWnxTzzxBP34xz+myy67LLGWbjpRXIcLh0Dj5+CDD1Y\/kgSBciGAcZdFb6kwTTwMH5B6dyKCQiWpFAHsvynnHpywPnBC6ngIPFzgk\/7ZZ5\/R\/vvvr9waYV9\/9tln6aijjlKLjy6iGnoPiNUPUsZLNWHCBFq3bp3yfEnDfRJtwm5STFhZ6UiRKWyYkxqLafQbxhwSdi7j729\/+9vhwpQ5hytSX7t2rWpnOVNa\/ZakDV6ZsLkSXn9ZSc5IvRINYlOMHgIAJ9rPnTuXTjjhhFQ0dTzz3XffVXV36NChEs0ueabIFN4NrjGCSQSLj1AgODGxh0tT3hwwr+An7lJnJTV11\/3mAnmvTFWrqQMs7LbERh9sOkKcFOwePfHEE+mrX\/2qU61W19ahGfXs2VO5U\/J1U1gAF52JOpqbm5VPPhZ9s0LqIlN477rEKM1Fy\/CWxMsBUofGHicxqZt87XENC7tpJZf95krGLMqkt82Jpg7TCz7NoLlwsCz9ITC\/QHvu1atXYlx\/+9vfKnv94sWL6aOPPqIxY8aouhFcS0hdJhq\/AZbkRdR9u5MuWiZ+AWJW4ILUTY8GqSM8SFopSb\/VkkzOSf1Pf\/qT8q1FTBTYsk8\/\/XRlQ4eNETZ1LKDut99+dNddd9ExxxyTCGsQN0IPIGoiEsLfwpUSm5+E1IXUXZK6yS880eC1LJzW53wSfTrISTNNTR326\/fee08FBSz3lzHMaaY1hCxONE5JHSaXn\/zkJ\/TCCy\/4kvZf\/vIXuvjii1UMcphJkiww6odboCHesLqYUNJezMFAS9IGy3c7UjaRKRyuqBixhh5es7scGFdDhgwpstW7q11qioLASSedRC+++KJaZPcm71hK2wwVRe7E5hcOE9CnTx\/CFnuThwvvMgW5w2c9yUpxGKl\/61vfitJ+ySsIZAoBaKNYr4FJsVu3bpmSrZaEwQI4ghNi\/QyaeVhK2wwV9nynmjp2i0IL\/+Y3v1kSCVF\/kKswASB11IUYMtjFCk19+PDhBfNL2po6z9pZ0tRFpvAhHwWjVg3dZktO+HOj5mBST3OxP6pMtZifTblNTe13k3prYDa\/VFWkjpcFJPtf\/\/VfhbAA3obDfx0Bvg4\/\/PDE5hd8GeDw582bN6vHIOTAz3\/+czWpiE1dbOp+L52tHRSE3r07ttqEeXezT4j5iSZPEeQMM+mkSep4Nta38BvyYf3LT84kRK4fUMP18CSFQHrgAayB2ST93GDk9wYJXLhwoVUAPrghwsECbeYNYpATeEyaNEkpiHpqI\/UHqLkZsgb3N8qawjvYtNF1nsTmFwj03\/\/93yp+OjYdASB9JycWNBEe4PXXX6cFCxao4+GSJHTO2LFjldskkq7RCKkLqWeB1DkaoyniIsIIMLGbvh7eeecdZX5xqakzmZsCfuEahyRI8l7qZUGW2EV+xRVXqMs6eT766KPWpA5C59PIUI8eIgT\/I4gZ1uiCyBn52EQMLuLoq8wV+jnFSUkdziIchdMVlnHqiUzqDNBLL73k+7wDDzywsMMOBzUjQfv5yle+ouKrJ7GpB4UJ4I6Cd8wPfvCDVDYfQePDi\/flL3+5ZHaP0wEuyohM4ShGwahVa4uvqWOhHkQTlkwyYWEOO6FdknqYX71rMjKROq4h7hMTNTRsVsrg6gwzKs5AQII2PmDAABWeGBOOKVS3rvGD7KEw4kAcU96nn36ajj32WOXIAU0d\/QOtGhq7S00dssO9u9IpMqnDhg5vF94eHaUBADMpqQeFCdDvpRUmAAd9YMY\/6KCDEsexiYJdUF6RKRzJKBhhjWbdugdDYxfW1Z1e9B7oXlfYtxGWTDJBWbr66qudkXqbOSlYGpemA5P5hcN56No3a9g4vAZaN2v2Xu2ezxCGIwaTPn6zGYdNKyNGjFBf8F\/4whforbfeou9+97sEDxakcphf8Bz47Kdh0gobS\/r9yKQepfK080qYgFaE87CVOu2xEFZ\/FIxwvu6AAUcFknp9PdGiRU\/Raaedpog9jhutSSYoJhdeeGERqYOYw2zxfu2HJrp06dIweNQ+Ez4pLDSzJwNITCcyr6auE+p\/\/Md\/FJExa9iLFi0i1t6DNHXgwxscdVJHPf\/0T\/9EOFoTGxIRewqHzreuj5SP1HOpqUft8KT59VnfZP\/CIi2ShAmQ0AVBY812oZTrABfsPonOWC1IPelGSpNMpnWhMPNJ0ncsaXmvXd5E6kzeTz75pHoctHOTLRzmVTa7IK9uU0c5vO+YQEDoJps6vqLhOAFXRHjlHX\/88WUjdayhpLkRy7afUtHUOWIjO+h36tQpUYRG\/ZON\/dRhf8NzDj30UJozZ47sKJV4NIFjPs+knkdNffTo0UpT5qR7v0Cb\/v3vf1\/wWkEePb\/u4RLF+wU8AzLHaWs41wEHz+PrAx5yaZtfghbHbcnYVb7YpP75558T7H8cWhf+4TjtCDMlZlp0HCe4L8EexrNmFOH5lCO2yWEmHzRoUMGlEaSOM1GxQFIO7xf2JEjLHSwKNpxXZApHLSpGOLwoSFPHE5Nq6iaZXI9h21g1Lm3q4b2RTg4okfA+AUdgvQIbIrGLPU5qc2mcTc3NrXb51qjy5pSGF1EcuVEmFqnjUAycdPTQQw8VnotojDfffDPdcccd6nxSrwcMbFvYTYpYLbaJV7jxmYXEJpagzUcIvQvvF14gsX2WbT4swCBme5rPsJWF84lM4YjlBSOW06X3S9hpTK69X8J7I\/s52ki9dUcpNhvi8B9MkvoOU1wHocOVOyspFqnD9AFSw0yIAYFGwmaGmfLDDz9U17CSjc8ezJgYoAi6hVV9fYXbFgSv3Xz58uVqAkHSY7\/oh2TY1i35BIEsIuCS1NE+P7t8ljTMLPWDl9S9B2HosV\/AhfjJSopM6iDpG264gTZs2KC26vOq9\/r16xWZwxyC69hAwQlR1rBogVgWIGOYaaIkW1JHnXycXZT6Ja8gkBUEOOaIa1JH+7w7Svv27VtywHVWcKi0HEzqUExhIejRo4evSH7RHCvVhsikzpuP0BCdoGFLx05PkDyu69tu2fXwzTffVIRv2iAQ5OXiJXU\/80ulQJTnCgKuEHBtU3clV63Vk+d+iE3qhx12WBF5M9l7r2Mw2JB60KDRSV3fUYoys2bNUodemyaKWhuI0t78I5AmmZQr9kv+e4HK4nSRFk65I3UAoe8cTeMzNS2wpV5BIAyBNEi9ErFfglwaXQX0ApZhcV8Y77gujXnkl1yQetiL4Pq+N5AQu1XiOaYocd7r+qSj548rZ1J5dPlxIhUHNYojj+43jJgdbE7za3PU65WUyRVOUTHSv2aBKTzLXJJJ2OYl194v5QjopZ905heUi8dSkoBe6AckeNXp7zlbHzheDbtcI4+rcRTnXUAZIXUPcl6\/eL\/47dx53rjuOK4PYYaxmOzCPJRUHg6WxDHn4w4U1op0cxdkwwaTa6+9liZPnlzSZpQxYeF3PY4JDQTiQiZvbP64OEWVB23Wg+QBR5ekXqnYL94oja4DeoFUw4JycR8mCegFr74VK1aUjG19tyv337Bhw2jgwIFFZzzEHUdJysUm9aAojX4C6ZpdEqHTKmvyizdpyezxo29h1rcvu1rIdSEPot0xsXIcaVf48e7ewYMHq\/DK3gnOb+Lzu24bYztI\/rgy6ZOxS5zC5ME7AeLAEXYIXw2t00vq1bCj1HVAL4QZYEWDIy3utddedO+99zoN6AXPl8cff9x4KI8+Dvn9T\/N9s31vhdQNSIV528CEAXcwL3nzdT8\/ettO8eZLKg9\/OqJe\/TMxrjxcTp\/ITG2G7TTKdX5Rk8iVRKY0cAqTh9vM2p6J1MPMJ0nwclHWJvYLH1DhKqCXidSxX+b+++93GtALX05QYE37Yhg73XkDocbTGEdR+ikyqUepPK95dRJlrZJPWEHQHsSYwAzOphGQOV8H2adJ6lHlgZycvFEtk\/SPKR6Pd+CXm9STyKRPKK5wspHHhtTzqKnr5hc93rmrgF4mUocJDW7TLgN6hZG6fnCH90vT1TiK+p4KqYdo6iatGeYXr1aZhvlF14jxt07QXm3ZTx7Tdb+6bAcPt5XrjrrukIb5JalM3hfSO7HbYuPXL0Fn66JMkKYe9dl6\/krEfgk7zs5VQC+0U\/d++eijj5wH9AKpYzHUdCZy0IE9Nu9ukn4NKiukHkLqbBOFFordqlgURFRIfGaxRq5fR8wblwulTIBMxFHlgZwcopSJA5NDXPs1yA5fI3p5v70DkDnthVLGJ6lMGzdudIZTFIx4cTgtUgc+tRL7JY2AXvhChweM1\/EBuJpOZsL76fJ9i0P8QuoWmrruoqS7mvldd+1H72cOgug28uhyJrGpe0+dwvPZnQx2R7Ylms6N9crqCiOXMrnAKY48aWrqPLwl9ks0euR+xAEje++9d8nY1scK18zuyy7GUTRpi3MLqSdBT8oKAo4RSGPzEYsosV\/sOyvNfrCXIl5OIfV4uEkpQSAVBPJMJqkAUqFK89wPQuoVGjTyWEHAhACTSZbi9ddiT6UR175cOAqplwtpeY4gYIGAnAlgAVKZsuCgnblz58Y6VLxMIhofI6ReSfTl2YKAAQE5EyAbwyJrcdJtURFSt0VK8gkCgoAgkAMEhNRz0EkioiAgCAgCtggIqdsiJfkEAUFAEMgBAkLqOegkEVEQEAQEAVsEhNRtkZJ8goAgIAjkAAEh9Rx0kogoCAgCgoAtAkLqtkhJPkFAEBAEcoCAkHoOOklEFAQEAUHAFgEhdVukJJ8gkBUEGhtbJamvz4pEIkeGEBBSz1BniCiCQAEBE3GvXo0g3kT4zQnE3tBA1K+fgCcIKASE1GUgCAJZQsCPuEHaS5f6SwpiHzUqSy0RWSqEgBWpf\/rpp\/TKK6\/Qtm3bjGI2NTXRyy+\/TFdddRV16dLFqil80gsOV+CDFnDGoJ6C8gSdDWglgGQSBLKGALTwqVPjS7VqlWjs8dGrmpKhpL5p0ya6+uqr1YnaQalXr17qHD8+nisMIT5TcuDAgXT99dfT8OHDS45Y88ujk71+yk7YM+W+IJBZBKCh9++fTDxo6tDYxeaeDMeclw4k9Z07d6rQk4sXLyaQ73e+8x1atGiRCkU5aNAgeuaZZ2jFihU0YMAAmjJlCnXq1MkKDu9Zmfqp61yBX55\/\/dd\/pQULFtCQIUNo\/Pjx6jDmuOdtWgkrmQSBciAAQtdt5XGfCTON2NzjolcV5QJJffv27UpL33PPPenWW2+lfffdl3AOH47Fuu2226hjx46K2KFp\/\/SnP6XevXtbgeI9hRuk\/txzzxEOd2YTTFge0yHKCFmKSQaTzgknnEAHH3ywlTxRMuFwW+CCtrdr1y5K0dTyxpWp3ZYtSqaWujrnssWVybkguyvMmjwK991jqfOHH1KHnj3TanprHy9aRC3\/\/M8U1udZwylr8uj9xhwAHsgKF0C+QFJn4oQmDI0YCQS8bNkyZWrp2rUr7dixg2688UZFxvht07gwwsZzwvKYSF0\/9HfkyJF0wQUXOH9R0N6tW7fSQQcdRO3bt3def5wKo8rU4fnnqcv8+dRh3brC40DsW+fMoeaTTy5cwySJhEkyaooqU9T6o+avlDxBJMoydd2xg44aMCBqkyLnbz7ppNA+rxROfo3JmjyQ0ytT586drdcSI3dajAKRSR3Eec0111BDQwMdc8wx6pGwfb\/44ot0zz33WDUuifmFJ5cgUofJKC1NHQu07777rvoK6NChQwzI3ReJJNPUqdThllt8hWi+6y5avctNburUqbROI30QO0xv\/Sxd5yLJ5B6SkhrLLg9MIMDaM3FCY2b3Q12mzpYOBmlAhT5nz5nXXnuN3nnnHfrmN7+ZifFd9n6zANgrU640dcxIN9xwA33yySfK\/ILPjY0bN9Lo0aNp+vTpysbOpA6yL9dCKWvyY8aMKbKpl+Ow2ObmZoK3D75SskLq1jJZLsZhuU7zhC4a5pjMR40apUxwSPU+G2CsZbJ4iVxkcSoP7N+8GOknXNB9TIyrVlGRTGed5camHhOs1VOn0rTVq2m1Zo9H36K\/bSfymI8OLOa03xwJmEWZ9KaFer+sXLlSaebwTrn44otp7733pksuuYS6d+9O06ZNo48++oiuvPJKpaGznd0GO92DBfWxBg6tv2\/fvmrx0y+PkHoxwtaDzHIxDt7QowM6ES952MtvLZPNYHGQJ6o8\/fv3L0xcJY9vbCTs5VwVQ64t7doRfuBz3tKtG7333nuEz3el0SdxZ4whi15kza5\/\/Jwp8dWGd7ISCTb1AkZl\/jL2O84OXzNQ7Pr06ZMZxS4SqWNRcMaMGfTQQw\/RaaedRvPnz6dHH31UEbqe0PFp2LBNA0m3nWPhdujQoSqbaOoBXw\/QHLt3t34v97DO2ZaRtXhciUqiNo8L89QL+nqIKg+UFq7PJBtIfZON0FoekPmEIUOKzFoRq5DsZUQAB0+\/+OJcWrSojqZNa5vk9XHBX6r4vQr7BDKQQjV1yPj555\/TCy+8oAb5D3\/4Q\/X\/0qVL6e6771ZNuPTSS9UnuXfzUBrt0xdQUf+sWbNo3rx5yj9eSN0dqYP+d0cYidSNGNjQ5KOSaNBDwnbH46sBSkbQ10OYPN4JIw1Sf75DBzqva1flJtytW7dIuErm8iKA9SQosE1ND1BzM5wHYJD030cAUseeniwkK1LPgqAsA4gbJhrY7zGJ6BuXcO9HP\/qRemkwy6aR8DmITy94v2TFpm4tUwRN3V6nL0YZhA6N3VqmkE5atizYKjFqVCMtXer\/suELEp5QfvKAzE3hVBobUWfwtBb1FX5nN6nLhrk03ky3dbKC2NQ0m5qbmUuC3wpWaNxKEr22XJL68uXLlU87Ekj9lFNOUSYYdMS3vvWt6ChICUGgDAhACcACexqkjq9ouBrjN7RGTGR+i9hJmvrqq68qR4m33367UI1Ne+AKPXHixEIZ3WwKJW3hwoV0yCGHKIXg6KOPTiKidVm0BZhNmjSpxMrQRupN6qvTJsFaAfkrnXxJHSYWLIJiwxEWR5Fw7dlnn6Wf\/exn9OGHH6oFnhEjRtDpp59eNp9tgC2kXulhI8+Pg0AapM5kji8Sb8I17PR2mUCETzzxBF1xxRWq2iBi5Od6d4zrcZuQZ82aNcpRwqYuV21h0vaLOxWH1CEbduFXOpWQOoRau3at8lP+29\/+RnvttRdde+21dP7559Mvf\/lLNavhU1ZPCBkAmyZcHtNOYeaXs846S4UQiLNhxkb2v\/\/974UdpcAmCymyTAFeFvB8iWNLL8bBPygVvPlMru6wmyfbJR8WCCvsvrcng5HAQmnUmIgwvzzhWFPHe2cidG6Na+3RROq4dvbZZytS1rV4aPDYywIZMbmY4kKB8A8\/\/HDl7QayRwiQiy66qCSv7hzBRIx4VL\/61a8Kaylwu4bWj+v89WAqB2xgKsEXQbimfiY1N2NnOt6KgCiZuwGHXT2NL6QoPFNC6n\/605\/UoicAPvLIIwkRGjdv3qyu\/e53v6P99ttPuTh+5Stfob\/85S8qPAAWUbGoALDTTrJQWopw2CJgSQm\/lccpU9SwxYsZPyGut78XAGJOsfLILu5JgxO2yhq2tAsLeJRDJcLqC\/Z+MT2JF0ptzBU2+ENLx4JuWHJp6zWZX9glGWQKEsdaF8gUGvjgwYOLiFM3w8AEg6ST+syZM1VcKVgJeB+MaXc5l+Ovdjyb19qwlwbPxuQArsJeGxA4no3E3nJ25hdeKAWph2OdOU0dGjiAefDBB9WMiUUvCAngEAIAi4NYoDzuuOMK44g7Ge6ON910U8FUEzbQktzXZ1\/9BRHvlxgborBS6NlA5OdNEuTi19qfoDLYFO0PbMCjw\/bx2I2VMCfMqJ\/F+kJptG8XtWln1Cjq5\/n8MJE6MA3H1YwAtEx4oYUlKGSwscdJaIuueXo1dSh\/IGLUj69jrHFhbwsSyB7EatLU8a7CEuAldfDOueeeS08\/\/bQKxwGHh2984xtqNzOC+ekTBnznUQevp+lmHJiIzjvvPGM53hPjmtTBl1lwayzS1D\/++OOCreyOO+5QWjkSNHVob0cccUTJBiPsNkVHYmuxbZgA1JlGPHUh9RikHvKm88IbsoFAgrV4mDjc2nDtiCjY3ax1kkniQxw2YRRLWWLL3j1xmsZnmPnErv3p5fK2xUTqbDKBgnXmmWcqrZg1dRCoKQorh9WGlu61qV922WX01FNPqfU63h8D841X40bZMFIvl6aehd23PAqKSJ2J9rDDDiuJmIgt+d7rqIQXPd58882yhQnwi6cupO6e1L104a\/Fg8yjWpldkBG0aJiL\/AIbRP96KJbKPGFwqASvbzzIB\/dMyTQ+86ip+3m\/6KYVmGLhzcLadRTvlwMPPJA2bNigzC\/4GkFdMKlA80bSbepBpI7FXJNNnffTRNHUW78o\/Sf3NBal474dFSH1JAG9guKpl4PU2dsgLZexOB1ZKZl0Ld4yAkGc5gWWafVTD7J1xv96wItcX49NTW2LrNDIvMSt4xAkrOvxiQkF4QzCkkubetizXNwHP3hJ3fbwHRfPRx3cV+3bP0DXXXeyinfmp9AETeSu5IlST8VI3ftZ5CKeOnfEuHHjUtt89NZbb9GECRMozWdE6UDkzYJMa9Zgz0Bb2N6obYiav127LTR27BaCqRif79CUiv2JoaEn+3r4\/vefLyzqQiPE536SxP3kaqEUsoDU9a8Fr3yuvV+StD9PZYO4BP2IozvBYbD5+8WIqVR7q4rUEf8bhKuHjK0UsLX43O3bz6WtW+em0vQOHZ6nrl3Po5aWOgKh+yUs9iMUKnYBNjUtD5QF9XTsuELlbd0K3ppwvUuX+epeGsklqUM+P7t8lkwCaeCYZp262SbsOVDw8JOVZCR1LH6eccYZykcdCXZz+Kjvv\/\/+RddxDz7SWNTAJiW\/0Ltsd8eqOOxscH9EkDA+ii7KcXZB8dQhD4idD3fICsi1JMdrr9XRkiV1CX3OixGDGWT69C101FH+ZG7C+He\/q6PJk\/0P+IC7\/plnPl8oGjZhJO1HjifimtQhl3dHKTxDKhkyNylWlS7PpG4TpycXmnrYIdMmwMt58DSebzoko9IDQZ5fjAB7Sya1t4N8426MDHDJ53MhytZtrm3qZRO8Bh+U574q0tRxKMZ\/\/ud\/quOaoiYc7fa1r33NOlxAGvHUo8os+cuDgM3ZHK2LkqVnJoPMfZxJIgtvcMmPXEeSAnkmiiTtzmPZPPdV7gJ65XGAiMzqTAgK2qiqa+OVJt+0+isVosCMiVVqv4TDLSyPILRpdxoBvfBc27gv+mYnDvxlW9amfZwnlb6KIkCCvELqBvC8Nn6OIoespgpr\/6sAAAUsSURBVOhy3uv6IoueP24\/JZVHlz9pJDzd31g3ufm1Wb9+\/vlLaO1aeGu0IYFFyYsuepv+7d9OjAuP2tzCEQCjyuTXn0lw8pMHgfCwluTUph4WYyGJ7crQI64DeiHmS1hwLRaDv+6x05SjOdqWjTq4dFJHWfaR5\/GirxPivvf0NkSdREoyjqLKzPmF1D3IMQFyJ\/kFEEMxU1x3xL5gd03k0Q\/xiNNJSeUByekx5+PIwGXwQuvtgWwIwYqAb5MnT1Y7\/vQ2428TFq0vwWyaNeviovxxfJFdyeSNzR8XpyB5sBlGDzYV9xlF5TJA6kkCeoEcw4JrcXsROuDYY4+lu+66qxCWwLZsVKyZ1LFbdsWKFSVj+8knn1SL03Dc4Mlm2LBhNHDgQGfvW1SZhdQNiHHEOPg9I5m2OPP2ZtznTmWCx8YU+DL7HeIRtZNcyDNgwICioEZRZQjKj4GPuEAI2nT77beXHFziN\/H5XYfWljTFlUmfjF3G89blgZb++uuvF2vqsDUlCX6DU0SC4r9gQSJm3BfVF7zYsbtjXAf08guuhXU9nJnw3e9+Vx2jyanc5hdwwOOPP248lEcfq8wLab5vtu+GaOoGpNBBTOomTR2fVHAZ85I3X\/eL927bKd58SeXhT0fUq38mxpWHy+nxO0xtxgQX5Tq\/4EnkSiJTGjjp8iCeEjbZFZlfwjTtJGC4KOsx37gO6OVH6njOn\/\/8ZxUlFgG+sPcAqdykji9QfF2ZDuVhePUoku+\/\/37BVOP6fbPtTiH1EFJnrZJPZoHvb6dOnZQWr5\/YwtdB9mmSelR52K+fXwj9pCjbQWLKp9v5WRv1Dvxyk3oSmfQJhe2lfKJWXJy88hhJPYeaun5Ihh4DPU5ALz9Sx+H2vXv3pvXr19PXv\/71QqTIrJG6fuCH90vT1TiKOv6E1C1I3fSZ5dUqdY3MlflF14j5y8GkxcPs4yeP6bpfXbaDh9vKdUddd+CJyXTOrK0MYThElcn7QupfR3FkMmGE8NUl5pc4letlwjT9FBZKXQf0QnN0DxaEe0BE0D59+ih7NXYJw8RXKU0dmyZNY9Ub593UlUnHUZzhIaQeQuq6FoqdqlgUnDNnDuEzizVy\/ToizLlcKGUCZCKOKg\/k5NCmLjZsYZDia0QnQb+DSyCz30KpS4xcyMQHK+gLX7zjOeqL5ScPIp3mfaE0KhZx8kM7h5YLWzps6yDU4cOH7wrd0CVOdbHK8EIpvtDxBWJyAvCLE+\/yfYsjvJC6haauuwTq9lC\/67obnwv3Ne9sH1UePX8Sm7opHoYeBpVt0qaDSwCzzfWog9ilTC5wCpIHSoBzl8Yy+6lH7Z+85ud+xBcDzmj2jm19rHAb2d3RxThKgpuQehL0pKwgEAGBPG9oidDMqsia574SUq+KISiNyAMCeSaKPODrUsY895WQusuRIHUJAgEIMFFkKRa\/dJgZgTRi35cLayH1ciEtz6l5BCTef76GAA7AQOhdhNbNUxJSz1Nviay5R0Di\/eenC7MWJ90WOSF1W6QknyAgCAgCOUBASD0HnSQiCgKCgCBgi4CQui1Skk8QEAQEgRwgIKSeg04SEQUBQUAQsEVASN0WKcknCAgCgkAOEBBSz0EniYiCgCAgCNgiIKRui5TkEwQEAUEgBwgIqeegk0REQUAQEARsERBSt0VK8gkCgoAgkAMEhNRz0EkioiAgCAgCtggIqdsiJfkEAUFAEMgBAkLqOegkEVEQEAQEAVsEhNRtkZJ8goAgIAjkAIH\/D\/juq9Pb\/5yfAAAAAElFTkSuQmCC","height":225,"width":373}}
+%---
+%[output:8db59851]
+%   data: {"dataType":"image","outputData":{"dataUri":"data:image\/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXUAAADhCAYAAAA3fSUpAAAAAXNSR0IArs4c6QAAIABJREFUeF7tnQm8l1P+xw9CwwwZkRTdMKkZTFkqSgoxsq8TWcqUsSW7MTJFykioQSFDWWKQMYw1VIiyDH9ZmhEyomxjmWHujGv8e5\/b9+fc5z7Lebbf7\/nde87rdV\/33t\/vWb7nc87zeb7ne77LKt9+++23Ksf23\/\/+V73++uvqn\/\/8p+9dli1bphYuXKhOO+00td566+Uoibu0Q8Ah4BBo+giskiepv\/322+r0009X\/\/d\/\/xeK5E9\/+lP1+9\/\/Xv3whz9s+oi7HjoEHAIOgRwRyI3UWQBceuml6vrrr1f77bef2nXXXdXUqVNV+\/bt1YEHHqieeuopNXPmTNW\/f381atQo9YMf\/CDHbrpLOwQcAg6B5oFAbqT+r3\/9S2vpq666qpowYYJae+211cUXX6yWLFmiLr\/8cvX9739fE\/uvfvUrdeWVV6pu3bo1D8RdLx0CDgGHQI4I5Ebq\/\/jHP9QvfvEL1bNnT3XOOefoLvzhD39Q06dP16aWtm3bqv\/85z\/q\/PPPV9\/73vf07xYtWuTYVXdph4BDwCHQ9BEoK6nPnz9fnXHGGerGG29UnTp10uhecskl6vnnn1fXXXed2yht+vMtVQ+ZK9dee23gNTDhde3aVQ0dOlT16tVLrxKlvfHGG2rIkCHq\/fffDzy\/Y8eOqm\/fvuqYY45Rm266qT7uhhtuUBdddJH+e9y4cWrgwIGl88XEeM011+jP1l9\/fT23t9pqq9IxH330kZYHZ4Ctt95amyM32GCDVDi4kx0CYQjkRupo4b\/+9a\/Vl19+qc0vmFv+9re\/6QdrzJgx2sYupA7Zu41SN1GjEIgidfP84cOHK35k9WdD6nI+5D5lyhSteDz33HNq0KBBqq6uTh122GHqwgsvVGussYY+9IsvvlAnn3yyNiNKw8T485\/\/vPT\/K6+8ouf8J5980uj8qP667x0CSRDIjdQR5r777tOa+eGHH66OO+44\/TD88pe\/VDw0F1xwgfr888\/VqaeeqjV0sbMn6YQ7p3kgEIfU0dpvuukmhWcVLQ6pc\/whhxyilQ8xIy5atEhtt912DVaUJmHLCBx11FENTIn333+\/frnQRo4cqY499tjmMViulxVDIFdSZ7OUpesdd9yhevfurSZNmqTuvfdeTehmGz16tDr66KMrBoK7cXUgYJL6jBkz9H6N2ZYvX67Gjh2rIFKaqTWbpL7vvvuq3\/72t3ovRxqa+AsvvKBXl7jibrbZZtqU0rp1a72Zj4LCPpBpOmSP6Nxzz9WrgdVWW03vEWH+wZTIeaZ5hmNuvfVWtcMOO1QH2E7KqkUgV1IHlf\/97396CYvXywEHHKD\/nzZtmhI75PHHH68GDx7c4AGrWjSd4LkiEEXq3FyIlr8vu+wy7T7r1dT9SJ1j\/v3vf5cIfOONN9YE\/qMf\/UhdddVVeiVJwyaO6ZCXAJr8zTffrDp37qy6d++uVwZ4efEbby7xAHv00Uf1MeIgkCtI7uLNHoFcSf29995TrVq10hPdNYdAWgTCSB2tmE1QNHA0dZOUbUidyOcnnnhCnXfeeYrNTVPjxmYuK8mTTjpJmxQ\/\/vhjbVJ86aWXtK38oIMO0t5e7CHJCuHdd9\/V9vS33npLBb1I0mLizncIeBHIjdTRUs4880xN6HgNrLnmmg59h0AqBGxt6quvvromVrT0VVZZpZGmbiPEWWedpVhFcr5Jznvvvbd+cbDpD9ELiaO9i5eLbKgSSS2brMRssKnqmkMgbwRyI3U\/P\/W8O+Ou37QRsCX13XffXdvGa2pqSoDYbpRi+2azk1xEeGzR\/MwoDz74oN4vEjdGPGV+85vf6P0jMbXIMVwDkwz7Sq45BPJGIDdSx+bIQ\/jOO+\/odAHrrrtu3n1x12\/iCNiSOjDg\/XL11VeXiNSG1NG80bbbtWtX0vC5lrnhycoTX3ls92yeQtTY3NdZZ52SPZ9jsJ\/ffffdmuRl03WTTTZp4iPkulcEBHIjdTZEsXHyIC5evFjtueeeaptttin5+JqdxzTDd85EU4QpUVwZojZK0aixp2PuIyvoHnvsUYqR8PN+wUyDHR0Nm7nK\/\/yNn7k3utl0TYT4H3\/8cW0rx0SDqQYzjeniiOsuQXV41LBycC67xZ1XTU2y3EhdzC9RGRoBtBqyNPKSwoth7ty5aq+99tIRi2KvbWqToqj9iSJ15MbGjQsiJGzOqzCXRjZC2QDlRQCZYzNn49NsEjhHqmiziTcMn5nBSCgo33zzjfaScfb0os6opilXbqSOz+7LL7+sfXejWjVo6mhleDrglok7Jt4MbjkdNbLZfh9F6niwzJo1S9vTIWhbUse8wphiJqQRHIev+eabb17qgF\/0qNes4k0bICebxJ8tIu5qDoHGCGRG6vj43nLLLZrofvaznxUea1IT3HbbbQ2CUEwfZ7\/gFglQefbZZ7WrmmykFb6zTUTAODZ1uoyLIcnk0L6jgo94CeCqyGqMRhQ0phgxCZp+6QKneMKYLruYZTDPSON5IC6DF4VrDoFyIJAZqXu9XYrs\/SLkbfoO89BjiyVghaU2hE+eD\/5mtYFHA0U8yOHB+ZhgTE2uHIPV3O8Rh9QJ\/vnd736nNz1pUaTOMdjEeRHgp86LYOLEiWrAgAEl2P\/4xz9q4pfmZ1Yx3R85ztnTm\/usLX\/\/Q0mdjSd27wnkCNO+meyPPPKI9ufddttttYbDctWberdc3eOFwsPHMpyiHNhYd9ppJ70BhoaORw7t6aefLmnqELX8z6qD8zlvww031N4PPOhff\/21zsCHDfarr77SG3GulQ8BG1Ln5QsRM9ZmNkQbUmeccT2UNBZdunTRZhh5MZgboZA+x3pTFZjujyBjbqSWDyl3p+aMQCip22jbPAgEemCSwFf3rrvu0g8BLl54vfAbYg1rfI9WnGWNUvMh9jOlmCRODhD+J5UBy3XpN3\/LQ8vDit0VGXkpkIjMld9rzo+O67tDoJgINCB1zAwk3XrmmWe0tGw8RRGzHLPLLrtoQmTJ+vDDD+tdf9uWl\/cLmp2EjpvJm5ArLqlLX+ivpF617Z87ziHgEHAIlAuBRpr6X\/\/6V202CSsm4BWO7HV4DmDikGaj5efZSUj79ttvV8OGDdMFCqT6ktzTj9S95hfMNyR0cs0h4BBwCFQLAqnNL0EdtbXH5wEULxSi\/ahgI1o5v83iBV5S99so9aZnzUNWd02HQKEQWLKkXhwjxUJJvrDvCtWJ5i1MKKmLrzl28S233LJJIeUldSF\/8mN7M\/w1qY67zjgE\/BCYM0cp6hzwWxrEfuON9f8Ffde3b\/33jvALM68yc2ksTI+cIA4Bh0A8BCDs0aPjnSNHcx4vAr+XgRB+siu7sxIiYEXqmDPmzJlTcgX0uxcJu0g5mndAjlnIADnIseG1lyfEwp3mEGh+CEDG\/frl02+0\/MGDnRafD7qBV40kdYJvTjjhBF3iK6zl5cHivaef6yEV3k17eZkxdLdzCFQvAhC6qWVn3RO0dafFZ41q6PVCSV3S506fPl1XeaEYL\/Z1v0ZyK7T1VVddtawdwG2RvNmO1MsKu7tZU0AAO3il0heIFt8UcCxYH0JJ\/dNPP9VkTt4K6jEWLTWuGTmK6+HSpUvVzJkzdbATld832mijzOHmRYdnD2Ymb3rWzG9meUEnUzRQDqPGGLVYulS1qKDLbt2sWaqud2+FHLQ6nyDFahg3eKAoXACOubk0Rj9m6Y4Q2zqJlyTqkxQARxxxhL4w7oxSVzLdnRqejUcQKQMIQS\/KS87JFD3CDqN6jLwE2nGzzaLBy+mI2h499JVbLlhQugPE\/tH48aq2Z0\/9WTWMG3WYs4yGTwt3KKkTPUkeF3KJ56Gpc93PP\/9c9yGO6QYNnTD91VZbTW+UekmdQKi8NHVeJh988IFeBbRs2TIt\/pmc72SKhrHZY4Rde\/ToRgQqJB+NYHmPqJ0yRW+yVsO4VZWmzjCi\/VJAeuzYsapPnz6ZFoaQqFPuQ\/kvm1wqnEPFd0wtr776qjLzuoim7pfrJaspWVtbqyiUQBRtUUjdyRQ9uqkwyskHO5VM0V3+7og0Lotx7pP1sbNna5MMz9sGO+xQmOeN1CnItEOBZDKhjww+ojAE7oyQLhkKe\/To4Zv7JIlLIzZ7VgI024RevFyQxWwkFJMMjJhfHKln\/XTFv17ZCMtStETyhAXkZOCDnUgmi\/6SmI6mC2\/n6bJoIUuqQ5BfXqj1HaoPhsoA+yRywYNk8OS3NDC+8cYbVd8KyeTXDyubehFL0vllUhRNfcSIEWr\/\/ffPZaOUB3H58uWqTZs2ypskLMlEyeIcJ1M0inExannJJaEBOXVTp6q6I4+MvnHIEXFliroZKaFRehqQjlKKmNCVcZ+Bl0AjrmvXrpF5pu688+rJ1Md0UzdokNI4lbmZ2LNip0Vlgk0rIl52o0MCtCD2wfjkF6CFkrrYvEmvG9XK7dIYRurI6jZKo0Ys3++LtsEVR56W8+ertis33MNQWjZjhlrcvvdKUrHPSirXjCNT1GiRXZWfoAaxR1HO22+9pTcm\/7lwofrB1lv7OgJggze9VMBqvUmTym6rv2fECPXb+fPVAmOTFWIfP358aY9t6dIWgWMT9p0XQ9MBI2wcZs+eXQiNPTL4KGoyBX0vppWf\/OQnulBAULvyyisVYFDH0camznUAGa8XGlkYyaYon2N+cRulSUctu\/OKtsEVR54W\/furFk89FQnGo+0Hqf5Lbykd1759nZo6tc7aOhBHpjBh0MypxBXVZkdo7LWvv67+3aZNYkcAk\/Bb3HKLajFsWJRIib+fppQaEnD2OedMUXPmDFYLFnznyCBjwyko3H7fBaWx6d+\/vy6ME9XQ1NHYK91ikToaO7UcqZJOEBKa\/Oqrr+7bB5vUu\/igYksnNW6cjVKqElH9\/fzzz9faxA033KBfCG6j1G3eBj1Q1vbrmAE5q6jGq1jbuBprmSJYol+\/fg1MLkGHo6mHUs6336qsZNIyBO1JiK0\/JfutEnp+1Cus8clBaWyWLCGNgpHoLOS+NlaNlN2OPN2K1NEoqNkJ8bLrS0qAq666Sl1++eXaFXH48OHqBz\/4gf6f6kBxm1krNOpciBv71oQJExQ1IgkC4v64NfLdfvvtpw4++GC9oZtH40X02Wef6fsWxfvFyRQ90rEwGhKkAza+zwVqtFqiOjT6AoLo0PjjBsfFkimkixRBt22BpA7Rjhqli9vkMr8pISmAzJ2r1DR07XRtRRoytTJRsM+F2EWoT72dTQu\/m9yDdCp6g7qCLZLUiZ4cNWqUog4pZep4k2O7gsDRlCks0b17d13kFw2eYwnOsamaRL+5FuRsW20d4uYFQ65zmrf+6I477lhBON2tHQIOgeaMQFVo6hTXveiii3Tw0aGHHqrt1RArWvvaa6+ty8LxPb7spBSQZmN+STL4jtSToObOcQg4BPJGALdG9gcr3UI19S+\/\/FJrwrjuSUQppg8hdezY7JajsbNkQ3uX1LviOYPNPct0vGJ+ufrqq9W4ceMUG7Je8wsujVIBPmuAWamweiE0uCj5HpxM0aMcCyNMBRH5xd9RNWqaGuxreomSxut+LceLR1xyy8T0UNtv35oadYzX73vUqAbixsIpqqNJvrfCXimMN8GmF7lxHpuW\/qauIvmrW\/mpY6+WnOVeUgc+v8\/ijCcvAFwi+YlqrABOOeUU9fHHHyvqqXbt2rW0yeo2St1GadD8ib0BCLOG2KqxpY9WDQkxau7m\/32wT0gD0oHYA+y+sXHKo1OR2K9450beF5t6HlpzR9\/XCT7smJ6L0KyyNHbr1k1R5g3S9RI4NiQiOl988UV13XXXNUps895776nHHntMffLJJ779JXiAXCrY5G1cGtm05QXz5z\/\/WV9v5MiR6thjj9V\/u+AjFxAVRuqxg8Z88qUsUTXqAjVKa+nFbP6KEc9MWPCM9CXrgKjEGAXkqlk8aJDqEhnwxEalTchVfOl69OjZyDceMh86dGj8i+V0RmQ+dcwuzzzzjCZs3vZeUpciGr1799ZmGNMkAdFjZw8idOkT5xI4ESfTWaWCj3hJ3X333eqggw7KzcQTd6ydTNGIpcVIfLDnz2+pjjiibfQNK3REjx4D1YIFfyjdHUcEzJF4hNm0tDjZ3CPOMcjzwOTJasCJJ5aeN9Jrn3XWWSGXQY\/PXmvu0aNW3XbbMoVMkydPVieulKmqsjSCGsSMU\/1mm22m8A9H6yYfDPZzzB+QPAQ7bdo0hUYvDdcoXgj33HOPHoBevXrpDVUmGZWUXnjhBYVdnDzoeLLEDbkPI3Um8Pbbb69D+bNurCzIV4OfPJkgi9CcTNGjkCVGt97aQl1\/fX0kadHa7Nn1\/tT0N0nofJY4ZYFNkDzz5s3TfMLKQhoK5e67D1UPPTQli1s3uEaLFkvV6NFLVK9edRpbkwNQdivtxmgKG+nSiHkFUwdmDgKPvI2NUMwvBx54YAOb+BdffKFOPvlknX9FNlkvu+wyRR4ZfNwJXuKlgCbP8mXXXXf1HYg33nhD4Yf7\/vvvK9Of3Y\/UAZsXiBk6nPnougs6BFa40tbW9lixST9C1dbW5\/2m8eDX1bWvGD4tW85XbdvW1xNoTg0F0rQQBI3NeutN0mPkN27f\/\/5M9dlnIwJha9UKS4J\/GgZWQvwUpUWSugiK7znk\/sgjj+i3I4E3O++8sw728dMI\/Fwa8XVHOyeUdpNNNtGBDhA+HjRElq6xxhrWuPiRumgokuTH+mLuQIdACgQgcsiCdu65PXMt+RkkJvueY8YsVVtsUS+Ha\/UImGPjxcT73eLF7dXvf9++UUlV9j87d54fCCn8l2RVlNcYWZN6XAGkFB5mEPGcYSMT90NInTS+tKSeM0GkHldOd7xDIEsEKpXpFg\/MgjhfZAlnxa4V4iBUMZlsb5wbqUvVpL\/\/\/e9aO2cTVEwpeNLsvffeSjxnnnvuOevcL7Ydc8c5BCqFQIRHXmKx0Ma9aVNWRvdTJMg1h4BGIJLUMZHce++9mpjJaxDUyAfjTco1d+5cnUWRDVTs6126dNEpASB87PCYdCB4tPYkm6VuDB0CRUUgKJcV5BsR1xTYJVMbr2ZNsqhj1lTkiiT1Bx54QNcDhdzJz8IGp1\/DpuStXsQ506dP1zmOd9llF+0x88QTT5Sux3XY4Jg4caIaMGBAYTAl9QHVY8yAq2uvvVbLJ1WW+BvTkd\/nZv5l8\/ikHUwrjynnxhtvrM1feB0lacjCi5hmvsiD+hz380rKlBVOXoxGjbpRde3aqhRHwUYem26vvbZhqbsdOnyrOnWaoQ44oJu6884fN7DrYq8fNux9NXly9yTw6HPijhvn+BV3zwqjuDKJLPfdd5\/uD7WJTbOuFJxP87zFwShMniwxSjLgoaQugr\/yyivaYwVNO0lDI2fzktzqkDjuSKTLpRE4hLvjqquumuTSmZ8jAyKTRtISsArB7ZK0CZLLnWO9n3fq1Em7fkqOd1IZ4PVjE1jl15m08kC8IrMU6E4KGuYzsz\/IhlfS2Wefrb2jvH3mPn5YBH2eBKOsZDLHNg1OceX54osfqnXW+Yf6xS9+oT3DpBQje0a\/\/OXFaty4+nxKaeZRXJkYB9mzMmXyI\/lyzaVZs2aVFC2RbeDAgYpc51k8b3ExCpIHx5Gsnrek2FqlCaDAqkSUJr2ReR4aPO6RpO0tCpmL5tChQweF2YiGJuCnJYtPqleb53PO9yP7JETBvdPKY076pNp50JhLcjUCsVht2b74uF5WGHllSyqT+TLOEqcoeXjpEk19yCGH6KR4zDlJI10pjIJkgkyFQLPEiDGMwsn7\/IBN1s+bOZeSypPn82bLvaGkLr7maNiy1LG9sBzHRin2copZoG2gEUmiMKpyY7LhpVGkxoQRUvfT1DFhYE7yPnTyeVBq4KR9TCuPLE25v7lsTSqPnGc+WH595oUU53OKh6dtaWTKA6coeaTPXm+usGykeWMUJlMeGMlLXkg66vkxXy5Eq0cdnwQv23Hj2l558sLIth+hpI53CmYX0gSIB4vthTlOUgi8++672tuFStzY5MlySDGNm2++WbVu3VpNmTJlhT2xU5xL53qsSaIy4bCdQ9qk16QgCC85MY2Yn0P2WU+yNPKYL2NZPu+0004qLYGaK5ggAio3qaeRycQjK5xs5Ck3qaeRyXzossJIVsiy6o16mXlNQFHHJyGKOBiFmaSyxChOPyI3Sj\/88EO9LCRYiFwHbdu2tTKZYGKBjPCcIa8LlYi8WRiF9IkmhXyKksrWS6ImoPIG95JinsvBNPL4ySmrkDgTJQyDuPsO8qL0mmuSmKi8qwbpb1yZ\/Jb3aXDyzpMgeeS+fpp61uaXtDJ550vYvLSdW3Fk8jP\/ROFqK0fcecS42ZijssAobh8iszSS4+C1114LdWfkpl6XRgk+MjM8eoWLyvAYtzNZHe81d4jmzWYvm4J485jLPvPz9ddfP5ONGy+JCsGYmomNPMjJHgEvzSwCtsCG1YhJgubkRk7Z1OPvvDdK5QWRViYUjKxwioORbA57xyYI0ySbyXExCpKJuZcVRnFl4nhW+qQUMTHIEqc44xYkT9YYJeE0K1K3Cbv3ujTaVj4CSLPoRpJOZH1OkLmD+4h3gkxKcWk0Pzfd+MzPk8qZVh4xE3H\/NDZ1s1\/SF8nHg5eE2BJtsMgKoyxlygKnJPKAZVTW0TTzKEuZssCI\/saVybyvzD1xX8xiLmUpT1YYJeWLSPNL0guLPYnfuPRhh\/Y2bOuYdkgKxmYq5fFccwg4BBwCDoHkCORG6ogk9U1PO+00nb7XTK8L2ZOu94orrtA+zkcffXTyXrgzHQIOAYeAQ0AjYE3q+JUTNMQym4AT3I8IRiJwyE8L5+Jo4tjAyM7IMZyDXzrl69jt5pqk7MVWlmUdUze2DgGHgEOguSJgRepPPfWUQtv2q2DExiC2rd122823xig+6bfffruOIF22bFkJZ7xoiCYlKsyZXZrr9HP9dgg4BLJGIJLUxe2QQCQqFuF+iK85\/5NfndwuBBbhnrbllluGyofmTjIv8qY7zTzroXTXcwg4BBwCEeYX8TV\/8MEHA0mb6kXkrdhrr70K5WvuBtch4BBwCDRHBKzSBJCd0VtUWsCS6kWk5ZUydSaQmF9IFUCuCIKL0NbJEvj444+X6pX++Mc\/bo7Yuz47BBwCDoHMEbBK6EWgSVjulyBfc9ID4Be9+eaba5fFtdZaS6cHuPTSS0sd4YVRtDQBmaPsLugQcAg4BMqEQCipo1VT1KJVq1al4tFeuagvihb\/2Wef6XzpYiuXvDHXX3+9jsIkCx3eLhSaXm211XRWP0kYtueee+qC0d40AmXCwN3GIeAQcAg0GQSsEnpBzKQH7dOnTwPihbgpenHKKaeooUOH6upGQsx+LwSitvBH51hInIbnzKJFi3xNN00GZdcRh4BDwCFQJgQiNfWpU6eqmTNnKhJ7oVHvscceut4ouV0eeeQR9fDDDyvcGknPi1mF72h+aQJwa7zooosULwm8aGhFTBNQJuzdbRwCDgGHQOYIWNnUO3furN566y1FgWhvIxc6QUW4Ppo1SiWh1\/bbb6\/t8ZI24IUXXiiVU4vaZM28t+6CDgGHgEOgiSPQgNSxj5Mml\/zpNHzKKWSBXzoJu\/ifY6Thn07jGKlBKjZ1jiXD45tvvqmuvPJK9fHHH2vXRzZdpcj0iy++qIYPH+7cIZv4JHPdcwg4BMqHQCNNXfzOSQVg24gOxfRC8QWzYUPH+4UNUpoUme7du7dOH3D\/\/ferDTfcUHvEbLXVVra3c8c5BBwCDgGHQAACVuYXtGuKLRNB+uSTT6ra2lrVsmVLbV\/fZ5991AYbbOB7eTZSn3\/+eTV58mR9Dpuk2OXR9inOSkFqap9uvfXWboAcAg4Bh0B1ILBkSb2cNTWFlDeU1CFfTCSPPfaYTgeADdzbSNTF5ifkHsclUdIFFBIVJ5RDwCHgEPAiMGcOlTqU4rc0iP3GG5Xq27cweEXmfnnggQfUqaeeqqhghP17u+220yl0cVl86aWXdK50NlEpFmFWw+EF8PXXXzdIt+vXa14cZH9kwzUo22Nh0HKCOAQcAk0fAT9NHDIfPTq47xD74MGFwCaU1MVj5Z133lH777+\/DjDyNuzlmGXYSMVV0SyFxf\/HH3+83mj1a6QPQMvHDGN6zhQCGSeEQ8Ah0BCBgpsdUg9XkCYOWYcRutx49uxCaOyRNvVBgwap5cuXq88\/\/zwUM7R3ikyTEoAmfuqbbbZZo3zpaOfU\/Rw7dqz65ptvVLt27dTdd9\/dyDYv1yCHu5RN49rY4++77z59n0Tl2Zr65Ew9u90Fmi0Cfs9GlZgdUo1ZlCZuc3HIH429wi2S1NHQyYOOxk2ov5\/WTbQpphi0bQKRaGySUhyDjVDs7VIIQ7TzWbNmaa2eIsV4wVDf0q+iOz7w++23nyZyNmtZNVBgwyykTE52qSIfimdzmJwVnlDu9gVHIEihCXo2sBVPmxbcqQKZHRIjT9\/79Ut8eoMTv\/02m+ukuIoVqWN2QbP2cztEi8fWToQoxG9ulprEjqcMgUhkcuR6kk\/mZz\/7mfrDH\/5QImrpi7cQr98xHEtEKsQPqVMgm+hXTEE92rRRG220kapr315fsuUll4QuoeqmTlV1Rx6pj22xdKn+Leea+LJXwH4C\/vi4aBahOZmiR6G5Y9TiqadUi7FjG23yMe9bzJtnZ14IgLlu1ixV17t39CAkOKIc49Zyr70a4pJAztIpb79dca+YSFKntihEDZGRr6VHjx6akEmpi3ZOYBHaO37nZGGUxjnrrruuPhebO3VIsb9vscUW6rzzztP1SX\/961\/rlLwQ9tNPP10KSuIakPoZZ5wR6xj84icddJAa8emnqmdtbUkWyFmIOmy8Ph0xQn1v\/nzVcsGCBud+NH68qu3ZU3+G6Yg9ANw4JfgqzRzI4lwnUzSKzRmjVpMmqfUmTYoGKeFcqXvzAAAgAElEQVQR\/zr4YPXiiBH6bBSqLFte44YCSMMpcZM+fbITueiaOlr43nvvrQmWFsdl8ac\/\/Wlp8xONHXMLL4Xdd99de9MQbZqG1GUTF5NMyWyThV0sYHhrp0zRu9tEz4ILqw589YvQwOKDDz7QK5PmLBNmOf2g+vgPN1uM5sxRWhPNua1iXB9iJ2dU3wzc\/LIetzkrTC2jR49WCwzFDWLHEp7aKZH+slla4RaZ0Gv8+PHqnnvuUf369VMdOnQIJHb8zl977TUdZESDXCh+Qek6GsWmqXXKpiemmldffVVHoDIBcIkkspQUvtLCzC9eLV6fk6VdLGBQLlgxaKMNH1XIg4IfWUzeNPMAzNn3ILK3KKReTpl4UNmz4bc079jwMgYjXGebFUbYik2\/6jQTLeTcjkqplSE5paN4Nljpp2lZziPmCIQe1CD2xNIWyF89MvgIEwsPC5ug2NQxvwhRm+CsvvrqOmvjK6+8YjWGaO\/8rLrqqtpMg20cu7vZxF5ubpR26tRJP8CYe8R9Up9ThsnLdtEQn95lMXmtQAs4KMuJn0YO89xyyRT1oPIQM3\/DCB+5w7T8rDDxXicvjEp94YYdodv8m6mpm3ebPXt2aeXkt4KKkiwNRuaYMv4oplENPTuRxs7LYtSoqMuX5ftQUv\/kk0907nO066iGVj5hwgStcds0sjhihkFjP+aYY7SWDsFD5CQHw6RiujSK6yLfE+hktt+dfrraZ\/hwm9umPiZs8qKxV8JbMs3ETw1IBV80tg9qUB95GUM0UVp+tWDku2LJyrQQAgLroyC6BF8hVy4Rd3WbZG774WA7hmjqvk6JaOKsOlj1eCNKIfOUKxJb+WyOCyV1MiviSw7pbrrppr7XY3eaqFP8xiHb1q1bR96Xc9g0RUOHyOM00\/TCebhEXjFihGrVrVucyyQ+1m+ZycX69q2fDpWIIE4y8RMDYHliOWRC8zI1cEvRrA\/LewWWJUZRK5ZUpoUQxDC5sHo1Auet8LXFNgojrxIVhYONcL5OiYYmjkwfPfec2qBApjyzX5HeL6TLZacYjxXMICYJs2FIRCik3r17d11rVIpkyE3wSyfVLp4iEDBBSnjO4HeOnfPCCy\/Udk7bhocL2jrmIK4l\/us9d9xRXyLEo9b2FqHH+ZlfvjvBP\/CA+dChQya3D3yx4iaKm2VR7MW8uPOWaciQ8NHIAnHMN+wl5dGywojYjTBbsciONTnrnryz4uIhwfOhsNlgG4bR9OmNleYlS1aE8zey7scbvUY4sQF6zDGli\/jJlHbvIJ6E4UdHlrPDpk6gD0sooksxx0AcFMzATZE6o3igUMrOm62RwhknnHCCogA1XjS8RXF\/xD2SdLs333yz1uzjFJ6G1PGZ50VBg9TZcP35NdfoEQ4yj2QJmruWQ8Ah4BAwEWB\/sCgtMqEXguI1MGLECJ1Gl4bZBGKG3HfeeWetrTfYtCRwp65Oa9SkDqDwBhusXpdIIX28YXhx2ATzBJJ6mzZ6s9SRelGmlpPDIdB8EKgqUoe88TQh5J+gI2zakHOvXr00cT\/77LPa9EKqAHOTVMrZkd2RVAF+Pu4AQeFp0vted911jUw3flMi0PzSs6daOnasWjxyZPBMwg6yyy7+38+dGxpVx6Iu3G7Innm2u9\/svRirvsB+YeMDb1ZKNi\/Gcjxq5ZDJu8GZX78wq9nnzmbc2Ffz854zp+DixfUmqq5dWzUaN78N9+ApGj07BZsGPUFINvkMv37bcWPlno35yx9bLB7pPDFXPM8xDUNs4sJ1UV46fhhV2q3ZnPuRmvpNN92kNXFzU2q11VbTNUcJwEEDh5DPPPNMddxxx5Wu7Vd42u+hi1t42m+jlPS\/rBQkovS2LbdMtkMdkP9iyJIlEbb6zMIXGkFkk\/gtajMpP7ILvnI5ZErr\/WKPS7ZLa4jdz4lCckH5peyOSsFSv10ZvaOkNUreGAEFHuKMG1Hh6Yk9W2wbjmm8dTs2fkg9qsXBKOpaeXwfGXyETXzRokW6xigaOW8x\/ifRF2YVyB3f8TZt2uj\/pUapRHzyG9L15kqHnNlcwK+doJk\/\/elPjTxngrI0YteXOqokC2OVQIPUSQw2Y8aM+ijTkMkbCaZxbvTkZWslejJE3tPnAJvEb0WcZOWSKXpskqBunsMKrPJRgna9wLEweD2JNonfeFiLO25p3AfrPcLzxNbfV83PzRIyt93sjIuR3dhld1QoqVM0Go8X8i\/gU44nDAQKeeJ9AtHjX44JBjs79nPT9VG0\/NNOO00DhreKNFwl2UB9\/PHHVefOnXXKgLRZGhuRenY4adc5P3\/mmppRas6cxHFoVhJG7cEUcZKVU6agsWHO2XiFBA9Cfiswq4GPfVBQeJy9f3iaccMkA2HaraDKgW1jTd30kxd548KcBqO490pyfCipE75Put0+ffqoyy+\/vBQcJKSOyeOrr77Sfuxo72jb5E+XZtrj0dQBFJdIUgpQ4Jpc6gcddJAiTwybsWyWSkuSpTFPUhe5mAi8kHDxrJ\/A2WXtDBrAqMRvyES5QcYhyh6YZJIkOadSMnkf1CDCl2V2uPkgvxVYEkztzvE3OdiaFrIat+gVVN7Y+odE2eIQhnVWGNmNZ\/yjQkkd8h0zZoxOfoPdHMLw2sDFg2WbbbbRPudeMws+6bfffru64YYbNHHTsOvht44mRdpesjhmlaUR8wueOtj682jvvfeeTkxm3gN\/2Wuuqc\/imEd75pn5oZf1kykPOeJcs2gyIQ8rRjJ\/mnNj7ordRx50yVlU30e0SMxp+a7A4uBpe2zLll1Ube2i0uFsnGOu5IVv07IcNz9skaeubmqu2LZosVS1aDFM1dY+lBiHMKy8GJG\/KuvslDZjFXRM5EYpnimQLxr46aefrh566CH18ssvqyuuuEJr26QGQKvmzYynS1hDc+dFAdHnkaWRICkI18zAlgacOOfW1vZY4YEyYsVE+o7cmVx1delSkbZsOV+1bXtEHFHcsQkRwJsL0mEsly27LeFVKntax471K2XpS2Wl+e7upjzLls1o8JxkLWOrVitSDa9Xn2q4HDig4PFTlBZJ6mjVlJrD3AAhexuuimg6Rx55ZGAGR9k0JZXAxhtvrDdU8ajB3IIdPW6RDN8sjSsFg9glV3KlQIbIIXTaY4+1VyNHJiN2HBTGjFmqttii\/lqulQ+BNONWPikb3gkPmYsvDl\/VVUo2876LF7dXRx2V7JmQ6\/Bs8OOXhqVz5\/JiUHWaumkXJxoULRvTCcUt8I0mDYCfn7o5iKKhm59RXGOTTTbRbpFo7aeccopOyWu2WFkaizBbA2RIWs+2QInfCoxufqIlHbf8JAq+coEyv1p1nwp5SbM8ePuaxsnNStgqOyhSUxcPFmzrhx56qLr00ktL3i9rr7221rLRur1+6uAA6fMdgUveJhFYaPoEzTz44IPa1zxJlkYCmKxqlBZgcLwTMIg4Cpb4rQDIVVaEOOOGpEkJK2kvq1EBSPrSrMa+Jh3XJOeFkrok3sIVEVJHQ\/dulOLuiFsjkXF4yIifOsKwuUqOli233FLtuOOOOt86\/uxo9hTMIO3ugAEDtJZOmbu4GRuTdLjI5ziNo8ijEyyb37glJawwBIhZ4F4Fz\/yaaBDjvDQLlOU2UV\/zPikyS+Oxxx6r1l9\/fZ3Q62186wIaxI+f+uabb66PkBcCOdmvvvpq7RXDiwHyh+jJG3PXXXfpQtTXX3+9NucUpXlt\/GYOd3NVEPS5uFbSnyxWEWnlMeVkT4O0p0nxRhbSPtDMkoVBfY77eZI5kJVMWeHklWfUqBt1KgDBgo1YNvJee+272gMdOny7IohvhjrggG7qzjt\/3IC42Z8ZNux9NXly9xI8cRWAuBhxI7+SkVlhxPVtZerR4+eqTZt\/6+R97MvRpL4Cf2f1vNnKg1XA3Cf0ypMlRkmeh1BSx3yCyQVCpxxdx44dNVljI+dvyTPy\/vvv611mSJrPaX5pAnBtJMMiJI7JhetgtsGzBq+VODVQk3TW5hwZEJk0QblmuJZfCmCia6VgNseQbljSGNjc33tMWnkg3lJ64pXFs5PIwTlvvPFGg\/4gG2N\/9tln64ydBJCZfeZvPyyCPvcmhbORMyuZGqRxToFTXHm++OKHap11\/qED+yhGI9HQPD+\/\/OXFaty4+tQbaeZRXJkYBzOaW2TyrQtsM0g+x8SViRrH8BDOFSLbwIEDVf\/+\/TN53rKSx6zS5g2mTAhV7NNCSZ1CFgjJgzt58mS12267Bfqp9+7dW5thhOj9SB2TCwRjaooQA2YYNHY2YivZeFOTOxv\/WhoTyE9LlgAfmWRC8HzO+b753hMQRRbymJM+qXYeNCaSMZMAsokTJzbKcR\/04gv6PIuHIKlM5ss4S5yi5OGlS5Q2QX4oOOIRFpa4Lu0zklSmMK+zvGUKijbP8nkz+xCFUZA8eT5vthhHml94G5KEn3J1aF2PPfaYIsc69nP81CEwPz91P3s8eV6I4MPHnZeAPNxmhKqt4HkeR5+E1P0eLkwYlNzzkrd87pvv\/ec\/TyxyWnkIyJJmLlsTC7TyRPFO4sHy63Pcz7PY7E4jUx44RckjffZGUAemmE4xj2S808iUB0ZepSjq+TFfLph3o45PMs9tMeLaXnnywsi2H6GkTgEMil+wQUp+FzR3b6PgNHbjAw88sJH5BM8ZTA8syw844IDSsonEQgQysZzjRUE0XxE0dXPSC6nLhKNUH6SN7OwPoFGJacT8HLLPepKZpB5XHjP1giyfdVGRlORgrmCCCKjcpJ5GJhOPrHCykafcpJ5GJvPZzwojrhlHJq8JKI+XXxp58sLIltA5LrLyEWRLRkSSWWE+wYMFEpYCGZhngkJkP\/zwQ+3ZIjnXuRY5SiBINlSxqUv4Ni+PItjUhTRNUjcBlTe4lxTNN3tW5pegl0wcefzkDOqb7cTxYhB330EwblSSMIGJyqt9Sn\/jyuS3nE6Dky1Gcl8\/TT2PeYSJMAqjIJm888OrbNjOn7D5G2Z28jP\/ZG2mijNuNuaoLDCKi2uknzrEjK2PQKETTzxRp8mN43oouV+wy3MdiJwXBHVNabg0klzJWwovbkeyPN5r7hDNm0hVNgXHjx+vzGWf+TmeQllulHpfMqZmYiMPcrJHYG4wid02CWZgw2rEJMGgHPdcP++NUsEnrUzkMMoKpzgYyeawl9TD6gbkPW5BMjH3ssIoybjBG3CFuaGeJU5xxg35\/eTJGqMkYx3p\/UK052uvvRbqzsiNTfe2KEEIPBJTDqaMomjoQZqx6aJUytW+0vuFVQfN\/Nx0sTI\/j8Il6Psg84v3vjZyprGpm\/0SWffdd1\/toornhtgSbbDICqMsZTLxS4pTEnnA0kvqfFZJjIJkygIjb99s5pJ5Xzle3IWzwCnuuIXJkxVGSfnCitRtcqlggiFL43rrrZdUFneeQ8Ah4BBwCKREINL8kvL6DU7n5UA6AEwwRJ7uueee2qxTNE09yz67azkEHAIOgXIikDmpk+CL\/DBsqOL7ix2dIhvz5s1TJ510UgMPGnza+YyfohRMLif47l4OAYeAQyBrBKxJHRs4xIztlE1PdtG7dOmievXqVSqMQfk7ik+b6QSwmePSiJ2V80jW37VrV+3rjifM559\/rqZOnao331xzCDgEHAIOgXQIWJE6roxUjcGTwtvw9mDDgrS55HghpS4h47hNkTqA3OmkBSCjIy6NJnlLAQ582M1o1HRdcmc7BBwCDoHmi0DkRilkTiQodu8TTjhBkzfh\/AQmUYYObZviGRtttJF2d+RzsjO2bt1ao0pOBaJIye\/iDTDCtk4QUtGCj5rvdHA9dwg4BKodgVBSx0cdlzWiuO68806dQtfbcHc87LDDFAmRSKtLUBEubvxPE1etTTfdtMHnfCfRYdjhCURJktCp2gfAye8QcAg4BLJEoAGpYy4hp8s111zT4B5kaERT9\/NSweecH4KHHKlnOTTuWg4Bh4BDID4CjTT1ZcuW6aitjz76SH311VfafEJKAD8tXW7HJupqq62m1lhjDW1mcZp6\/IFwZzgEHAIOgSwQCDW\/vPvuu9r8gr38T3\/6k07s5W1S+QhTDaYW8qk7Us9iaNw1HAIOAYdAfARCSf2bb77RWRZvueUW7dWCv7lpgsHs8sQTT+ikXYMGDdKJv9Dqhw0bprV2Glr8hAkT1IYbbtjgc75jgxV3RjZKnU09\/uC5MxwCDgGHgBeBSJdGsijie44ZhgjQPfbYQ6cCoCoSAUYPP\/ywYhOUZF94wixcuDA2ynHyxsS+uDvBIeAQcAg0IwQiSR3zCpVZ0KjZSA1qW221lSb8r7\/+OjZ86667rvagMYtWx76IO8Eh4BBwCDgEwvOpg48UY6UYBnlaqIK01lprqVatWik2VSH6bt26qcGDB2tS97O7O5wdAg4Bh4BDoDwIhGrqaOmE+C9atEgXtsAuTipeGhkZsblTu\/Txxx\/XAUft2rUrj9TuLg4Bh0ChEKBeL03q9xZKuGYmTGSNUqqcb7\/99urII49U999\/v7rjjjvUxx9\/rDp37qz23ntvtfPOO2uip8wbtnfXHAIOgeaDwJw5c3SxCH5Lg9gpLg8n0Bzhl3c+RJL6scceq80tzz\/\/vK9NnYRd3bt3114xBC45u3h5B9DdzSFQMQT69VNLDDJvJEdNjRpSUxNK+BWTvQnfOJTUyc2CqyK5X7bbbjvtukiKXKrC4OJIWTtcHkkVgL0dLd6F+jfh2eK61uwQ6AdxrzStNOr8kiWqRik1OwAVDDIdA75Di589O+jMZgdzph0OJXUiSg8++GCdSnfixInapZFCFyToOvzwwxVaPAN+4IEHarLHPEOqgLybWXpKSlrlfU93fYdAc0SAYMJAUseGrpR6OwGpcwqkLiaa5ohtXn2ONL+gqS9fvlxRQBpSx34OwZOhkZS5RJFSRJoUvHzGZmqeLctCs3nK6a7tEGgKCORJ6njMYXt3LVsEQkmdNLonn3yy2njjjXVKXdwVx40bp0gfwOeLFy\/W0uDeyDE333xz7jVK0dIp7EoEKpkgf\/WrX+lVA9XtWUUcddRR2SLkruYQaMYImBugQTDUb4f6t++2T\/2\/byqaepFMSaGkThoAMjbeddddasqUKWqLLbYoZWskbS6ujhTO4Lvdd99dHX\/88bnXG4XUb7vtNp1fhgap77TTTrooB9\/tuOOOzfgRdF13CDgEKoEAXFmUFhlRymbpFVdcoXewzzrrLNWjRw+tmVOGjlwv06ZN00UzyOyIl4w0vGGIFGUzNcsWReq4WLZv3z7LWza4lkTVFqmmqpMpergdRtEYcYTgtHRpi5Un1PufBzVs6kEt\/Mz6s3B\/lH3YGp+LVcu4mSU87ZDO76hImzp+6tQljdvyyucSZn6RDVTqoWKOyaORfIxIWqo8kbysCM3JFD0KDqNojDhCcPrPf9qqLl2Y3\/ivBNNzmo3Smpq+qqZmtjK9IiF2zOwrXdxL8rjnzW78OCrSpZG6o6QKQDP\/0Y9+pHersa2TYfGFF15QL7\/8stbQBwwYoDdLpUXlc5GKSLwwSO9rpuuVa\/gdQyIxvG1I9UvDlfKee+7RrpSO1N2LJmjqNyVSZ++InzwamjHBhazG99oLUh8SSurIEOaY2C9UyNErzvYvOD96tFLUojflKbcSxYrfb9VfxLlkwhxK6gDKpuS9996rC0hjevFWP\/rb3\/5Wql16zjnnaNdGm8Z1WXrtt99+DTY7zXP9jiH3zLx587SnDY2iHKT6FZv6EUccoZymbjMC+R5TtIlfNHlMrTiOFgqZYwZdsGBBvgPorq757tJLL21E7EWcS9akjqZM6P+2226rzj333MBydviKM8nID0NBjagmGjgvAcwkrATwheV\/r5YedgzHCvE7UncmobB5V8QHMYlMshqFbFyupSimSf49fIYi66cgJhm35JLEPzNUU3\/zzTe1Bty\/f38Fcfs1tHk0ZdIIYAah8HRUM33NMelA6k8\/\/XSjiklnnHGGTihme4xM+BEjRqj999\/f6gUTJav3ewYUv32CrKS4dtxrZH28kyka0aaCEc\/Z0UcfnetqNBrNpn+EcMkNN9zQaH\/OO5ewTthaKMqBXCipv\/\/++2qfffbRgUck7SHnuenNArmNHj1aF8vApk3JOxvtIQtSx6XS9FEHLDPS9JhjjtGTP+tG5krqt1Jouyhphp1M0aPcVDBiD+r000\/PhdTxQpk+nQRceKUodcwx9b+L2kxPuLgKVlRUunxPPiucPszmnUvsP1A4qCgt0k8dDZ0CGRSWxl595pln6qRdjz76qNaiP\/vsM92X0047TZ100km+\/RICvu+++3SQEsuaiy66SJtbkphfvC8Fuam5NCVXjY0pKO5A0JcPPvhAX7vcGzdBsjqZokexqWDEHCc9R5b7RkLmbE56G5+NGhWNbyWOuOqqq\/SqGcUzjrcb\/IGSihs2L4OxY8cqlEAsAl4uuemmm3SWWrN551JVaep0BD917OnkdaGhnUJmRJjScLrHGwWQ4mRoTLpR2qlTp9KAeJOHOe8X5\/0SRC5FtIMmkSmPOX7BBWrFijuYlgcPrnczzKp5lTxJFUC0OgkCaZheWZGQggSLAQqh6SZNeU1KaZK6hN9EuPs104MOpRRlzHsO5t8OHTo0eDGE4bx4cZ12a95hhw0Ko9iZfY8MPuJgzC9EcfJmNMkcuzL29IEDB6q111471phjr8fzhQHGDo+HDW9NyH6XXXbRAPsdQ2k9NmTNxguF9AB5THhvp5I8iLGASXCwkykatKaCUdZzHC29Y1AqRQNWEiqK73g02uFHQKI09utMrZno9LvvvlsXq0dzxp3QNLGa55lEDC9B1GjavATILCnmGJNPxCHjoIMOavAiMK\/r1dRlRdSvX71ZimYmrRTzFL+LknTSmtR5m5JuF00dFyzelDvssIMaM2aMQnuO25Jq6rLM4v5ki8TMIj7uWU94vz41FXKIO15xjy8aTkWTBzyTyOQ3xyGZoOy4UeOGDX3atKijlEJbx8aepEF4pm2eZ99UzDDJwi\/iECGEj8KHEofiyKpctHM0bm9QpGRrhaDZ88LGvddee2nTsff8OJr6mmvOULW1PSPxpX9vB6WrTAJainMibeoEF7Eseu6550okzlIFTxc+Z2IOHz5cg2y7WZHWpZHBxg6Ghv\/SSy81InXn\/ZJiRmR0atG8TYomj5B6XE8qP++XKPNJRkOa+DJeu7yfZszFeWHNnTtXr\/oh3iBNXQRB06eZ2v5DDz2kyfytt95S\/\/vf\/3SpTVn5i6YOydva1Jctqyd1m5blasbmfkHHBJI6gLz33nu6MAZFMIS4+XzWrFnqxRdfVBSjZpJB\/CT0wh5GJaSoltb7BVMNjZeLJPfiheK8X5xHTtDca8reL9WmqZs2dcYLW\/kJJ5ygEwOSfZXmZ1Mn8pzU3+Si8m5syouC6PZdd91VcxeBWl27di1p9WJTx\/5u6\/0Sh9Sz3nuI4tFYpL5w4ULtnYL7IiABAuCwrIHkn3322dL12PndbbfddGgxSyqbykdpSH3o0KHar\/28887TOWn8SJ3AjLy8XwiSmj59up5URSmy62SKnv5NBaOsvV\/Iu4K9OKpVQgv1ml+iZOR7ssqi4PESp94DZh1TU+cY0fDDriekH4fUuV4RkjU20tSZ\/ESR8ps34\/nnn6\/zQBBkhCsiuWBIbo+5hSUONnXywmAO6dWrl68JJkuXRogUbxyzISeymcFHhPjm0dAACNPGxJPXPeLK7WSKRqypYCT9yNKlEVIPKzVaKQ00Cal7Z4LsveFBEyfJYFJSx65ead\/+RqSOXyZaOiR9yCGHlFID4MIDkeMShD2KzQ1MMYTTsnTiRYBG780NE\/S4pd0o5bre4AOXFyOa3NwRTQOBLEkdRILs8kX2U89zJJOSeuE0dZYsBBSRG\/i6665TrVu31rjxxsTDhMpGYgPDjYhoK5Y6uB5iS+d\/W19103+UQtaS98V0QQo6RgbTL6Iszwx2eU4id22HgA0CYTlJbM4PO8YbUUqWxKzcGNPKVu7zk5A6WBXBrbGBpi4kuummm5Y8Sgg+IvLqj3\/8o8aVghjULYTAMc2QswU7Oho8Wr6NTb3cA+Tu5xBoKgiUw223qWCVph9xSd2bBz7NvdOeG0nqYo7Zeuut1VdffaVDZl955RW9S43r0S233KJdGyF1or4cqacdEne+QyAYgTxJvdpyv+Q5T7ykDmmHxQIUyUzVgNSl0DRpANDEsY8T0UUqAIpM4wGDpo7POqQOgbMBwUYluWEgdaJMXXMIOATyQSAPUq\/W3C9pEnqJWdkv7wvfeUldinaw9+Ct1ERuHDaTi9IakDoeLniz4MBP7VEIms1RMi+SiZHv8Iqhw0LqTz31lD6GCC7yw5jVj4rSybhyePO7mxFwErnGNYM+j\/KBLbc8ppxm9F5cOTgebMT7yPQmCOpz3M8rKVNWOMXFSAgmLOuozLs8SD0qeKlS3i9RcyFpQi+uK6Zm3LQlmtW8n+BMROkhh2ygbr21v\/5axmHRolo1Zco5WpGlefcFJWI27fMWhYHf9428XyBpvFkwt\/Ab0wo5GdgIhciZsELqbKASJPCXv\/xF29lvv\/32QqWgTAKIPNgySPSVz+g7m8Ly4Ampez8nZYLkgecYSVKU1CyVVh6I10sWSXDhHNzDzP4gGyu1s88+W40cOVJvspt95m8\/LII+T4JRVjKZYxsn458Xy7jy0GfTIUC8WsxYDhNTKo1lWd2rErlfKp3QCy89Ik233HJLHfDkDWQyNXXSFMycObPR3CYAUwr7yPiRAyusklvS5y7ueY1IHW2dHC\/8YHbhBzMMD+7xxx+vxo8fr8vJbbXVVlozx2SDlr733nvrDdUiJYuPC4YkCSJUmYZHjp\/WLkFHZrUmcdEkytXvJZCEKLKQhwInZrGRuJiEHS\/LXxIkTZw40frFF\/RCTIKRV76kMpkvY0a\/hXQAABuGSURBVDMFa1q8ouThpQtx4D5MWmtJRx2mTHhJvdoiSiud0Es87STdSBipcyyWC6\/y5p2r8vzn+bzZzkXfNAH4n2M3J3KU3BQUv2CiQw6PPfaYLjiN5o6GTsQpLwLMNd26dbO9b6GPY4CE1P0eLpZURKl5yVs+lyhXroGWvNNOO1lFsQWBklYeSECauUxMOwjmi8yvz2YaBxOLoM9tIv2iZE4jUx44Rclj5i\/BjGmSehCmXlKPMp9EYZb3995NxEon9JI0vTakzgqUyHVcuoOeZ3NVhVUjj3kUZ4wiszSiqVPkmc6REtPbyP+CnYmc6raBR3EErMSxJomKVomNDNLu27evfqHx8MnkND+H7PMk9bjymHVfZdmb9iWDDOYKxtywsiHvvEg9jUzmCyUrnGzkyYLUq1lTN5\/vciX0iqOpR5G6XwU26VNW8yguB0aSulyQDQXInQ1TMt7hIbPzzjtrGxLZ1JpS85K62Tez0LXf51maX+T6aeTxar9h17IdQy8Gcfcd5MUUtaS1lUeuh1lM+htXJr\/lNNc1X4p5yCP39WYujWN+iSOX99hK5H4pQkIvcLDV1NkM9ZurQRXYvLyQZh4lGVtrUk9y8Wo9x2vuEM2baFX2FthXYJnl9zneP1lulAphycQwtWIbeZCTPQLIyUscScbHjPiV84M29fg+741SwUeSNiWViQ3IrHCKg5FsDnvHplwbpeDVlHK\/ZJ3QixU6m9d+TgCSvtfc4JfVRlbPW5Jn1JG6D2pB5hcONXNumLZB83PTjS+LHB1p5THlTGNTN\/slsBGjgL0Ru6PYEm2wyAqjLGXKAqck8oCl3wvXD6M8XBq5fxFzvxQhoRd7hWussUajue3dFwBDcXfMYh4lIXM5x5F6GvTcuQ6BMiOQF6nTDZf75bvBzBPnvKeMI\/W8EXbXdwhkiEA1k02GMOR+qWrG2ZF67tPD3cAhkB0CQjZFyuefXe+Kc6U88taXq3eO1MuFtLuPQyADBFzNgAxAtLwERXCoolZt3n2O1C0H2B3mECgKAq5mQHlGAjKvNkIHGUfqlvODKNtHH31Uu71RrZzSfU0l2MoSAneYQ8AhUAUIpCZ1qiW9\/PLLuqvbbLONWnPNNaug2\/FFpB7rSy+9pIvZ4guLK98mm2wS\/0LuDIeAQ8AhkCMCqUld\/GuRUdLx2sqLH+qTTz6po1Rx7k+Spc\/2Xt7jzCAeMvTRzJSpfv7l5Lgh7w05cYYMGWJdui+pjO48h4BDwCEQF4HUpE65uzvuuEPf97DDDrMiOlIOQKBTp07V+WTiVPmO20G\/44W8JXAGUjdTphJdSLTohRdeqPib1Ujnzp31S4cITc7HBLP55ptnIY67hkPAIeAQyAyB1KRuKwla7vPPP69uuOEGNWfOHJ3ZkbbDDjuoYcOG6URZWaXtNUOs2egwMyWiob\/zzjv63tRXJRoSUoeo5X\/JE895G264oU4\/zIvo66+\/1imHyTlPab899tjDtvvuOIeAQ8AhUBYEcid1yJCi1dOnT1fLli3TnSLLISHlhx9+uLZL57HhiOaNiYQiDn6mFJPEhdS9Se8lDSoysyLBlk7ueF4Kp556alnNRWWZDe4mDgGHQNUjYEXqeH6gmVJoGgJGy8YWzsYhmiymCNMezvF\/\/etftY393nvv1cejhZNvHeKkqELS7HdxEJfKPKKNm+fGJXU597\/\/\/a\/OBeGaQ8Ah4BAoIgKRpI4p4ze\/+Y0uLC3kePfdd2uThphQunfvrqu3oPFSJQQTC6ROo2QUlUV22203fQ0KAZBuNG9Sh7Qpr4dpZ+HChY3u50fqXvMLm7dZVsEp4gRwMjkEHAJNC4FIUr\/pppvURRddpKi\/R9pZtHAqhxBGS1YyzCuQ36BBg9Qzzzyjs\/WRfvbQQw\/VP+QXX3XVVTVq4imTN6lzH3Ig8zKhmeWzZPi8pO63Ueqn4Tet4a9Qb8gcRaupqZAA7rYOgaaLQCipf\/nll1ojZ4NwwoQJ2rPlxRdfVEcffbQ2oZx\/\/vkamTFjxmg7M2TKOQcffLDq16+f1nLNzc9ykbrNcHlJXcj\/3HPP1RWO\/CqM21zXHbMSAT\/ipiIDOV75LQ1iv\/FGpfr2ddA5BBwCGSAQSup+JIxJA82cwtQUm6Zhu0ZLRzPme+qb0tq2bauOPPJIXR0Jovz0009Tm1+8VVPS5AfPAD93CS8CQcQNaU+bFowXxD54sMPTIeAQSIlALFJnkxD7OsWn0WRx78PdDzMMGvx1112nWrVqpd59912F3f3OO+8sebz85Cc\/UQMGDFB33XWXdgVMalM36z7KSwfTUBZFi1Ni6U5PWwF59mynsTeXWUS5JVnN+fWZFRzzwbXYCISSOkE3aOUECF122WU68IaNToJuLr\/8cm2OIbkQ2vLWW2+tg3VMz5Ag33Q2VnEJ3HbbbVN7kgTVDI2NhDshHQK2xS7D7oKmPmpU\/RHO3p5uPIp+dseO4aQeNgcc4YeObuRG6QMPPKAJGH9yNHU2SEePHq03QfE9v\/nmm9UXX3yhpkyZonr37h14MzZU0fA5RzxjxF+dSFRzQ9V2PvoVfpUMdhtttJHix7XyINByr70a2sqzuG1NjaqbOlXVhcyrLG7jrlF+BFp26RJN6gFi1bVvr+reeKP8QgfckX3DrAIns+hUJKmjbZMGAI24trZWHXfccerEE0\/U92YTFTdATDL77LOPVRCR+LBD7gQlsQmbJE2A2NYJYJKK7Gauaez7bOhm3cADn\/211lqrMANZaZlaLF2qNunTJ2uoS9f76NJL1b8OPjjV9SuNkZ\/wTVmmtocfrlqsUACDGnMmTYPYg1pdu3Zq2W23pbl86LneccPkTFBiUVokqQcJii2daM0NNtggsQklaUIvNHRWD\/i9Y\/oRUpeqMCS232677XLR1JH5gw8+0Ndu2bJlIcax4jItWaK05pVjq33wwVT29opj5INNtcvUon\/\/QG07LWmnnUqBpM\/qb9asVJf3jlvVaeqpep\/DyRD6eeedp235r776aoMUAOWoK8hqhXQHePYUhdQrIpPXZXGVVXIYbeOS2NvxkEnYKoJRhKxVL5ONXTzheOV6WtB+jdjqI+IoijhuJl7Wmjq2dKJFKRRBp1hy4ItOigC0dbOxsQrpev3U\/\/73v+v8KST2ghSHDh2qi01IcJLNQI4dO1anHzAb3jd4vzhSL8OLJshlMcyTwWZgbY759lubo3yPKeKDWBUyhXmplGPME494whMhdrNf8gIwNmcXL16sFTuSERZFsYtF6tiPsH+PHz9e27+9jc1OIk6xqdP+\/Oc\/ay+Ympoa7eIotiZS2J5wwgnq7bffbnCJ4cOHK37ibjSIO6OZdMssyrv\/\/vvnYn7hQVy+fLlq06aNTotQhFYumVpecolasUtesS7Xvv56Yq8YwQjhP\/vss4r1wbwxz9bHH3+sFaSikEMjmYYMSbyhWQiQUwjRvq5O8VNqKwme\/FXS4DndCuSRE6mpP\/744+r444\/Xybgg365du+rEXmjjVDzC1ZGqQNdee61ad9111eDBg3UqAQic1AFUQsI1EqLHb53fhxxyiLZLX3DBBTpoadq0adoGHqeFkTrXyWujlL7gycPqpChVnvKSidUWjfTFLefPV22POCLOEDU6ls1ObK0tFyxIdJ2333or0XmcRMQzwW9s+i9IeP\/EN3cnViUCuvD0XXc1JPagnkDqHoW1Up0OJXXxMGFDlAhSPxdBzDJ4xOCnjknl+uuvV1dddZXaZZddSn0iGIk0uPilk1JAyPCVV17Rfu9EnKJxx9HWw0jdbZSmm07ku8dt1SQ\/9BEs2pHB\/ExufrypAEaNUrUDB5YEg9zZzLJ2hezbVy2aMmWlUmSfM8bsC9owc5T50a5du3QgubObNALM\/UmTJqkZy5apnrW1kX1Fd18ye7auC1HpFiui1E9YiSjF9MEDw4sAUl9nnXVKh6PtYz8X27d8QY7y008\/XdvoveeEAcO9cGWkkYWRACmas6nHs6n77QexeoLQgxrEHhnM\/+23ekw\/eu45tUGU3dEiaIkH5oKaGjXNs+wlqjnsIfL2RUjdL79+pR9Ed\/9iIVDikhikfsHgwTrSvtItlNQJKiIjI6XcSHQVVMxCcr988803arPNNiul6JXOYaIhJ4ykFpDPZSXABqptfVMJODrppJN0QjG0flL9ks\/dkbodqQftdQ4ejIbeL3JOErwdqo+8\/baq3Wgjey8hcsJguw1oF6z4POg1w5zC5OdtaOhs5JstT1LHzsreE7+xs2L+K9lbIxGNdwDPG+ZOmpl8zpsXyRv\/4ResxzW85wVdM248iTyPZu+8il28njc82qwpbMrM5wQziqtzknskIfWOSum0KZVuoaSOgHirsPnJJMK26m1sGmJrB0DKvG266aYNSF0yPWKmYeO0devWpUskIXXAZlLzEmCjkgAoCUDiOx5k5PSTNSuwkXv11VePZS7K6t5B14kjk2kZaXw9I4NiwM0wfoQaQFYuQePIpD0OArwpoiTy09YhV3NDi67kQepC5n6rGz4bJWkPMpoAzPG5c+eWcieRMpqXCW6+FKShSR4k77H8z7OMGRVlzSR0M4jPTEM9a6VPt3iXmfeO6pKUjhR5eKmwegKTtEXmzRxQyOGVOStSX3PZMrWRhfkF\/RxSxxEkr5d5FN7yfQNSZ4Pz888\/b\/C2IXoSGyTa9BlnnKE3Ssn5gumEcH+8Yjp27KhOO+00rTl7TSliT8d1ke9NuzluQZJLhtzlbMBGNSYKRaE5nuatP7rjjjtGXcJ930wRyIPUo8xVrCKyXJKbJO71vvKSuDnMvGApZEPW1FtuuUWbLWV1G0bUmEX33HNP7Z4MKVMs\/pRTTmnk+WVqzaaLMRvUfqTOdWS1IZlWzWvIqgCvOV5ErLzY2+Pa7MHRF+mDdzqLpt6pUyfNL9R4oIlc8kKQ+\/uZ40RTh6PgtKiGT18hNXXZfBQQojpifs8gQPhkYTS9WShWMWLEiAapeuU8ySvDJBHNIeqejtSjEHLfByGQNamjpaPQRLXZGW+gmfV3vbn\/TZOHaS7hnIcfflg\/Z6YGbRaQMc0wcl3OMUndT9P2vmhYSYujBLWIzQaBQrbelwP3hsCRmWZeQ5Q4juH+WAZmzpzp+3LhXCF1PNRwqebl5V3RSD3ioJdkElIf0revYqwr3Rpo6mjfuHyhrcdtuDOSihfAMU3gBkkCMBJ9MUF4K4r3DGadv\/zlL7qSEvfElMK5Nk3ML1dffbUaN26cdlMT84+zqQfb1LFsWPCPMQThEaK+lkM2WFeaG9IG1tgS5ncCoyv5GYWw1dfncfcjdT8zjc085BjMHigwUQ1tXapwRR3r\/Z6lfNhyPsykYRIWmq1optxj33331atdFDg\/TV00dC+pQ8ZoyJhlIGG0ZsjWS95oxZhATE3d7JuplYumbr6sOJYXAM28hnjWoRB6NXX6wgsDM5SYX8z9B+mz+b2sYLzX8trUv\/NM9x9BxmhOxMZ93LFPenykn3qcC0PWJOliU1UClShtd8UVV5QyOELCaO7Y3zHFECGK33rQJqz3\/kxiNHuCNjD\/sDqQTVZH6lmSOhqo\/1TuW1OjZnuj7iBzY8MyLakz7rZzon6OhG1QsWE6x5fUo8wnceZ\/Hsd67fLe0owmKUG4aMiyQSjmEuoYcB52dzHZiCaMZmzuS9EHc0MV5Ytm2tRxYSY2AnMtrn8oZGLXN01CXpu6Hz7IDwcceOCBOlpdTDthmjo2eV4qom1zXV4IKImYg5FZXihC7kk19Rlrrql6nnOOVgtwyw5qeeyfJJ1PqUkdIsduzoAwMCx3CM4BRML\/KY5B1Kk02Tj98MMPtYaNrT3Ow8skwKcdOxtt5MiR6thjj9V\/u4jS8CjX730vTgIyf02dDWjIQ29OQuwBeTSyiHLt37+\/fvlHN3xxwpa9+pFsMpq6qX2KRguRB3mxmMQsWJokx2cQO6ZSWpT3C04PuCkTnIPNmefe1LxFJn77aepeMy+aOmRuysBnaL+QsmlTN+3fUd4v3F9WELzsiE3AhVpeCKxcgkpXCpfgWScvSb\/4DZ4HXjK4bBelJSZ1wonnzZunJk+erMvXxXV3SgtApSJKmdBUdaJGa1ECWGxlOvzwtmrBAhtix9\/E37WRVRY\/Uc1WprDr+LnENT7eNixqlcy9X\/zcJv36k7VNPQr7vL9fuHChjgTHYQJvjzPPPDO36GobbT9uf21cHmXuUQxI7PxyH+Y2vEcKcjig6lPvooVjYmG5xVuahibOm4qfcuVDCSN1Cl9vv\/32Oj9L1o3QefLH4ycfN7VB1rLI9WxlmjevhRo5MriQCddr0WKp2n33W1cEhI5usOuPqYzxtS0baCtTFCa33nqrjlIObniwr6yWFHqxjqply+U6QC7L4CNcaCH3oJa190sUXk3t+0qTut9z7p3bUfse5R4TK009qCwdWcpwGdp5550bkDm2NlwhcVE0TSuYXlj6UM+Uh4skYFH+5ObmiWx08OLwI3WzSEa5gayW+\/3rXwerjz66NFDcVq0mrTChTSp9z9jHSd+QBw6YctiLMV3LkKmubqpNfKsWqWPHzZT0JUtS59pBdvki2VnzGJemfE27VWI9Arar13LhFUrqJO1ip5ilhqmV83Cxm+8XZcrSjKyNRHqaof\/Y0LGbPfvss6W+4SXDLjk2uTh2dS7gR+p8LuXsygVgNd5n8eL26ve\/b++XnkV17jy\/0F0yXzLnntuzQR+CBMf8f\/HF8\/Wmns7nMWNGqmhDv\/t4I0qx4RYhD0ihB7PAwgmp2+QJyjvYMS5MjUjdr9wc5IuWjJcKRafZ\/WbzgA1LszGx+Y7fuDqhqWB340HkYcINkeUo2j2ZHUnuhfskbmFdYlbOCSL1uAA09+ND9joLD41F2hi9j0s6Doi9HN5RhQfNCWiFQDXPlQakbrob0nPMK9T57NOnT8mDRcjUj9RvuukmraV73RQlcpQ3GnlgxBsGzwZS9PIiICgirrZuNTruoCaNQETaGJ3+XSL183xQy5n7pUkPaEE6l+dcybuLDUhdCBsfVGqA7rTTTlrTNlsQqXMO2RLZDffmeAEgXg64LIn7IdeUhGEEhbDL7L1X3p13128aCAQlKPO4zueiqZc79wsjVs6EXjJDwlIQZDmLzL6JRx17aGFpAbK8v9lf3CHzMNXlIa95zQakjp8rngb8YE9nMwq7IERMLvQ11lijZMv2aupC9t6EXtwM2zo+oWjyFNuQliShV96AcH1vsiBzoplZ5oI+NzdZsshKl1aeIBJIgqVffg4zQybXNPschEWWGJky\/ehH\/dVtt13cIGunyITPc9YPalTwUtbeL15yzTuhF2Mr+ErkZ5J5Y3MO8xRPEjMhGSkC8DaDk4JyvdhcO+4xpqbOueLvLnPbGxNgYpPl8xZXbo733ShF4CeffFInInrhhRe0TRyTCa6CuHARtdW7d+8GNvUgUhcN\/vXXX9eRn3i9FJnUZUBkkCQtgTcrpGhM3s8JUybxmeR4J5UBJqekWenSyuMXMZhkonCOmQmP\/iAbSZaI5CMIzNtnzvHDIujzJBjFkYkHk3HNSvuyTWWQpZ96uRN68Vy\/9NJLaq211vJNJyBzyS8fDdHk3oRakoyLeUOwk2jjXCcoWZgZNYv3HA4aNPNcVvr4j5PywPSSSzrXhdRZIZBnxju3zYhW4b6BAwfqvURvhG5SGZKeF+nS6OeXzs2oAUpHpeh0kClF7OnbbLONLmWHti+NUH\/s6aTjLYL5RYISmBg0NoL9tGTJxWGGKYuWgTYYlBo47iBlIQ9RmUKsZNrLsklyNQKxJk6c2CgdctCLL+jzNPmvpV9hMkEC7PmYpF6NuV\/KmdBL5oy5QuD+rLwJvKHeKwm\/iCr3prt98803GyXUIpsrPCCpfiXtAZYASTjmnaNmhkk4w5v0y1SkkFdSDKSZT0LqcMBDDz3km+rblFOe\/zyfN9tnN5LU5ULiq04WRt6wkttFfNVJeTthwgQNgOnNAkGybMLTxRu4IhulRx11lDrrrLMKs1HKAAmp+2nqhBbjsuYlb\/k8KDWw7aB4j0srj5lsKcsltPki8+szD3mcz20Dm8JwDJOJhHJogyapR5lPko5ZVudF+brnndAriNQhdnLKcH\/4AO1YtHIz9N6bUMtrSpHskcxRP02d5w8SF5v6J598onOwoOnT\/LI+ZhGwJKTOCpREYX6pvmWMzVw5yJfX82Y7p6xJ3bwg9nbIm7wIJNWSpRBaN0tx6pXyhuNFgGaEFo+Zwsw2x1IJDfLVV1\/VmRwx5xSlmSQqWqXkiWCPAVMU\/ZMJyySWzyH7PEk9rjym26nYAdkAT0ug5gpGtGPvxC83qUfJ5Efq1aaplzuhV5SmzrONycHcKxOtXnK3oDGL2ShIU2c++tnU+Yw9OXLAY\/41U+6KRp6nph5F6vJMmUVGhMeyfN7icGMiUpcb4NNOwh7S9RIlytuUsG6KVEvzZmIk1S6mFgaHlwNJvfipdNSidyklmrqf1mxu5sj3eZhfzGsnlcdL3t4XVpzJ4u2ruaHlZ3KSF5DtfkSa5XIQIZj39jO\/JOm\/nFOp3C\/lTOglffWaX0RTl+\/9kmuZWqsk1MKFGYIWm7rX\/h3m\/UKBD\/bzJPGYJP3C5GHa1LNYjZqaOvfzq7QWVB7QlkvSzL2wc1ORunlhtHKyMtJI8EXkKH7nAM6bVHzQpdg00X1EmDJQRJ8WqXnNHaJ5E60q6T2ZsH6fszmU5UapEKOQuqkV28iDnJIvO4uALT97pTm5kVM2h\/k7741SwcdMOctnfjJlvVHKfZpj7hcI3Uvqts9vUP5y2\/P9jguryJT0ukLqrNAx8fg5AfgVDDFfflk8b0nkz4zUbW9Oql40dHzTzU1T2\/PLcVyQ+YV7m\/ZYU6swPzfd9bLwtEgrjylnGi3GLx+GWWxBbIk2WGSFURyZGL+sXRq5psv9Yv9UVhupsz8IT3nntne1BALi7pjV82aPasMjy07qSQV15zkE0iKQZ5Sgy\/2SdnSKdX6ecyXvnjpSzxthd\/3CIFDND2phQGwmglTzXHGk3kwmqetmw8pYVO1xzSEQhADeebhZZ2E+LTfKjtTLjbi7X8UQcPn2KwZ9Vd6YFz+pd6NqPhStc47UizYiTp5cEXD59nOFt0ldvGh50m3BdaRui5Q7ziHgEHAIVAECjtSrYJCciA4Bh4BDwBYBR+q2SLnjHAIOAYdAFSDgSL0KBsmJ6BBwCDgEbBFwpG6LlDvOIeAQcAhUAQKO1KtgkJyIDgGHgEPAFgFH6rZIueMcAg4Bh0AVIOBIvQoGyYnoEHAIOARsEXCkbouUO84h4BBwCFQBAo7Uq2CQnIgOAYeAQ8AWAUfqtki54xwCDgGHQBUg4Ei9CgbJiegQcAg4BGwRcKRui5Q7ziHgEHAIVAEC\/w\/DWCrhZGAQeAAAAABJRU5ErkJggg==","height":225,"width":373}}
 %---
