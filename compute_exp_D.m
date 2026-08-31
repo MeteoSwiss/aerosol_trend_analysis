@@ -13,7 +13,7 @@ function data_cal=compute_exp_D(data,shortnames,lambda)
 %takes names
 namesOK=data.Properties.VariableNames;
 
-namesB=namesOK(contains(namesOK,shortnames));
+namesB=namesOK(contains(namesOK,shortnames) & endsWith(namesOK,shortnames));
 
 namesBs=namesB(contains(namesB,{'Bs'}));
 namesBbs=namesB(contains(namesB,{'Bbs'}));
@@ -65,32 +65,32 @@ if ~isempty(namesBs)
             data_cal.(N2)=real(-log(data.(b{1})./data.(r{1}))/log(lambda(1)/lambda(3)));
             data_cal.(N3)=real(-log(data.(g{1})./data.(r{1}))/log(lambda(2)/lambda(3)));
         end
-    end
 
-    if ~isempty(namesBbs) & ~contains(namesBbs,'BbsFg')
-        Cbs(1,:)=contains(namesBbs,'0_');
-        Cbs(2,:)=contains(namesBbs,'1_');
-        Cs(1,:)=contains(namesBs,'0_');
-        Cs(2,:)=contains(namesBs,'1_');
-        for i=1:2
-            namesBbsx=namesBbs(Cbs(i,:));
-            Bb=namesBbsx(startsWith(namesBbsx,'BbsB'));
-            Bg=namesBbsx(startsWith(namesBbsx,'BbsG'));
-            Br=namesBbsx(startsWith(namesBbsx,'BbsR'));
 
-            namesBsx=namesBs(Cs(i,:));
-            b=namesBsx(startsWith(namesBsx,'BsB'));
-            g=namesBsx(startsWith(namesBsx,'BsG'));
-            r=namesBsx(startsWith(namesBsx,'BsR'));
+        if ~isempty(namesBbs) & ~contains(namesBbs,'BbsFg')
+            Cbs(1,:)=contains(namesBbs,'0_');
+            Cbs(2,:)=contains(namesBbs,'1_');
+            Cs(1,:)=contains(namesBs,'0_');
+            Cs(2,:)=contains(namesBs,'1_');
+            for i=1:2
+                namesBbsx=namesBbs(Cbs(i,:));
+                Bb=namesBbsx(startsWith(namesBbsx,'BbsB'));
+                Bg=namesBbsx(startsWith(namesBbsx,'BbsG'));
+                Br=namesBbsx(startsWith(namesBbsx,'BbsR'));
 
-            N1=strcat('BbsFb', num2str(i-1));
-            N2=strcat('BbsFg', num2str(i-1));
-            N3=strcat('BbsFr', num2str(i-1));
-            data_cal.(N1)=data.(Bb{1})./data.(b{1});
-            data_cal.(N2)=data.(Bg{1})./data.(g{1});
-            data_cal.(N3)=data.(Br{1})./data.(r{1});
+                namesBsx=namesBs(Cs(i,:));
+                b=namesBsx(startsWith(namesBsx,'BsB'));
+                g=namesBsx(startsWith(namesBsx,'BsG'));
+                r=namesBsx(startsWith(namesBsx,'BsR'));
+
+                N1=strcat('BbsFb', num2str(i-1));
+                N2=strcat('BbsFg', num2str(i-1));
+                N3=strcat('BbsFr', num2str(i-1));
+                data_cal.(N1)=data.(Bb{1})./data.(b{1});
+                data_cal.(N2)=data.(Bg{1})./data.(g{1});
+                data_cal.(N3)=data.(Br{1})./data.(r{1});
+            end
         end
-
     end
 end
 
