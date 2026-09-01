@@ -7,14 +7,22 @@ function station_datD = read_betsy_2026(filename, STN)
 %% read the data
 if strcmp(STN,'SUM2')
     station_dat = importfile_SUM2("C:\github_trend\raw_data\sum_neph_psap_clap2_clap10_AE16_AE33", [2, Inf]);
-station_dat.Properties.DimensionNames{1}='Time';
-elseif strcmp(STN,"SPL") || strcmp(STN, "UGR") || strcmp(STN, "ATTO") || strcmp(STN, "APP")  || strcmp(STN, "MBO") || strcmp(STN, "CPR")
+    station_dat.Properties.DimensionNames{1}='Time';
+elseif strcmp(STN,"SPL") || strcmp(STN, "UGR") || strcmp(STN, "APP")   || strcmp(STN, "CPR")
     station_dat = read_SPL_actris(filename, [2, Inf]);
-station_dat.Properties.DimensionNames{1}='Time';
+    station_dat.Properties.DimensionNames{1}='Time';
 elseif  strcmp(STN, "MLO")
     station_dat = importfile_MLO(filename, [2, Inf]);
+elseif  strcmp(STN, "ATTO")
+    station_dat = importfile_ATTO(filename, [2, Inf]);
+    station_dat.Properties.DimensionNames{1}='Time';
+elseif  strcmp(STN, "LLN")
+    station_dat = importfile_LLN(filename, [2, Inf]);
+    station_dat.Properties.DimensionNames{1}='Time';
+elseif  strcmp(STN, "MBO")
+    station_dat = importfile_MBO(filename, [2, Inf]);
 else
-station_dat= read_spo_actris(filename);
+    station_dat= read_spo_actris(filename);
 end
 
 %% probleme numeric negative: tentative to solve it
@@ -24,7 +32,7 @@ station_dat = timetable2num(station_dat);
 %%
 names_var=fieldnames(station_dat);
 %% remove the variables containing g (STD) and N (nb of data)
-c=contains(names_var,{'g','N'}); 
+c=contains(names_var,{'g','N'});
 names_delete=names_var(c);
 station_dat=removevars(station_dat,names_delete);
 names_var=fieldnames(station_dat);
@@ -60,7 +68,7 @@ elseif contains(east,STN)
         station_dat.(N{i})(ind)=NaN;
     end
 elseif strcmp(STN,'SUM2')
-  
+
     Cc=startsWith(names_var,["B","U","X"]);
     N=names_var(Cc);
     for i=1:length(N)
@@ -86,33 +94,45 @@ if strcmp(STN,'AMY')==1
         station_dat.(Nu{i})(ind)=NaN;
     end
 
-%erreur special pour PAL: false missing code for G and R Bbs
+    %erreur special pour PAL: false missing code for G and R Bbs
 elseif strcmp(STN,'PAL')==1
     station_dat.BbsG_S11(station_dat.BbsG_S11==100)=NaN;
     station_dat.BbsR_S11(station_dat.BbsR_S11==100)=NaN;
 
-% time treatment for SPL
+    % time treatment for SPL
 elseif strcmp(STN,'SPL')==1 || strcmp(STN,'UGR')==1  || strcmp(STN,'ATTO')==1  || strcmp(STN,'APP')==1 || strcmp(STN,'CPR')==1 
-  
-    station_dat.SPL=[];
+
+    station_dat(:,1)=[];
     station_dat.Properties.VariableNames{1}='y';
     station_dat.DOY=[];
     station_dat=table2timetable(station_dat);
-station_dat.Properties.DimensionNames{1}='Time';
-elseif strcmp(STN, 'MBO')
-    station_dat.SPL=[];
-    station_dat.Properties.VariableNames{1}='y';
-    station_dat.DOY=[];
-    station_dat=table2timetable(station_dat);
-station_dat.Properties.DimensionNames{1}='Time';
-Cu=startsWith(names_var,["U";"B"]);
+    station_dat.Properties.DimensionNames{1}='Time';
+    Cu=startsWith(names_var,["U";"B"]);
     Nu=names_var(Cu);
     for i=1:length(Nu)
         ind=station_dat.(Nu{i})>880 | station_dat.(Nu{i})<=-99;
         station_dat.(Nu{i})(ind)=NaN;
     end
-elseif strcmp(STN,'MLO')==1 
-station_dat.Properties.DimensionNames{1}='Time';
+elseif strcmp(STN,'LLN')==1
+
+    station_dat(:,1)=[];
+    station_dat.Properties.VariableNames{1}='y';
+%    station_dat=table2timetable(station_dat);
+
+elseif strcmp(STN, 'MBO')
+    station_dat.MBO=[];
+    station_dat.Properties.VariableNames{1}='y';
+    station_dat.DOY=[];
+    station_dat=table2timetable(station_dat);
+    station_dat.Properties.DimensionNames{1}='Time';
+    Cu=startsWith(names_var,["U";"B"]);
+    Nu=names_var(Cu);
+    for i=1:length(Nu)
+        ind=station_dat.(Nu{i})>880 | station_dat.(Nu{i})<=-99;
+        station_dat.(Nu{i})(ind)=NaN;
+    end
+elseif strcmp(STN,'MLO')==1
+    station_dat.Properties.DimensionNames{1}='Time';
 end
 
 names_var=fieldnames(station_dat);
@@ -123,7 +143,7 @@ for i=1:length(RH)
     %select RH too high
     if strcmp(STN,'GSN')==1 && strcmp(RH{i},'U_S11')
         RH{i}='U0_S11';
-  
+
     end
     indRH=station_dat.(RH{i})>50 ;
     if strcmp(STN,'MCN')==1 | strcmp(STN,'MRN')==1

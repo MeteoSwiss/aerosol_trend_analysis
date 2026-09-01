@@ -27,69 +27,70 @@ for i=1:length(merged_data.Variables)
         else
 
             for j=1:size(merged_data.Variables(i).Value,2) % take all data from an optical parameter
-
-                % select variable type
-                if contains(merged_data.Variables(i).Name,'_scattering')
-                    var='Bs';
-                    inst='S';
-                elseif contains(merged_data.Variables(i).Name,'backscattering')
-                    var='Bbs';
-                    inst='S';
-                elseif contains(merged_data.Variables(i).Name,'absorption')
-                    var='Ba';
-                    inst='A';
-                elseif contains(merged_data.Variables(i).Name,'humidity')
-                    var='U';
-                    inst='S';
-                else
-                    warning('none of the variable has been identified')
-                    var='xxx';
-                end
-
-                % select size cut
-                if contains(merged_data.Variables(i).Name,'pm10')
-                    pm='0';
-                elseif contains(merged_data.Variables(i).Name,'pm1')
-                    pm='1';
-                elseif contains(merged_data.Variables(i).Name,'pm2.5')
-                    pm='2';
-                else
-                    warning('size cut is identified as TSP')
-                    pm='';
-                end
-
-                %select wavelength
-                if Wavelength(j)==370
-                    wv='1';
-                elseif Wavelength(j)==470
-                    wv='2';
-                elseif Wavelength(j)==520
-                    wv='3';
-                elseif Wavelength(j)==590
-                    wv='4';
-                elseif Wavelength(j)==660
-                    wv='5';
-                elseif Wavelength(j)==880
-                    wv='6';
-                elseif Wavelength(j)==950
-                    wv='7';
-                else
-                    if Wavelength(j)<500 
-                        wv='B';
-                    elseif 500<Wavelength(j) && Wavelength(j)<600
-                        wv='G';
-                    elseif 600<=Wavelength(j) && Wavelength(j)<720
-                        wv='R';
-                    elseif Wavelength(j)>720
-                        wv='Q';
+                if size(merged_data.Variables(i).Value,2)<= size(Wavelength,1)
+                    % select variable type
+                    if contains(merged_data.Variables(i).Name,'_scattering')
+                        var='Bs';
+                        inst='S';
+                    elseif contains(merged_data.Variables(i).Name,'backscattering')
+                        var='Bbs';
+                        inst='S';
+                    elseif contains(merged_data.Variables(i).Name,'absorption')
+                        var='Ba';
+                        inst='A';
+                    elseif contains(merged_data.Variables(i).Name,'humidity')
+                        var='U';
+                        inst='S';
+                    else
+                        warning('none of the variable has been identified')
+                        var='xxx';
                     end
-                
-                end
 
-                % keep the paramerter only if there is data for the applied wavelength
-                if strcmp(var,'xxx')==0 & sum(isnan(merged_data.Variables(i).Value(:,j)),1)< size(merged_data.Variables(i).Value(:,j),1)
-                    name_var=strcat(var,wv,pm,'_',inst); % parameter name
-                    STN_rds.(name_var)=merged_data.Variables(i).Value(:,j);
+                    % select size cut
+                    if contains(merged_data.Variables(i).Name,'pm10')
+                        pm='0';
+                    elseif contains(merged_data.Variables(i).Name,'pm1')
+                        pm='1';
+                    elseif contains(merged_data.Variables(i).Name,'pm2.5')
+                        pm='2';
+                    else
+                        warning('size cut is identified as TSP')
+                        pm='';
+                    end
+
+                    %select wavelength
+                    if Wavelength(j)==370
+                        wv='1';
+                    elseif Wavelength(j)==470
+                        wv='2';
+                    elseif Wavelength(j)==520
+                        wv='3';
+                    elseif Wavelength(j)==590
+                        wv='4';
+                    elseif Wavelength(j)==660
+                        wv='5';
+                    elseif Wavelength(j)==880
+                        wv='6';
+                    elseif Wavelength(j)==950
+                        wv='7';
+                    else
+                        if Wavelength(j)<500
+                            wv='B';
+                        elseif 500<Wavelength(j) && Wavelength(j)<600
+                            wv='G';
+                        elseif 600<=Wavelength(j) && Wavelength(j)<720
+                            wv='R';
+                        elseif Wavelength(j)>720
+                            wv='Q';
+                        end
+
+                    end
+
+                    % keep the paramerter only if there is data for the applied wavelength
+                    if strcmp(var,'xxx')==0 & sum(isnan(merged_data.Variables(i).Value(:,j)),1)< size(merged_data.Variables(i).Value(:,j),1)
+                        name_var=strcat(var,wv,pm,'_',inst); % parameter name
+                        STN_rds.(name_var)=merged_data.Variables(i).Value(:,j);
+                    end
                 end
             end
         end

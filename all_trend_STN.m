@@ -64,8 +64,12 @@ for i=1:length(names)
     data_trok=data_tr(PP,:);
 
     %compute the overall trend with end year = last year for all data!
+    if years(data_tr.Time(e)-data_tr.Time(s))>=10
+        [Tresult_MK_25,Tresult_LMSlogi,Tresult_LMSlini]=all3_trend(data_trok,{names{i}}, inst, data_st.name, resolution,'end_year',max(data_trok.y), 'fig',1);
+    else
+        [Tresult_MK_25,Tresult_LMSlogi,Tresult_LMSlini]=all3_trend(data_trok,{names{i}}, inst, data_st.name, resolution,'end_year',max(data_trok.y),'period',ceil(years(data_tr.Time(e)-data_tr.Time(s))), 'fig',1);
 
-    [Tresult_MK_25,Tresult_LMSlogi,Tresult_LMSlini]=all3_trend(data_trok,{names{i}}, inst, data_st.name, resolution,'end_year',max(data_trok.y), 'fig',1);
+    end
     %     end
     %compute all the 10y trend
 
@@ -96,7 +100,7 @@ for i=1:length(names)
         else
             Tresult_MKi=Tresult_10y;
         end
-    elseif nb_trend==1
+    elseif nb_trend==1 | nb_trend==0
         Tresult_MKi=Tresult_MK_25;
     end
 
