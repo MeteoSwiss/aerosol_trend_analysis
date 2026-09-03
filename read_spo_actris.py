@@ -9,7 +9,7 @@ def read_spo_actris(filepath):
     """
 
     # 0. Constants
-    N_HEADER_LINES = 3
+    N_HEADER_LINES = 1
     VARNAMES_LINE  = 3
     MISSING_FLAGS = [99999.99, 99999.999]
     MISSING_TOL = 1e-4
@@ -22,8 +22,8 @@ def read_spo_actris(filepath):
     with open(filepath, "r", encoding="utf-8") as f:
         header_lines = [next(f).strip() for _ in range(N_HEADER_LINES)]
 
-    # 3. Extract column names (line 3 in MATLAB)
-    var_line = header_lines[2].strip()
+    # 3. Extract column names 
+    var_line = header_lines[0].strip()
     all_names = [x.strip() for x in var_line.split(",")]
 
     if all_names[0].lower() != "datetimeutc":
@@ -32,14 +32,14 @@ def read_spo_actris(filepath):
     data_var_names = all_names[1:]
 
     # make names Python-safe
-    data_var_names = pd.io.parsers.ParserBase({'names': data_var_names})._maybe_dedup_names(data_var_names)
+    # data_var_names = pd.io.parsers.ParserBase({'names': data_var_names})._maybe_dedup_names(data_var_names)
 
     # 4. Read full data
     df = pd.read_csv(filepath,skiprows=N_HEADER_LINES,header=None,names=["DateTimeUTC"] + data_var_names,
         na_values=["", " "],keep_default_na=True,encoding="utf-8")
 
     # 4. Convert datetime
-    df["DateTimeUTC"] = pd.to_datetime(df["DateTimeUTC"],format="%Y-%m-%d %H:%M:%S",errors="coerce")
+    df["DateTimeUTC"] = pd.to_datetime(df["DateTimeUTC"],format="mixed",errors="coerce")
 
     df = df.set_index("DateTimeUTC")
 
