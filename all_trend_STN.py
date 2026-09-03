@@ -49,12 +49,12 @@ def all_trend_STN(data_tr,data_st):
         data_trok = data_tr.loc[start:end].copy()
 
         # compute the overall trend with end year = last year for all data!
-        if (data_tr["Time"].iloc[end] - data_tr["Time"].iloc[start]).days / 365.25 >=10:
+        if (end - start).days / 365.25 >=10:
             Tresult_MK_25, Tresult_LMSlogi, Tresult_LMSlini = all3_trend(data_trok,[name],inst,data_st["name"],resolution,
             end_year=data_trok["y"].max(),fig=True,)
         else:
             Tresult_MK_25, Tresult_LMSlogi, Tresult_LMSlini = all3_trend(data_trok,[name],inst,data_st["name"],resolution,
-            end_year=data_trok["y"].max(),period=int(np.ceil((data_tr["Time"].iloc[end] - data_tr["Time"].iloc[start]).days / 365.25)),fig=True,)
+            end_year=data_trok["y"].max(),period=int(np.ceil((end - start).days / 365.25)),fig=True,)
 
         
         # compute all the 10y trend
