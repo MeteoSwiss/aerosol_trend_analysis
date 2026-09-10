@@ -108,6 +108,16 @@ def timetable_naming_trend(ds):
     
                         data[f'Ba660{i}_A'] = np.where(mask, data[f'Ba5{i}_A'], np.nan)
                         data[f'Ba5{i}_A'] = np.where(mask, np.nan, data[f'Ba5{i}_A'])
+        
+        elif da.dims == ("d_Location", "time"):
+
+            da = da.transpose("time", "d_Location")
+
+            values = da.values
+
+            # If there is only one location
+            if "humidity" in var_name:
+                data["RH_S"] = values[:, 0]
 
     df = pd.DataFrame(data)
 
