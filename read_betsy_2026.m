@@ -8,7 +8,7 @@ function station_datD = read_betsy_2026(filename, STN)
 if strcmp(STN,'SUM2')
     station_dat = importfile_SUM2("C:\github_trend\raw_data\sum_neph_psap_clap2_clap10_AE16_AE33", [2, Inf]);
     station_dat.Properties.DimensionNames{1}='Time';
-elseif strcmp(STN,"SPL") || strcmp(STN, "UGR") || strcmp(STN, "APP")   || strcmp(STN, "CPR")
+elseif strcmp(STN,"SPL")  || strcmp(STN, "APP")   || strcmp(STN, "CPR")
     station_dat = read_SPL_actris(filename, [2, Inf]);
     station_dat.Properties.DimensionNames{1}='Time';
 elseif  strcmp(STN, "MLO")
@@ -21,6 +21,13 @@ elseif  strcmp(STN, "LLN")
     station_dat.Properties.DimensionNames{1}='Time';
 elseif  strcmp(STN, "MBO")
     station_dat = importfile_MBO(filename, [2, Inf]);
+elseif strcmp(STN, "UGR")
+        station_dat = importfile_UGR(filename, [2, Inf]);
+    station_dat.Properties.DimensionNames{1}='Time';
+    elseif strcmp(STN, "ARN")
+        station_dat = importfile_ARN(filename, [2, Inf]);
+    station_dat.Properties.DimensionNames{1}='Time';
+
 else
     station_dat= read_spo_actris(filename);
 end
@@ -76,7 +83,7 @@ elseif strcmp(STN,'SUM2')
         station_dat.(N{i})(ind)=NaN;
     end
 else
-    Cc=startsWith(names_var,["B","T","U"]) & ~startsWith(names_var,'Time');
+    Cc=startsWith(names_var,["B","T","U"]) & ~endsWith(names_var,["Time","UGR"]);
     N=names_var(Cc);
     for i=1:length(N)
         ind=station_dat.(N{i})>=9999 ;
@@ -101,13 +108,26 @@ elseif strcmp(STN,'PAL')==1
 
     % time treatment for SPL
 elseif strcmp(STN,'SPL')==1 || strcmp(STN,'UGR')==1  || strcmp(STN,'ATTO')==1  || strcmp(STN,'APP')==1 || strcmp(STN,'CPR')==1 
-
     station_dat(:,1)=[];
     station_dat.Properties.VariableNames{1}='y';
     station_dat.DOY=[];
     station_dat=table2timetable(station_dat);
     station_dat.Properties.DimensionNames{1}='Time';
-    Cu=startsWith(names_var,["U";"B"]);
+    names_var=fieldnames(station_dat);
+    Cu=startsWith(names_var,["U";"B","X"]);
+    Nu=names_var(Cu);
+    for i=1:length(Nu)
+        ind=station_dat.(Nu{i})>880 | station_dat.(Nu{i})<=-99;
+        station_dat.(Nu{i})(ind)=NaN;
+    end
+        % time treatment for SPL
+elseif  strcmp(STN,'ARN')==1 
+
+    station_dat(:,1)=[];
+    station_dat.Properties.VariableNames{1}='y';
+    station_dat.Properties.DimensionNames{1}='Time';
+    names_var=fieldnames(station_dat);
+    Cu=startsWith(names_var,["U";"B";"X"]);
     Nu=names_var(Cu);
     for i=1:length(Nu)
         ind=station_dat.(Nu{i})>880 | station_dat.(Nu{i})<=-99;
@@ -117,7 +137,10 @@ elseif strcmp(STN,'LLN')==1
 
     station_dat(:,1)=[];
     station_dat.Properties.VariableNames{1}='y';
-%    station_dat=table2timetable(station_dat);
+    
+
+ station_dat=table2timetable(station_dat);
+     station_dat.Properties.DimensionNames{1}='Time';
 
 elseif strcmp(STN, 'MBO')
     station_dat.MBO=[];
