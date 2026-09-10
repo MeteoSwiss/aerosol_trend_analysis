@@ -42,7 +42,7 @@ def compute_exp_D(data, shortnames, lam):
 
     namesOk = data.columns.tolist()
     
-    namesB = [n for n in namesOk if any(s in n for s in shortnames)]
+    namesB = [n for n in namesOk if any(n.endswith(s) for s in shortnames)]
     namesBs = [n for n in namesB if "Bs" in n]
     namesBbs = [n for n in namesB if "Bbs" in n]
     namesBa = [n for n in namesB if "Ba" in n]
@@ -96,28 +96,28 @@ def compute_exp_D(data, shortnames, lam):
                 data_cal[f"expS_gr{i}"] = np.real(-np.log(data[g[0]] / data[r[0]])
                       / np.log(lam[1] / lam[2]))
 
-        if len(namesBbs) > 0:
-
-            Cbs = [["0_" in n for n in namesBbs],
-                ["1_" in n for n in namesBbs]]
-
-            for i in range(2):
-
-                namesBbsx = [n for n, keep in zip(namesBbs, Cbs[i]) if keep]
-
-                Bb = [x for x in namesBbsx if x.startswith("BbsB")]
-                Bg = [x for x in namesBbsx if x.startswith("BbsG")]
-                Br = [x for x in namesBbsx if x.startswith("BbsR")]
-
-                namesBsx = [n for n, keep in zip(namesBs, Cs[i]) if keep]
-
-                b = [x for x in namesBsx if x.startswith("BsB")]
-                g = [x for x in namesBsx if x.startswith("BsG")]
-                r = [x for x in namesBsx if x.startswith("BsR")]
-
-                data_cal[f"BbsFb{i}"] = data[Bb[0]] / data[b[0]]
-                data_cal[f"BbsFbg{i}"] = data[Bg[0]] / data[g[0]]
-                data_cal[f"BbsFbr{i}"] = data[Br[0]] / data[r[0]]
+            if len(namesBbs) > 0:
+            
+                Cbs = [["0_" in n for n in namesBbs],
+                    ["1_" in n for n in namesBbs]]
+    
+                for i in range(2):
+                
+                    namesBbsx = [n for n, keep in zip(namesBbs, Cbs[i]) if keep]
+    
+                    Bb = [x for x in namesBbsx if x.startswith("BbsB")]
+                    Bg = [x for x in namesBbsx if x.startswith("BbsG")]
+                    Br = [x for x in namesBbsx if x.startswith("BbsR")]
+    
+                    namesBsx = [n for n, keep in zip(namesBs, Cs[i]) if keep]
+    
+                    b = [x for x in namesBsx if x.startswith("BsB")]
+                    g = [x for x in namesBsx if x.startswith("BsG")]
+                    r = [x for x in namesBsx if x.startswith("BsR")]
+    
+                    data_cal[f"BbsFb{i}"] = data[Bb[0]] / data[b[0]]
+                    data_cal[f"BbsFbg{i}"] = data[Bg[0]] / data[g[0]]
+                    data_cal[f"BbsFbr{i}"] = data[Br[0]] / data[r[0]]
     
     # absorption
     if len(namesBa) > 0:
