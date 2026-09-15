@@ -278,7 +278,6 @@ def fig_LMS(data, name, Eplot, x_residue, b):
     plt.subplot(2, 2, 3)
     normplot_matlab(x_residue)
     plt.title("normplot of residues")
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%y"))
 
     # 4) Cumulative residuals
     plt.subplot(2, 2, 4)
@@ -291,16 +290,37 @@ def fig_LMS(data, name, Eplot, x_residue, b):
 #_______________________________________________________________________
 def normplot_matlab(x_residue):
 
-    (quantiles, values), (slope, intercept, r) = stats.probplot(x_residue, dist='norm')
+    # Remove NaN
+    x = np.asarray(x_residue, dtype=float)
+    x = x[np.isfinite(x)]
 
-    plt.plot(values, quantiles,'+')
-    plt.plot(quantiles * slope + intercept, quantiles, '-.r')
+    # Sort data
+    x_sorted = np.sort(x)
 
-    prob_ticks = np.array([0.01, 0.1, 1, 5, 10, 25,
+    # Sample size
+    N = len(x_sorted)
+
+    # MATLAB normplot:
+    # midpoint between empirical CDF evaluation points
+    p = (np.arange(1, N + 1) - 0.5) / N
+
+    # Transform probability to normal-probability coordinates
+    y = stats.norm.ppf(p)
+
+    # Plot points
+    plt.plot(x_sorted, y, '+')
+
+    # Fit straight line
+    slope, intercept, r, _, _ = stats.linregress(x_sorted, y)
+    # Reference/fitted line
+    x_line = np.linspace(x_sorted.min(),x_sorted.max(),100)
+    plt.plot(x_line,slope * x_line + intercept,'-.r')
+
+    prob_ticks = np.array([0.1, 1, 5, 10, 25,
         50, 75, 90, 95, 99, 99.9]) / 100
 
     plt.yticks(stats.norm.ppf(prob_ticks),
-        ["0.001", "0.01", "0.1", "0.5", "0.10", "0.25",
+        [ "0.001", "0.01", "0.05", "0.10", "0.25",
          "0.50", "0.75", "0.90", "0.95", "0.99", "0.999"])
 
     plt.ylabel("Probability")
