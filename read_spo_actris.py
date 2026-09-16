@@ -39,7 +39,7 @@ def read_spo_actris(filepath):
         na_values=["", " "],keep_default_na=True,encoding="utf-8")
 
     # 4. Convert datetime
-    df["DateTimeUTC"] = pd.to_datetime(df["DateTimeUTC"],format="mixed",errors="coerce")
+    df["DateTimeUTC"] = pd.to_datetime(df["DateTimeUTC"],dayfirst=True,errors="coerce")
 
     df = df.set_index("DateTimeUTC")
 
