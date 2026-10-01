@@ -7,7 +7,7 @@ from scipy import stats
 from statsmodels.regression.linear_model import yule_walker
 
 def trend_LMS_D(data,param,inst,station,distribution,end_year=2025,
-                path="",period=(10, 20, 30, 40, 50),fig=True,):
+                path="",period=(10, 20, 30, 40, 50),fig=True,averageM="median"):
     
     """LMS fit is applied on the montly mean (median if the distribution in 'log') of the data
     The LMS consists of:
@@ -89,7 +89,7 @@ def trend_LMS_D(data,param,inst,station,distribution,end_year=2025,
     dataT[name] = dataT[name].replace([np.inf, -np.inf], np.nan)
 
     # monthly average
-    dataG = dataT.resample("MS").median()
+    dataG = dataT.resample("MS").agg(averageM if callable(averageM) else averageM)
     dataG[name] = np.real(dataG[name])
     # Year column
     dataG["y"] = dataG.index.year
@@ -101,6 +101,12 @@ def trend_LMS_D(data,param,inst,station,distribution,end_year=2025,
 
     mask = dataG[name].notna() & np.isfinite(dataG[name])
     dataG = dataG.loc[mask]
+
+    # normalize period: accept a single number or a list/tuple
+    if isinstance(period, (int, float)):
+        period = [period]
+    else:
+        period = list(period)
 
     # take the number of periods to be analysed
     n_years = dataG["y"].max() - dataG["y"].min() + 1
@@ -148,7 +154,7 @@ def trend_LMS_D(data,param,inst,station,distribution,end_year=2025,
         rho, sigma = yule_walker(x_residue,order=1)
         phi = rho[0]
         # compute the statistical significance:
-        variance = (sigma**0.5/((1 - phi) * period[i]**1.5))
+        variance = (sigma/((1 - phi) * period[i]**1.5))
 
         # computation of the statistical significance
         significance = abs(b[1])*365.25 / variance
@@ -191,7 +197,7 @@ def trend_LMS_D(data,param,inst,station,distribution,end_year=2025,
                 "granularity": "month",
                 "parameter": name,
                 "instrument": inst,
-                "distribution": distribution,
+                "MK_seasonality": distribution,
                 "method": "LMS",
                 "significance": significance,
                 "ss": ss,
@@ -218,7 +224,7 @@ def trend_LMS_D(data,param,inst,station,distribution,end_year=2025,
                 "granularity": "month",
                 "parameter": name,
                 "instrument": inst,
-                "distribution": distribution,
+                "MK_seasonality": distribution,
                 "method": "LMS",
                 "significance": significance,
                 "ss": ss,
@@ -238,7 +244,7 @@ def trend_LMS_D(data,param,inst,station,distribution,end_year=2025,
         if os.name == "nt":  # Windows
             save_path = (f"C:/github_trend/result/{station}/" f"{station}_{name}_LMS_D.png")
         else:
-            save_path = (f"C:/prod/pay/Aerosol_actris_trend/result/" f"{station}/{station}_{name}_LMS_D.png")
+            save_path = (f"/prod/pay/Aerosol_actris_trend/result/" f"{station}/{station}_{name}_LMS_D.png")
 
         fig_obj.savefig(save_path, dpi=300, bbox_inches="tight")
         plt.close(fig_obj)
@@ -278,7 +284,6 @@ def fig_LMS(data, name, Eplot, x_residue, b):
     plt.subplot(2, 2, 3)
     normplot_matlab(x_residue)
     plt.title("normplot of residues")
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%y"))
 
     # 4) Cumulative residuals
     plt.subplot(2, 2, 4)
@@ -291,16 +296,37 @@ def fig_LMS(data, name, Eplot, x_residue, b):
 #_______________________________________________________________________
 def normplot_matlab(x_residue):
 
-    (quantiles, values), (slope, intercept, r) = stats.probplot(x_residue, dist='norm')
+    # Remove NaN
+    x = np.asarray(x_residue, dtype=float)
+    x = x[np.isfinite(x)]
 
-    plt.plot(values, quantiles,'+')
-    plt.plot(quantiles * slope + intercept, quantiles, '-.r')
+    # Sort data
+    x_sorted = np.sort(x)
 
-    prob_ticks = np.array([0.01, 0.1, 1, 5, 10, 25,
+    # Sample size
+    N = len(x_sorted)
+
+    # MATLAB normplot:
+    # midpoint between empirical CDF evaluation points
+    p = (np.arange(1, N + 1) - 0.5) / N
+
+    # Transform probability to normal-probability coordinates
+    y = stats.norm.ppf(p)
+
+    # Plot points
+    plt.plot(x_sorted, y, '+')
+
+    # Fit straight line
+    slope, intercept, r, _, _ = stats.linregress(x_sorted, y)
+    # Reference/fitted line
+    x_line = np.linspace(x_sorted.min(),x_sorted.max(),100)
+    plt.plot(x_line,slope * x_line + intercept,'-.r')
+
+    prob_ticks = np.array([0.1, 1, 5, 10, 25,
         50, 75, 90, 95, 99, 99.9]) / 100
 
     plt.yticks(stats.norm.ppf(prob_ticks),
-        ["0.001", "0.01", "0.1", "0.5", "0.10", "0.25",
+        [ "0.001", "0.01", "0.05", "0.10", "0.25",
          "0.50", "0.75", "0.90", "0.95", "0.99", "0.999"])
 
     plt.ylabel("Probability")
