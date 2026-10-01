@@ -1,6 +1,6 @@
 ATTO_st.name='ATTO';
-ATTO_st.lat=2.1483;
-ATTO_st.lon=59.0033;
+ATTO_st.lat=-2.1483;
+ATTO_st.lon=-59.0033;
 ATTO_st.alt=190;
 ATTO_st.env='con';
 ATTO_st.footp='f';
@@ -121,11 +121,14 @@ writetable(ATTO_result_MK,'ATTO_res_MK.txt'); %, 'delimiter',',' )
 writetable(ATTO_result_LMSlog,'ATTO_res_LMSlog.txt'); 
 writetable(ATTO_result_LMSlin,'ATTO_res_LMSlin.txt'); 
 plot_10y_in_two(ATTO_result_MK, ATTO_st,'y'); %[output:5df39e60] %[output:4528c99d]
+%%
+ timetable_to_netcdf(ATTO_tr,'ATTO_tr_def.nc');
+
 
 %[appendix]{"version":"1.0"}
 %---
 %[metadata:view]
-%   data: {"layout":"onright","rightPanelPercent":41.2}
+%   data: {"layout":"onright","rightPanelPercent":35.8}
 %---
 %[output:89d3c672]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: there is a lot of days with less than 50% data coverage"}}

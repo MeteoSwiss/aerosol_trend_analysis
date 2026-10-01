@@ -8,8 +8,11 @@ function station_datD = read_betsy_2026(filename, STN)
 if strcmp(STN,'SUM2')
     station_dat = importfile_SUM2("C:\github_trend\raw_data\sum_neph_psap_clap2_clap10_AE16_AE33", [2, Inf]);
     station_dat.Properties.DimensionNames{1}='Time';
-elseif strcmp(STN,"SPL")  || strcmp(STN, "APP")   || strcmp(STN, "CPR")
+elseif strcmp(STN,"SPL")     || strcmp(STN, "CPR")
     station_dat = read_SPL_actris(filename, [2, Inf]);
+    station_dat.Properties.DimensionNames{1}='Time';
+    elseif strcmp(STN,"APP")    
+    station_dat = importfile_APP(filename, [2, Inf]);
     station_dat.Properties.DimensionNames{1}='Time';
 elseif  strcmp(STN, "MLO")
     station_dat = importfile_MLO(filename, [2, Inf]);
@@ -27,7 +30,15 @@ elseif strcmp(STN, "UGR")
     elseif strcmp(STN, "ARN")
         station_dat = importfile_ARN(filename, [2, Inf]);
     station_dat.Properties.DimensionNames{1}='Time';
-
+    elseif strcmp(STN, "ZSF")
+        station_dat = importfile_ZSF(filename, [2, Inf]);
+    station_dat.Properties.DimensionNames{1}='Time';
+elseif strcmp(STN, "KCG")
+        station_dat = importfile_KCG(filename, [2, Inf]);
+    station_dat.Properties.DimensionNames{1}='Time';
+elseif strcmp(STN, "GSN")
+        station_dat = importfile_GSN(filename, [2, Inf]);
+    station_dat.Properties.DimensionNames{1}='Time';
 else
     station_dat= read_spo_actris(filename);
 end
@@ -107,7 +118,7 @@ elseif strcmp(STN,'PAL')==1
     station_dat.BbsR_S11(station_dat.BbsR_S11==100)=NaN;
 
     % time treatment for SPL
-elseif strcmp(STN,'SPL')==1 || strcmp(STN,'UGR')==1  || strcmp(STN,'ATTO')==1  || strcmp(STN,'APP')==1 || strcmp(STN,'CPR')==1 
+elseif strcmp(STN,'SPL')==1 || strcmp(STN,'UGR')==1  || strcmp(STN,'ATTO')==1   || strcmp(STN,'CPR')==1 
     station_dat(:,1)=[];
     station_dat.Properties.VariableNames{1}='y';
     station_dat.DOY=[];
@@ -133,14 +144,26 @@ elseif  strcmp(STN,'ARN')==1
         ind=station_dat.(Nu{i})>880 | station_dat.(Nu{i})<=-99;
         station_dat.(Nu{i})(ind)=NaN;
     end
-elseif strcmp(STN,'LLN')==1
+elseif strcmp(STN,'LLN')==1 || strcmp(STN,'APP')==1
 
     station_dat(:,1)=[];
     station_dat.Properties.VariableNames{1}='y';
     
 
- station_dat=table2timetable(station_dat);
+ %station_dat=table2timetable(station_dat);
      station_dat.Properties.DimensionNames{1}='Time';
+     elseif strcmp(STN,'ZSF')==1 ||strcmp(STN,'KCG')==1 ||strcmp(STN,'GSN')==1
+names=fieldnames(station_dat);
+for i=1:length(names)-3
+station_dat.(names{i})(station_dat.(names{i})>9999)=NaN;
+station_dat.(names{i})(station_dat.(names{i})==999.9 )=NaN;
+
+end
+    %station_dat(:,1)=[];
+   % station_dat.Properties.VariableNames{1}='y';
+    
+ %station_dat=table2timetable(station_dat);
+ 
 
 elseif strcmp(STN, 'MBO')
     station_dat.MBO=[];
@@ -199,7 +222,7 @@ end
 station_datD=retime(station_dat,'daily',@nanmedian);
 station_datN=retime(station_dat,'daily','count');
 names_var=fieldnames(station_dat);
-CB=startsWith(names_var,'B');
+CB=startsWith(names_var,["B","b"]);
 SB=names_var(CB);
 for i=1:length(SB)
     indN=station_datN.(SB{i})<6 ;

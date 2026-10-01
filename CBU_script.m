@@ -110,6 +110,8 @@ writetable(CBU_result_MK,'CBU_res_MK.txt'); %, 'delimiter',',' )
 writetable(CBU_result_LMSlog,'CBU_res_LMSlog.txt'); 
 writetable(CBU_result_LMSlin,'CBU_res_LMSlin.txt'); 
 %plot_10y_in_two(CBU_result_MK, CBU_st,'y');
+%%
+ timetable_to_netcdf(CBU_tr,'CBU_tr_def.nc'); %[output:39f79696]
 
 %[appendix]{"version":"1.0"}
 %---
@@ -307,4 +309,7 @@ writetable(CBU_result_LMSlin,'CBU_res_LMSlin.txt');
 %---
 %[output:48324f4c]
 %   data: {"dataType":"error","outputData":{"errorType":"runtime","text":"Output argument \"Tresult\" (and possibly others) not assigned a value in the execution with \"trend_LMS_D\" function.\n\nError in <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('all3_trend', 'C:\\github_trend\\aerosol_trend_analysis\\all3_trend.m', 11)\" style=\"font-weight:bold\">all3_trend<\/a> (<a href=\"matlab: opentoline('C:\\github_trend\\aerosol_trend_analysis\\all3_trend.m',11,0)\">line 11<\/a>)\nTresult_LMSlog=trend_LMS_D(data, param,inst, station, 'log',varargin{1:2},'fig',0);\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nError in <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('all_trend_STN', 'C:\\github_trend\\aerosol_trend_analysis\\all_trend_STN.m', 70)\" style=\"font-weight:bold\">all_trend_STN<\/a> (<a href=\"matlab: opentoline('C:\\github_trend\\aerosol_trend_analysis\\all_trend_STN.m',70,0)\">line 70<\/a>)\n        [Tresult_MK_25,Tresult_LMSlogi,Tresult_LMSlini]=all3_trend(data_trok,{names{i}}, inst, data_st.name, resolution,'end_year',max(data_trok.y),'period',ceil(years(data_tr.Time(e)-data_tr.Time(s))), 'fig',1);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"}}
+%---
+%[output:39f79696]
+%   data: {"dataType":"text","outputData":{"text":"Fichier NetCDF créé : CBU_tr_def.nc\n","truncated":false}}
 %---

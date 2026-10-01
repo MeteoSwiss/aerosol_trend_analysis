@@ -92,6 +92,8 @@ WGG_st_22=WGG_st;
 WGG_st_22.name='WGG22';
 
 [WGG_result22_MK,WGG_result22_LMSlog,WGG_result22_LMSlin]=all_trend_STN(WGG_tr_2022,WGG_st_22); %[output:0b581c34] %[output:2d2e476b] %[output:65fa5376] %[output:4819b908] %[output:926cb90f] %[output:5004d4a5] %[output:54444444] %[output:93ddd47a] %[output:4080b96e] %[output:526bb7aa] %[output:4ec376b7] %[output:163de18e] %[output:79ce3103] %[output:7781fffa] %[output:53d00b60] %[output:1704a2d8] %[output:24a76c97]
+%%
+ timetable_to_netcdf(WGG_tr,'WGG_tr_def.nc'); %[output:7950acb8]
 
 %[appendix]{"version":"1.0"}
 %---
@@ -334,4 +336,7 @@ WGG_st_22.name='WGG22';
 %---
 %[output:24a76c97]
 %   data: {"dataType":"tabular","outputData":{"columnNames":["station","end_time","length_period","granularity","parameter","instrument","MK_seasonality","method","significance","ss","slope","UCL","LCL","slopeP","UCLP","LCLP","slopeR","UCLR","LCLR"],"columns":19,"dataTypes":["cellstr","double","double","cellstr","cellstr","cellstr","cellstr","cellstr","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell"],"header":"4×19 table","name":"WGG22_resultLMSlin","rows":4,"type":"table","value":[["'WGG22'","2022","10","'month'","'BsG_S'","'neph'","'lin'","'LMS'","0.7232","0","-0.2236","0.3948","-0.8421","-0.6117","1.0800","-2.3034","-3.2362","-3.2193","-3.2532"],["'WGG22'","2022","10","'month'","'BaG_A'","'abs'","'lin'","'LMS'","6.0765","95","-0.2024","-0.1357","-0.2690","-6.5170","-4.3720","-8.6620","-3.0235","-3.0217","-3.0253"],["'WGG22'","2022","10","'month'","'expS_bg3'","'neph'","'lin'","'LMS'","0.8075","0","0.0043","0.0149","-0.0063","0.2841","0.9877","-0.4195","-0.9572","-0.9569","-0.9575"],["'WGG22'","2022","10","'month'","'SSA311'","'abs+neph'","'lin'","'LMS'","7.4801","95","0.0038","0.0049","0.0028","0.4193","0.5314","0.3072","-0.9616","-0.9615","-0.9616"]]}}
+%---
+%[output:7950acb8]
+%   data: {"dataType":"text","outputData":{"text":"Fichier NetCDF créé : WGG_tr_def.nc\n","truncated":false}}
 %---
