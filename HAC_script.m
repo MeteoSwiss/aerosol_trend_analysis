@@ -6,10 +6,9 @@ HAC_st.env='Mt';
 HAC_st.footp='P';
 %%
 
-HAC_rd=read_ebas_merged_STN('C:\github_trend\raw_data\merged_Helmos Mountain.nc', HAC_st); %[output:9f67ffc1]
+HAC_rd=read_ebas_merged_STN('C:\github_trend\raw_data\merged_Helmos Mountain.nc', HAC_st);
 
-names_rd=fieldnames(HAC_rd);
-
+names_rd=fieldnames(HAC_rd); %[output:9f67ffc1]
 
 %%
 datevec(HAC_rd.Time(1)) % begin in 2016 %[output:157fdefc]
@@ -176,7 +175,7 @@ writetable(HAC_result_LMSlog,'HAC_res_LMSlog.txt');
 writetable(HAC_result_LMSlin,'HAC_res_LMSlin.txt'); 
 plot_10y_in_two(HAC_result_MK, HAC_st,'y'); %[output:37d16e34] %[output:156247cf]
 %%
-%HAC_result_D=HAC_result;
+ timetable_to_netcdf(HAC_tr,'HAC_tr_def.nc');
 
 %[appendix]{"version":"1.0"}
 %---

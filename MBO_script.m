@@ -3,7 +3,7 @@ MBO_st.lat=43.9775;
 MBO_st.lon=-121.6861;
 MBO_st.alt=2800;
 MBO_st.env='Mt';
-MBO_st.footp='Mx';
+MBO_st.footp='P';
 %%
 
 MBO_rd=read_betsy_2026('C:\github_trend\raw_data\MBO_dataonly_wRH_gml.csv', MBO_st.name); %[output:7bce0832]
@@ -115,7 +115,7 @@ MBO_tr=synchronize(MBO_rd,MBO_cal);
 
 MBO_tr.y=year(MBO_tr.Time);
 % begin at the beginning of a year: 2007 for abs, 2009 for scat
-%end: 2025
+%end: 2025 WAIT FOR 2025
 P=timerange('2012-01-01','2025-01-01');
 MBO_tr=MBO_tr(P,:);
 

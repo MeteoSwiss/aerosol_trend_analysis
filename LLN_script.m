@@ -222,6 +222,13 @@ LLN_result_LMSlog_paper=LLN_result_LMSlog(~SS,:);
 writetable(LLN_result_MK_paper,'LLN_res_MK_paper.txt'); %, 'delimiter',',' )
 writetable(LLN_result_LMSlog_paper,'LLN_res_LMSlog_paper.txt'); 
 writetable(LLN_result_LMSlin_paper,'LLN_res_LMSlin_paper.txt'); 
+%%
+LLN_tr_paper=LLN_tr;
+LLN_tr_paper.Bac3_A81ae31=[];
+LLN_tr_paper.expA_fit=[];
+LLN_tr_paper.SSA30_ae=[];
+
+timetable_to_netcdf(LLN_tr_paper,'LLN_tr_def.nc'); %[output:57ec1856]
 
 %[appendix]{"version":"1.0"}
 %---
@@ -1712,4 +1719,7 @@ writetable(LLN_result_LMSlin_paper,'LLN_res_LMSlin_paper.txt');
 %---
 %[output:852dae32]
 %   data: {"dataType":"error","outputData":{"errorType":"runtime","text":"Output argument \"ak_ss\" (and possibly others) not assigned a value in the execution with \"nanprewhite_AR\" function.\n\nError in <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('prewhite', 'C:\\github_trend\\Matlab\\prewhite.m', 66)\" style=\"font-weight:bold\">prewhite<\/a> (<a href=\"matlab: opentoline('C:\\github_trend\\Matlab\\prewhite.m',66,0)\">line 66<\/a>)\n[c.PW, dataARremoved, c.ss]= nanprewhite_AR(data,'alpha_ak',alpha_ak);\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nError in <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('MK_tempAggr', 'C:\\github_trend\\Matlab\\MK_tempAggr.m', 132)\" style=\"font-weight:bold\">MK_tempAggr<\/a> (<a href=\"matlab: opentoline('C:\\github_trend\\Matlab\\MK_tempAggr.m',132,0)\">line 132<\/a>)\n    dataPW=prewhite(data, (obs{1}), resolution,'alpha_ak',alpha_ak);\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nError in <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('seasonalKendall_main_D', 'C:\\github_trend\\aerosol_trend_analysis\\seasonalKendall_main_D.m', 149)\" style=\"font-weight:bold\">seasonalKendall_main_D<\/a> (<a href=\"matlab: opentoline('C:\\github_trend\\aerosol_trend_analysis\\seasonalKendall_main_D.m',149,0)\">line 149<\/a>)\n    result_y=struct2table(MK_tempAggr(dataGTT_deseason(:,1),resolution));\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nError in <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('all3_trend', 'C:\\github_trend\\aerosol_trend_analysis\\all3_trend.m', 8)\" style=\"font-weight:bold\">all3_trend<\/a> (<a href=\"matlab: opentoline('C:\\github_trend\\aerosol_trend_analysis\\all3_trend.m',8,0)\">line 8<\/a>)\nTresult_MK=seasonalKendall_main_D(data,param, inst, station, resolution,varargin{:});\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nError in <a href=\"matlab:matlab.lang.internal.introspective.errorDocCallback('all_trend_STN', 'C:\\github_trend\\aerosol_trend_analysis\\all_trend_STN.m', 68)\" style=\"font-weight:bold\">all_trend_STN<\/a> (<a href=\"matlab: opentoline('C:\\github_trend\\aerosol_trend_analysis\\all_trend_STN.m',68,0)\">line 68<\/a>)\n        [Tresult_MK_25,Tresult_LMSlogi,Tresult_LMSlini]=all3_trend(data_trok,{names{i}}, inst, data_st.name, resolution,'end_year',max(data_trok.y), 'fig',1);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"}}
+%---
+%[output:57ec1856]
+%   data: {"dataType":"text","outputData":{"text":"Fichier NetCDF créé : LLN_tr_def.nc\n","truncated":false}}
 %---

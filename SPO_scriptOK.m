@@ -256,7 +256,7 @@ SPO_tr.expA_gr=[];
 
 %%
 % save data in Netcdf
-timetable_to_netcdf(SPO_tr, 'C:/github_trend/result/SPO/SPO_tr.nc');
+
 %%
 [SPO_result_MK,SPO_result_GSMd,SPO_result_LMSlog,SPO_result_LMSlin,SPO_result_LMSlog2,SPO_result_LMSlin2]=all_trend_STN(SPO_tr, SPO_st);
 plot_10y_in_two(SPO_result_MK,SPO_st,'y');
@@ -269,7 +269,7 @@ writetable(SPO_result_LMSlin2,'SPO_result_LMSlin2.txt');
 %%
 % do quantile analysis
 %%
-SPO_result_D=SPO_result;
+ timetable_to_netcdf(SPO_tr,'SPO_tr_def.nc'); %[output:6f6b2444]
 
 %[appendix]{"version":"1.0"}
 %---
@@ -1775,4 +1775,7 @@ SPO_result_D=SPO_result;
 %---
 %[output:4b3738ae]
 %   data: {"dataType":"warning","outputData":{"text":"Warning: Iteration limit reached."}}
+%---
+%[output:6f6b2444]
+%   data: {"dataType":"text","outputData":{"text":"Fichier NetCDF créé : SPO_tr_def.nc\n","truncated":false}}
 %---
