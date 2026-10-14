@@ -107,7 +107,7 @@ dataG=dataG(ind,:);
 %take the number of periods to be analysed
 if length(period)>1
     if period(end)-period(end-1)<10
-        nb_period=floor((max(dataG.y)-min(dataG.y)+1)/5)-1;
+        nb_period=floor((max(dataG.y)-min(dataG.y)+1)/10)-1;
         if nb_period==0
             nb_period=1;
         end
