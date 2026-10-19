@@ -100,7 +100,7 @@ for i=1:length(names)
         else
             Tresult_MKi=Tresult_10y;
         end
-    elseif nb_trend==1 | nb_trend==0
+    elseif nb_trend==1 | nb_trend<=0
         Tresult_MKi=Tresult_MK_25;
     end
 

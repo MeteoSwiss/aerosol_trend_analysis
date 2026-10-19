@@ -73,7 +73,7 @@ end
 
 % Set values from user input, or use defaults
 avM = varg_val(varargin, 'averageM', @nanmedian);
-end_time = varg_val(varargin, 'end_year', 2017);
+end_time = varg_val(varargin, 'end_year', 2025);
 path = varg_val(varargin, 'path', '');
 period = varg_val(varargin, 'period', [10 20 30 40 50]);
 granu='month';
@@ -107,7 +107,7 @@ dataG=dataG(ind,:);
 %take the number of periods to be analysed
 if length(period)>1
     if period(end)-period(end-1)<10
-        nb_period=floor((max(dataG.y)-min(dataG.y)+1)/5)-1;
+        nb_period=floor((max(dataG.y)-min(dataG.y)+1)/10)-1;
         if nb_period==0
             nb_period=1;
         end
@@ -119,7 +119,7 @@ end
 
 % compute the LMS trend for all periods
 for i=nb_period:-1:1
-    TT=timerange(datetime(end_time-period(i)+1,1,1,0,0,0),datetime(end_time,1,1,0,0,0));
+    TT=timerange(datetime(end_time-period(i)+1,1,1,0,0,0),datetime(end_time+1,1,1,0,0,0));
     dataGa=dataG(TT,:);
     % center the time vector
     t=datenum(dataGa.Time)-datenum(dataGa.Time(1));
