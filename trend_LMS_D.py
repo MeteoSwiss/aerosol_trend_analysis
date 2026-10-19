@@ -112,7 +112,7 @@ def trend_LMS_D(data,param,inst,station,distribution,end_year=2025,
     n_years = dataG["y"].max() - dataG["y"].min() + 1
     if len(period) > 1:
         if period[-1] - period[-2] < 10:
-            nb_period = int(n_years // 5) - 1
+            nb_period = int(n_years // 10) - 1
             if nb_period == 0:
                 nb_period = 1
         else:
