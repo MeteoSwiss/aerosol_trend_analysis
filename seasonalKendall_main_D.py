@@ -199,7 +199,7 @@ def seasonalKendall_main_D(data, param, inst, station, resolution, granularity="
         t_MS = np.arange(1,6) + i*delta
 
         if fig:
-            title = (f"{station} {name} {inst}" f"{end_year-period[i]+1}-{end_year}")
+            title = (f"{station} {name} {inst} " f"{end_year-period[i]+1}-{end_year}")
 
             fig_obj.suptitle(title)
             plt.sca(ax1)
@@ -211,21 +211,32 @@ def seasonalKendall_main_D(data, param, inst, station, resolution, granularity="
             ax2.text(t_MS[0], result_MS["UCL"].iloc[0] + abs(result_MS["UCL"].iloc[0])*0.3, f"{period[i]}y", fontsize=12, ha="center")
 
         for seasonality, result in [("y", result_y), ("MetSea", result_MS), ("month", result_mo)]:
+  
+            row = {"station": station,
+                   "end_time": end_year,
+                   "length_period": period[i],
+                   "granularity": granularity,
+                   "parameter": name,
+                   "instrument": inst,
+                   "MK_seasonality": seasonality,
+                   "method": "MK"}
 
-            results.append({"station": station,
-                "end_time": end_year,
-                "length_period": period[i],
-                "granularity": granularity,
-                "parameter": name,
-                "instrument": inst,
-                "MK_seasonality": seasonality,
-                "method": "MK",
-                "ss": result["ss"].iloc[0],
-                "slope": result["slope"].iloc[0],
-                "UCL": result["UCL"].iloc[0],
-                "LCL": result["LCL"].iloc[0],})
+            for var in ["ss", "slope", "UCL", "LCL"]:
+                vals = result[var].to_numpy()
+                for k, v in enumerate(vals, start=1):
+                    row[f"{var}_{k}"] = v
+
+            results.append(row)
             
     Tresult = pd.DataFrame(results)
+
+    meta_cols = ["station", "end_time", "length_period", "granularity",
+                 "parameter", "instrument", "MK_seasonality", "method"]
+    n_max = 13
+    val_cols = [f"{var}_{k}" for var in ["ss", "slope", "UCL", "LCL"]
+                for k in range(1, n_max + 1)]
+
+    Tresult = Tresult.reindex(columns=meta_cols + val_cols)
 
     if fig:
         fig_obj.tight_layout()
