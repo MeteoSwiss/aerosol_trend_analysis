@@ -1,7 +1,7 @@
 NDL_st.name='NDL'; 
 NDL_st.lat=28.62;
 NDL_st.lon=77.21;
-NDL_st.alt=0000;
+NDL_st.alt=212;
 NDL_st.env='Con';
 NDL_st.footp='U';
 %%
@@ -78,7 +78,7 @@ writetable(NDL_result_LMSlog,'NDL_res_LMSlog.txt');
 writetable(NDL_result_LMSlin,'NDL_res_LMSlin.txt'); 
 %plot_10y_in_two(NDL_result_MK, NDL_st,'y');
 %%
- timetable_to_netcdf(NDL_tr,'NDL_tr_def.nc');
+ timetable_to_netcdf(NDL_tr,'NDL_tr_def.nc'); %[output:70a71ae1]
 
 %[appendix]{"version":"1.0"}
 %---
@@ -399,4 +399,7 @@ writetable(NDL_result_LMSlin,'NDL_res_LMSlin.txt');
 %---
 %[output:881e7bd5]
 %   data: {"dataType":"tabular","outputData":{"columnNames":["station","end_time","length_period","granularity","parameter","instrument","MK_seasonality","method","significance","ss","slope","UCL","LCL","slopeP","UCLP","LCLP","slopeR","UCLR","LCLR"],"columns":19,"dataTypes":["cellstr","double","double","cellstr","cellstr","cellstr","cellstr","cellstr","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell"],"header":"2×19 table","name":"NDL_resultLMSlin","rows":2,"type":"table","value":[["'NDL'","2024","8","'month'","'Ba3_A'","'abs'","'lin'","'LMS'","3.5461","95","-847.1200","-369.3475","-1.3249e+03","-10.1381","-4.4202","-15.8559","-6.7780e+03","-6.7675e+03","-6.7884e+03"],["'NDL'","2024","8","'month'","'expA_fit'","'abs'","'lin'","'LMS'","1.4256","0","0.0031","0.0075","-0.0013","1.2836","3.0843","-0.5172","-0.9750","-0.9749","-0.9751"]]}}
+%---
+%[output:70a71ae1]
+%   data: {"dataType":"text","outputData":{"text":"Fichier NetCDF créé : NDL_tr_def.nc\n","truncated":false}}
 %---

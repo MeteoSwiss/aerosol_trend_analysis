@@ -51,7 +51,7 @@ for i=1:length(merged_data.Variables)
                         pm='0';
                     elseif contains(merged_data.Variables(i).Name,'pm1')
                         pm='1';
-                    elseif contains(merged_data.Variables(i).Name,'pm2.5')
+                    elseif contains(merged_data.Variables(i).Name,'pm2')
                         pm='2';
                     else
                         warning('size cut is identified as TSP')

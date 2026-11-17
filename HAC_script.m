@@ -184,7 +184,7 @@ HAC_tr.BbsFr=[];
 %%
 [HAC_result_MK,HAC_result_LMSlog,HAC_result_LMSlin]=all_trend_STN(HAC_tr,HAC_st); %[output:7a14ee40] %[output:6890a558] %[output:57e34c7a] %[output:12beaf22] %[output:99f90d0f] %[output:736978a5] %[output:5f14efc0] %[output:6bb441fc] %[output:53cd5338] %[output:8c9abf72] %[output:4f6ad73f] %[output:99ff8dc2] %[output:006b69f3] %[output:972e86d4] %[output:78643881] %[output:35dc0034] %[output:319b4d19] %[output:05b50c27] %[output:53aa8f23] %[output:6f46157b] %[output:82d4b853] %[output:247a3855] %[output:9a396729] %[output:358847f1] %[output:2c33b5f5] %[output:29c3b9bd] %[output:5892b129] %[output:2f957d57] %[output:8c0c074c] %[output:6022eec9] %[output:2a3620fb] %[output:3c67f791] %[output:1b2e78f8] %[output:5849c3da]
 
-writetable(HAC_result_MK,'HAC_res_MK.txt'); %, 'delimiter',',' )
+writetable(HAC_result_MK,'HAC_res_MK_present_10y.txt'); %, 'delimiter',',' )
 writetable(HAC_result_LMSlog,'HAC_res_LMSlog.txt'); 
 writetable(HAC_result_LMSlin,'HAC_res_LMSlin.txt'); 
 plot_10y_in_two(HAC_result_MK, HAC_st,'y'); %[output:00a9a708] %[output:37f0b130]
