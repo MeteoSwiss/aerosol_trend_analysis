@@ -57,7 +57,7 @@ def timetable_naming_trend(ds):
                 if "pm10" in var_name:
                     pm = "0"
     
-                elif "pm2.5" in var_name:
+                elif "pm2" in var_name:
                     pm = "2"
     
                 elif "pm1" in var_name:

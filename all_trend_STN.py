@@ -87,7 +87,7 @@ def all_trend_STN(data_tr,data_st):
             else:
                 Tresult_MKi = Tresult_MK_10y.copy()
 
-        elif nb_trend==1 | nb_trend==0:
+        elif nb_trend==1 | nb_trend<=0:
             Tresult_MKi = Tresult_MK_25.copy()
         
         # Initialize result containers

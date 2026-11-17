@@ -115,11 +115,11 @@ def plot_each_variable(select1, names, mask, Tmin, Tmax, type, seasonality):
 def fig_seasonKendall_trend10_m(data, namesP, type, nb, seasonality):
     # Select result column according to seasonality
     if seasonality == "MetSea":
-        colonne_res = 4
+        colonne_res = 5
     elif seasonality == "y":
-        colonne_res = 0
+        colonne_res = 1
     elif seasonality == "month":
-        colonne_res = 12
+        colonne_res = 13
     else:
         raise ValueError("No plot because no seasonality was given")
     
@@ -146,8 +146,8 @@ def fig_seasonKendall_trend10_m(data, namesP, type, nb, seasonality):
 
     # Plot each trend
     for i in range(len(data)):
-        ss = data["ss"].iloc[i]
-        slope = data[s].iloc[i]
+        ss = data[f"ss_{colonne_res}"].iloc[i]
+        slope = data[f"{s}_{colonne_res}"].iloc[i]
 
         # Determine size and colour
         if ss == 90:
