@@ -1,8 +1,8 @@
 BHJ_st.name='BHJ'; 
 BHJ_st.lat=23.25;
 BHJ_st.lon=69.67;
-BHJ_st.alt=0000;
-BHJ_st.env='Con';
+BHJ_st.alt=117;
+BHJ_st.env='D';
 BHJ_st.footp='U';
 %%
 % data imported via the import tool from matlab
@@ -89,7 +89,7 @@ writetable(BHJ_result_LMSlog,'BHJ_res_LMSlog.txt');
 writetable(BHJ_result_LMSlin,'BHJ_res_LMSlin.txt'); 
 %plot_10y_in_two(BHJ_result_MK, BHJ_st,'y');
 %%
- timetable_to_netcdf(BHJ_tr,'BHJ_tr_def.nc');
+ timetable_to_netcdf(BHJ_tr,'BHJ_tr_def.nc'); %[output:1aa3bc16]
 
 %[appendix]{"version":"1.0"}
 %---
@@ -248,4 +248,7 @@ writetable(BHJ_result_LMSlin,'BHJ_res_LMSlin.txt');
 %---
 %[output:6506620f]
 %   data: {"dataType":"tabular","outputData":{"columnNames":["station","end_time","length_period","granularity","parameter","instrument","MK_seasonality","method","significance","ss","slope","UCL","LCL","slopeP","UCLP","LCLP","slopeR","UCLR","LCLR"],"columns":19,"dataTypes":["cellstr","double","double","cellstr","cellstr","cellstr","cellstr","cellstr","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell","cell"],"header":"2×19 table","name":"BHJ_resultLMSlin","rows":2,"type":"table","value":[["'BHJ'","2024","8","'month'","'Ba3_A'","'abs'","'lin'","'LMS'","0.2158","0","1.2828e+03","1.3170e+04","-1.0605e+04","0.7551","7.7523","-6.2422","1.0261e+04","1.0522e+04","1.0001e+04"],["'BHJ'","2024","8","'month'","'expA_fit'","'abs'","'lin'","'LMS'","4.2619","95","-0.0113","-0.0060","-0.0166","-0.5006","-0.2657","-0.7355","-1.0905","-1.0904","-1.0906"]]}}
+%---
+%[output:1aa3bc16]
+%   data: {"dataType":"text","outputData":{"text":"Fichier NetCDF créé : BHJ_tr_def.nc\n","truncated":false}}
 %---

@@ -147,16 +147,16 @@ if ~isempty(namesBa)
             error('the nb of wavelengths is different from the number of abs coef')
         end
 
-        b=namesBa(contains(namesBa,'2_'));
-        g=namesBa(contains(namesBa,'3_'));
-        r=namesBa(contains(namesBa,'5_'));
+        b=namesBa(contains(namesBa,["2_","20_"]));
+        g=namesBa(contains(namesBa,["3_","30_"]));
+        r=namesBa(contains(namesBa,["5_","50_"]));
         data_cal.expA_bgAE=real(-log(data.(b{1})./data.(g{1}))/log(470/520));
         data_cal.expA_brAE=real(-log(data.(b{1})./data.(r{1}))/log(470/660));
         data_cal.expA_grAE=real(-log(data.(g{1})./data.(r{1}))/log(520/660));
-        a1=namesBa(contains(namesBa,'1_'));
-        a4=namesBa(contains(namesBa,'4_'));
-        a6=namesBa(contains(namesBa,'6_'));
-        a7=namesBa(contains(namesBa,'7_'));
+        a1=namesBa(contains(namesBa,["1_","10_"]));
+        a4=namesBa(contains(namesBa,["4_","40_"]));
+        a6=namesBa(contains(namesBa,["6_","60_"]));
+        a7=namesBa(contains(namesBa,["7_","70_"]));
         all_Abs=[data.(a1{1}) data.(b{1}) data.(g{1}) data.(a4{1}) data.(r{1}) data.(a6{1}) data.(a7{1})];
         data_cal.expA_fit=Exp_AE_nan_regr(all_Abs);
     else

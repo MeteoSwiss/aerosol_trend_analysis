@@ -39,6 +39,9 @@ elseif strcmp(STN, "KCG")
 elseif strcmp(STN, "GSN")
         station_dat = importfile_GSN(filename, [2, Inf]);
     station_dat.Properties.DimensionNames{1}='Time';
+elseif strcmp(STN,"FKL")
+          station_dat = importfile_FKL(filename, [2, Inf]);
+    station_dat.Properties.DimensionNames{1}='Time';  
 else
     station_dat= read_spo_actris(filename);
 end

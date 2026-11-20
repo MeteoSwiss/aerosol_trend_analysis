@@ -40,7 +40,7 @@ plot_10y_in_two(GIF_result_MK, GIF_st,'y');
 %[appendix]{"version":"1.0"}
 %---
 %[metadata:view]
-%   data: {"layout":"onright","rightPanelPercent":35.8}
+%   data: {"layout":"onright","rightPanelPercent":16.2}
 %---
 %[output:8271a9ab]
 %   data: {"dataType":"matrix","outputData":{"columns":6,"name":"ans","rows":1,"type":"double","value":[["2010","1","1","0","0","0"]]}}

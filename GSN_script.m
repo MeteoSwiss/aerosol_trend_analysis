@@ -6,12 +6,33 @@ GSN_st.env='coast';
 GSN_st.footp='RB';
 %%
 
-GSN_rd=read_ebas_merged_STN('C:\github_trend\raw_data\merged_Gosan(1).nc', GSN_st); %[output:81ef7455]
+GSN_rd=read_ebas_merged_STN('C:\github_trend\raw_data\GSN\merged_Gosan (2).nc', GSN_st); %[output:81ef7455]
 names_rd=fieldnames(GSN_rd);
 %%
 GSN_rd2=read_betsy_2026('C:\github_trend\raw_data\gsn_psap_neph_ae31', GSN_st.name); %[output:13038e3e] %[output:3b4576a4] %[output:5bba9a73]
 names_rd2=fieldnames(GSN_rd2);
 plotFigControl(GSN_rd2,GSN_st.name);
+%%
+% new data directly send by Park
+GSN_absorption_TSP_hourly_2009_2010.Properties.VariableNames{1}='BaB0_A11';
+GSN_absorption_TSP_hourly_2009_2010.Properties.VariableNames{2}='BaG0_A11';
+GSN_absorption_TSP_hourly_2009_2010.Properties.VariableNames{3}='BaR0_A11';
+gsn_abs_2011_2015=gsn_abs_2011_2015(:,1:6);
+gsn_absorption_2016_2020=gsn_absorption_2016_2020(:,1:6);
+gsn_absorption_2021_2025=gsn_absorption_2021_2025(:,[4 5 6 10 11 12]);
+
+
+GSN_abs=[gsn_abs_2011_2015;gsn_absorption_2016_2020;gsn_absorption_2021_2025];
+
+GSN_absorption_TSP_hourly_2009_2010.Properties.DimensionNames{1}='Time';
+GSN_abs.Properties.DimensionNames{1}='Time';
+for i=1:6
+GSN_abs.Properties.VariableTypes{i}='double';
+end
+
+GSN_abs_d=retime(GSN_abs,'daily',@nanmedian);
+
+GSN_abs=[GSN_absorption_TSP_hourly_2009_2010;GSN_abs];
 %%
 datevec(GSN_rd.Time(1)) % 2001 %[output:83622b07]
 datevec(GSN_rd.Time(end)) %2025 %[output:7d4e3fb9]
